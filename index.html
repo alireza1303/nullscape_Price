@@ -54,7 +54,7 @@
     .upgrades-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px 35px;
+      gap: 25px 35px; /* Increased vertical gap for text wrapping */
     }
 
     .upgrades-grid label {
@@ -70,6 +70,13 @@
     .upgrades-grid label:hover {
       color: white;
       text-shadow: 0 0 18px rgba(136, 163, 232, 0.8);
+    }
+
+    /* Text block to handle multi-line labels */
+    .label-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
     }
 
     .custom-icon {
@@ -162,14 +169,11 @@
   </style>
 </head>
 
-  
 <body>
 
   <h1>Nullscape Price Calculator</h1>
 
   <div class="layout">
-
-    
     <div class="box">
       <div class="box-title" style="text-align: left;">Upgrades</div>
       <div class="upgrades-container">
@@ -185,14 +189,14 @@
           <label><input type="checkbox" class="option" data-price="100"><img src="Double_Jump.png" class="custom-icon"> Double Jump (100)</label>
           <label><input type="checkbox" class="option" data-price="250"><img src="Grace_Wings.png" class="custom-icon"> Grace Wings (250)</label>
           <label><input type="checkbox" class="option" data-price="100"><img src="Grapple_Points.png" class="custom-icon"> Grapple Points (100)</label>
-          <label><input type="checkbox" class="option" data-price="200"><img src="Last_Robloxian_Standing.png" class="custom-icon"> Last Robloxian Standing (200)</label>
+          <label><input type="checkbox" class="option" data-price="200"><img src="Last_Robloxian_Standing.png" class="custom-icon"><span class="label-text">Last Robloxian Standing <span>(200)</span></span>  </label>
           <label><input type="checkbox" class="option" data-price="150"><img src="Pocket_Bell.png" class="custom-icon"> Pocket Bell (150)</label>
           <label><input type="checkbox" class="option" data-price="400"><img src="Tripmine_ESP.png" class="custom-icon"> Tripmine ESP (400)</label>
           <label><input type="checkbox" class="option" data-price="600"><img src="Advanced_Gravity_Coil.png" class="custom-icon"> Advanced Coil (600)</label>
           <label><input type="checkbox" class="option" data-price="400"><img src="Ice_Skates.png" class="custom-icon"> Ice Skates (400)</label>
           <label><input type="checkbox" class="option" data-price="600"><img src="Helmet.png" class="custom-icon"> Helmet (600)</label>
           <label><input type="checkbox" class="option" data-price="600"><img src="More_Altars.png" class="custom-icon"> More Altars (600)</label>
-          <label><input type="checkbox" class="option" data-price="1000"><img src="Subspacial_Barrier.png" class="custom-icon"> Subspacial Barrier (1000)</label>
+          <label><input type="checkbox" class="option" data-price="1000"><img src="Subspacial_Barrier.png" class="custom-icon"> Barrier (1000)</label>
           <label><input type="checkbox" class="option" data-price="500"><img src="Ninja_Belt.png" class="custom-icon"> Ninja Belt (500)</label>
           <label><input type="checkbox" class="option" data-price="2000"><img src="Gift_Magnet.png" class="custom-icon"> Gift Magnet (2000)</label>
           <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix (2500)</label>
@@ -204,7 +208,6 @@
       </div>
     </div>
 
-    
     <div class="right">
       <div class="input-row">
         <div class="box">
@@ -219,8 +222,6 @@
           </select>
         </div>
       </div>
-
-      
       <div class="box">
         <button onclick="calculate()">Calculate</button>
       </div>
@@ -231,7 +232,6 @@
     </div>
   </div>
 
-  
   <script>
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
@@ -239,6 +239,7 @@
       if (players < 1) players = 1;
       if (players > 20) players = 20;
       document.getElementById("players").value = players;
+
       let grandTotal = 0;
       const sqrtPlayers = Math.sqrt(players);
       document.querySelectorAll(".option:checked").forEach(opt => {
@@ -248,13 +249,11 @@
       });
       document.getElementById("result").textContent = "Total: " + grandTotal.toLocaleString();
     }
+
     function clearAll() {
       document.querySelectorAll(".option").forEach(opt => opt.checked = false);
       document.getElementById("result").textContent = "Total: 0";
     }
   </script>
-
-  
 </body>
 </html>
-
