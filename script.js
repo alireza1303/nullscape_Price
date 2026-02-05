@@ -37,10 +37,13 @@ function renderGrid() {
     if (isTrapMode) {
         enemiesList.forEach(item => {
             const label = document.createElement('label');
+            label.style.justifyContent = "space-between";
             label.innerHTML = `
-                <input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
-                <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
-                <span class="enemy-name-text">${item.name}</span>
+                <div style="display:flex; align-items:center;">
+                    <input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
+                    <span>${item.name}</span>
+                </div>
+                <span class="after-trap-label" style="font-size: 10px; font-style: italic; color: #aaa; margin-left: 5px;"></span>
             `;
             grid.appendChild(label);
         });
@@ -50,8 +53,7 @@ function renderGrid() {
             label.id = item.id || '';
             label.innerHTML = `
                 <input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
-                <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
-                <span>${item.name} <small class="price-val"></small></span>
+                <span style="margin-left:10px;">${item.name} <small class="price-val"></small></span>
             `;
             grid.appendChild(label);
         });
@@ -63,35 +65,30 @@ function toggleTrapMode() {
     isTrapMode = !isTrapMode;
     document.body.classList.toggle('trap-active');
     document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card Calculator" : "Nullscape Price Calculator";
-    document.getElementById('gridTitle').textContent = isTrapMode ? "Current Run Enemies" : "Upgrades";
-    document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
-    
+    document.getElementById('gridTitle').textContent = isTrapMode ? "CURRENT RUN ENEMIES" : "Upgrades";
     document.getElementById('player-group').style.display = isTrapMode ? "none" : "block";
     document.getElementById('upgrade-results').style.display = isTrapMode ? "none" : "block";
     document.getElementById('trap-results').style.display = isTrapMode ? "block" : "none";
-    
     renderGrid();
 }
 
 function handlePlayerRules() {
-    const players = Math.min(20, Math.max(1, parseInt(document.getElementById("players").value) || 1));
+    const pInput = document.getElementById("players");
+    let p = Math.min(20, Math.max(1, parseInt(pInput.value) || 1));
+    pInput.value = p;
+
     const modeSelect = document.getElementById("mode");
-    
     if (!isTrapMode) {
-        modeSelect.disabled = (players === 1);
-        if(players === 1) modeSelect.value = "1";
+        modeSelect.disabled = (p === 1);
+        if(p === 1) modeSelect.value = "1";
+        
+        document.querySelectorAll(".price-val").forEach(span => {
+            const parent = span.closest('label');
+            const base = upgradesList.find(u => u.id === parent.id || u.name === parent.innerText.split('(')[0].trim()).price;
+            span.textContent = `(${p === 1 && soloPrices[parent.id] ? soloPrices[parent.id] : base})`;
+        });
     } else {
         modeSelect.disabled = false;
-    }
-    
-    if (!isTrapMode) {
-        document.querySelectorAll(".upgrades-grid label").forEach(label => {
-            const checkbox = label.querySelector('input');
-            const priceSpan = label.querySelector('.price-val');
-            const base = Number(checkbox.dataset.price);
-            let displayPrice = (players === 1 && soloPrices[label.id]) ? soloPrices[label.id] : base;
-            priceSpan.textContent = `(${displayPrice})`;
-        });
     }
     calculate();
 }
@@ -101,38 +98,35 @@ function calculate() {
     if (isTrapMode) {
         let limit = (modeVal > 1) ? 16 : 8;
         let used = 0;
-        const list = document.getElementById('trapList');
-        list.innerHTML = '';
-
+        let totalEnemies = 0;
+        
         document.querySelectorAll(".enemy-count").forEach(input => {
             let count = parseInt(input.value) || 0;
-            let name = input.parentElement.querySelector('.enemy-name-text').textContent;
             let added = 0;
             if (used < limit && count > 0) {
                 added = Math.min(count, limit - used);
                 used += added;
             }
-            if (count > 0) {
-                const li = document.createElement('li');
-                li.innerHTML = `${name} <span>${count + added}</span>`;
-                list.appendChild(li);
-            }
+            const afterLabel = input.closest('label').querySelector('.after-trap-label');
+            afterLabel.textContent = count > 0 ? `After Trap: ${count + added}` : "";
+            totalEnemies += (count + added);
         });
+        document.getElementById("trap-total-display").textContent = "Total After Trap: " + totalEnemies;
     } else {
-        let players = parseInt(document.getElementById("players").value) || 1;
+        let p = parseInt(document.getElementById("players").value) || 1;
         let total = 0;
-        const sqrtP = Math.sqrt(players);
         document.querySelectorAll(".option:checked").forEach(opt => {
-            let price = (players === 1 && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Math.ceil(Number(opt.dataset.price) * sqrtP);
+            let base = Number(opt.dataset.price);
+            let price = (p === 1 && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Math.ceil(base * Math.sqrt(p));
             total += Math.ceil(price * modeVal);
         });
         document.getElementById("result").textContent = "Total: " + total.toLocaleString();
     }
 }
 
-function clearAll() { 
+function clearAll() {
     document.querySelectorAll(isTrapMode ? ".enemy-count" : ".option").forEach(i => isTrapMode ? i.value = 0 : i.checked = false);
-    calculate(); 
+    calculate();
 }
 
 window.onload = renderGrid;
