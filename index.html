@@ -25,18 +25,23 @@
             <div class="controls">
                 <div class="box" id="input-box">
                     <div id="player-group">
-                        <div class="box-title" style="font-size: 14px; margin-bottom: 8px;">NUMBER OF PLAYERS</div>
+                        <div class="box-title" style="font-size:14px;margin-bottom:8px;">
+                            NUMBER OF PLAYERS
+                        </div>
                         <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
                     </div>
-                    <div id="mode-group" style="margin-top: 20px;">
-                        <div class="box-title" style="font-size: 14px; margin-bottom: 8px;">GAME MODE</div>
+
+                    <div id="mode-group" style="margin-top:20px;">
+                        <div class="box-title" style="font-size:14px;margin-bottom:8px;">
+                            GAME MODE
+                        </div>
                         <select id="mode" onchange="calculate()">
                             <option value="1">Normal</option>
                             <option value="1.15">Hard Mode</option>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="box" id="results-container">
                     <div id="upgrade-results">
                         <div class="price" id="result">Total: 0</div>
@@ -44,6 +49,7 @@
                             <span class="formula-text">ceil(base * √players) * Mode</span>
                         </div>
                     </div>
+
                     <div id="trap-results" style="display:none;">
                         <div class="price" id="trap-total-display">Total After Trap: 0</div>
                         <div class="formula-container">
