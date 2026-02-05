@@ -11,14 +11,11 @@
       background-color: rgb(26, 26, 26);
       color: white;
       font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
-    /* Title */
     h1 {
-      margin-top: 30px;
+      text-align: center;
+      margin-top: 25px;
       margin-bottom: 40px;
       font-size: 42px;
       color: #b266ff;
@@ -28,69 +25,83 @@
         0 0 30px #7a33ff;
     }
 
-    /* Main container */
-    .container {
-      display: flex;
+    /* Main layout */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
       gap: 40px;
-      background-color: rgb(32, 32, 32);
-      padding: 25px 35px;
-      border-radius: 12px;
+      padding: 0 60px;
+    }
+
+    /* Shared box style */
+    .box {
+      background: rgb(32, 32, 32);
+      border-radius: 14px;
+      padding: 25px;
       box-shadow: 0 0 20px rgba(155, 77, 255, 0.25);
     }
 
-    /* Checkbox column */
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+    .box-title {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #b266ff;
     }
 
-    .options label {
-      cursor: pointer;
+    /* Upgrades box */
+    .upgrades {
+      min-height: 420px;
+    }
+
+    .upgrades label {
+      display: block;
+      margin-bottom: 15px;
       font-size: 18px;
+      cursor: pointer;
     }
 
-    .options input {
+    .upgrades input {
       margin-right: 10px;
       transform: scale(1.2);
     }
 
-    /* Right side controls */
-    .controls {
+    /* Right column */
+    .right {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 25px;
     }
 
     input[type="number"] {
-      width: 80px;
-      padding: 5px;
+      width: 100%;
+      padding: 10px;
       background: rgb(20, 20, 20);
       color: white;
       border: 1px solid #7a33ff;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
     button {
-      padding: 10px;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
       background: #7a33ff;
-      color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 10px;
+      color: white;
       cursor: pointer;
       transition: 0.2s;
     }
 
     button:hover {
       background: #9b4dff;
-      box-shadow: 0 0 10px #9b4dff;
+      box-shadow: 0 0 12px #9b4dff;
     }
 
-    #result {
-      margin-top: 10px;
-      font-size: 20px;
+    .price {
+      font-size: 28px;
       color: #b266ff;
+      text-align: center;
     }
   </style>
 </head>
@@ -99,10 +110,12 @@
 
   <h1>Nullscape Price Calculator</h1>
 
-  <div class="container">
+  <div class="layout">
 
-    <!-- Left side: checkboxes -->
-    <div class="options">
+    <!-- LEFT: UPGRADES -->
+    <div class="box upgrades">
+      <div class="box-title">Upgrades</div>
+
       <label>
         <input type="checkbox" class="option" data-price="10">
         Basic Package (€10)
@@ -119,13 +132,39 @@
       </label>
     </div>
 
-    <!-- Right side: input + result -->
-    <div class="controls">
-      <label>
-        Players:
+    <!-- RIGHT SIDE -->
+    <div class="right">
+
+      <div class="box">
+        <div class="box-title">Players</div>
         <input type="number" id="players" min="1" value="1">
-      </label>
+      </div>
 
-      <button onclick="calculate()">Calculate</button>
+      <div class="box">
+        <button onclick="calculate()">Calculate</button>
+      </div>
 
-      <div id="result">
+      <div class="box">
+        <div class="price" id="result">Price = €0</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    function calculate() {
+      const players = parseInt(document.getElementById("players").value) || 0;
+      let total = 0;
+
+      document.querySelectorAll(".option:checked").forEach(opt => {
+        total += Number(opt.dataset.price);
+      });
+
+      document.getElementById("result").textContent =
+        "Price = €" + (total * players);
+    }
+  </script>
+
+</body>
+</html>
