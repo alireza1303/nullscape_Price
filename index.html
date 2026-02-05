@@ -17,14 +17,14 @@
       text-align: center;
       margin-top: 36px;
       margin-bottom: 54px;
-      font-size: 56px; /* 0.9x of 63px */
+      font-size: 56px;
       color: #b266ff;
       text-shadow: 0 0 7px #b266ff, 0 0 20px #9b4dff, 0 0 40px #7a33ff;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.1fr 472px; /* 0.9x of 525px */
+      grid-template-columns: 1.1fr 472px;
       gap: 40px;
       padding: 0 81px 81px 81px;
     }
@@ -37,7 +37,7 @@
     }
 
     .box-title {
-      font-size: 24px; /* 0.9x of 27px */
+      font-size: 24px;
       margin-bottom: 20px;
       color: #b266ff;
       text-transform: uppercase;
@@ -60,7 +60,7 @@
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 19px; /* 0.9x of 21px */
+      font-size: 19px;
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
@@ -73,15 +73,18 @@
       text-shadow: 0 0 16px rgba(136, 163, 232, 0.8);
     }
 
-    /* CENTER REAL WINGS ON LAST ROW */
+    /* FIXES THE WINGS POSITIONING */
     .centered-row {
-      grid-column: 1 / -1;
-      justify-self: center;
-      margin-top: 10px;
+      grid-column: 1 / -1; /* Makes it span all 3 columns */
+      display: flex;
+      justify-content: center; /* Centers the content within that span */
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(136, 163, 232, 0.1);
     }
 
     .custom-icon {
-      width: 40px; /* 0.9x of 45px */
+      width: 40px; 
       height: 40px;
       margin-right: 7px; 
       object-fit: contain;
@@ -90,7 +93,7 @@
 
     .upgrades-grid input {
       margin-right: 13px;
-      transform: scale(1.6); /* 0.9x scaling on checkbox */
+      transform: scale(1.6);
       accent-color: #b266ff;
     }
 
@@ -145,6 +148,7 @@
       margin-top: 13px;
       width: auto;
       align-self: center;
+      border-radius: 8px;
     }
 
     .clear-btn:hover {
@@ -154,7 +158,7 @@
     }
 
     .price {
-      font-size: 43px; /* 0.9x of 48px */
+      font-size: 43px;
       color: #b266ff;
       text-align: center;
       font-weight: bold;
@@ -204,7 +208,9 @@
           <label><input type="checkbox" class="option" data-price="3000"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
           <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
           
-          <label class="centered-row"><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
+          <div class="centered-row">
+            <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
+          </div>
         </div>
         <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
       </div>
