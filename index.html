@@ -217,7 +217,7 @@ input[type="number"],select{
 
 /* MOBILE SPECIFIC OVERRIDES */
 @media(max-width:900px){
-  body { padding-bottom: 200px; } 
+  body { padding-bottom: 220px; } 
   .layout{
     display: flex;
     flex-direction: column;
@@ -228,8 +228,10 @@ input[type="number"],select{
   h1{margin-top:80px}
   .upgrades-grid{grid-template-columns:1fr}
   
+  /* Hide the static Clear All button inside the box on mobile */
   .box .clear-btn { display: none; }
   
+  /* Show the mobile Clear All button in the fixed footer */
   #mobile-clear { display: block !important; margin-top: 15px; padding: 10px; }
 
   #results-container{
@@ -241,11 +243,33 @@ input[type="number"],select{
     border-radius:20px 20px 0 0;
     padding:15px 25px;
     box-shadow:0 -10px 30px rgba(0,0,0,.7);
-    max-height:50vh;
+    max-height:60vh;
     overflow-y:auto;
     background: var(--box-bg);
   }
   .price{font-size:40px}
+
+  /* Mobile Collapsible logic */
+  #trapList {
+    display: none; /* Collapsed by default */
+  }
+  #trapList.visible {
+    display: block;
+  }
+  #collapsible-title {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  #collapsible-title::after {
+    content: '▼';
+    font-size: 14px;
+  }
+  #collapsible-title.active::after {
+    content: '▲';
+  }
 }
 
 #mobile-clear { display: none; }
@@ -282,7 +306,7 @@ input[type="number"],select{
     <div class="formula">ceil(base × √players) × Mode</div>
   </div>
   <div id="trap-results" style="display:none">
-    <div class="box-title" style="font-size:18px;text-align:center">Enemies After Trap</div>
+    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
     <ul class="trap-results-list" id="trapList"></ul>
   </div>
   <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
@@ -319,7 +343,9 @@ const upgradesList=[
  {name:"Sport Shoes",price:1200,icon:"Sport_Shoes.png"},
  {name:"Real Wings",price:25000,icon:"Real_Wings.png"}
 ];
+
 const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000 };
+
 const enemiesList=[
     {name:"Mart", icon:"Mart.png"},
     {name:"Baby", icon:"baby.png"},
@@ -337,7 +363,17 @@ const enemiesList=[
     {name:"Cadence", icon:"Cadance.png"},
     {name:"ICBM", icon:"icbm.png"}
 ];
+
 let isTrapMode=false;
+
+function toggleMobileList() {
+    if(window.innerWidth <= 900) {
+        const list = document.getElementById("trapList");
+        const title = document.getElementById("collapsible-title");
+        list.classList.toggle("visible");
+        title.classList.toggle("active");
+    }
+}
 
 function renderGrid(){
  const grid=document.getElementById("mainGrid");
@@ -433,4 +469,3 @@ window.onload=renderGrid;
 </script>
 </body>
 </html>
-
