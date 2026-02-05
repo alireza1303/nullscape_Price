@@ -15,30 +15,30 @@
 
     h1 {
       text-align: center;
-      margin-top: 40px;
-      margin-bottom: 60px;
-      font-size: 63px;
+      margin-top: 36px;
+      margin-bottom: 54px;
+      font-size: 56px; /* 0.9x of 63px */
       color: #b266ff;
-      text-shadow: 0 0 8px #b266ff, 0 0 22px #9b4dff, 0 0 45px #7a33ff;
+      text-shadow: 0 0 7px #b266ff, 0 0 20px #9b4dff, 0 0 40px #7a33ff;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1fr 525px;
-      gap: 45px;
-      padding: 0 90px 90px 90px;
+      grid-template-columns: 1.1fr 472px; /* 0.9x of 525px */
+      gap: 40px;
+      padding: 0 81px 81px 81px;
     }
 
     .box {
       background: rgb(32, 32, 32);
-      border-radius: 21px;
-      padding: 30px;
-      box-shadow: 0 0 30px rgba(155, 77, 255, 0.25);
+      border-radius: 19px;
+      padding: 27px;
+      box-shadow: 0 0 27px rgba(155, 77, 255, 0.25);
     }
 
     .box-title {
-      font-size: 27px;
-      margin-bottom: 22px;
+      font-size: 24px; /* 0.9x of 27px */
+      margin-bottom: 20px;
       color: #b266ff;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -48,82 +48,83 @@
     .upgrades-container {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 27px;
     }
 
     .upgrades-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 25px 35px; /* Increased vertical gap for text wrapping */
+      gap: 18px 31px;
     }
 
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 21px;
+      font-size: 19px; /* 0.9x of 21px */
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
-      text-shadow: 0 0 12px rgba(136, 163, 232, 0.4);
+      text-shadow: 0 0 11px rgba(136, 163, 232, 0.4);
+      white-space: nowrap; 
     }
 
     .upgrades-grid label:hover {
       color: white;
-      text-shadow: 0 0 18px rgba(136, 163, 232, 0.8);
+      text-shadow: 0 0 16px rgba(136, 163, 232, 0.8);
     }
 
-    /* Text block to handle multi-line labels */
-    .label-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
+    /* CENTER REAL WINGS ON LAST ROW */
+    .centered-row {
+      grid-column: 1 / -1;
+      justify-self: center;
+      margin-top: 10px;
     }
 
     .custom-icon {
-      width: 45px; 
-      height: 45px;
-      margin-right: 8px; 
+      width: 40px; /* 0.9x of 45px */
+      height: 40px;
+      margin-right: 7px; 
       object-fit: contain;
-      filter: drop-shadow(0 0 5px rgb(136, 163, 232));
+      filter: drop-shadow(0 0 4px rgb(136, 163, 232));
     }
 
     .upgrades-grid input {
-      margin-right: 15px;
-      transform: scale(1.8);
+      margin-right: 13px;
+      transform: scale(1.6); /* 0.9x scaling on checkbox */
       accent-color: #b266ff;
     }
 
     .right {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 27px;
     }
 
     .input-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 22px;
+      gap: 20px;
     }
 
     input[type="number"], select {
       width: 100%;
-      padding: 15px;
+      padding: 13px;
       background: rgb(20, 20, 20);
       color: white;
       border: 1.5px solid #7a33ff;
-      border-radius: 12px;
-      font-size: 24px;
+      border-radius: 11px;
+      font-size: 21px;
       text-align: center;
       box-sizing: border-box;
     }
 
     button {
       width: 100%;
-      padding: 21px;
-      font-size: 27px;
+      padding: 19px;
+      font-size: 24px;
       background: #7a33ff;
       border: none;
-      border-radius: 15px;
+      border-radius: 13px;
       color: white;
       cursor: pointer;
       transition: 0.2s;
@@ -132,16 +133,16 @@
 
     button:hover {
       background: #9b4dff;
-      box-shadow: 0 0 22px #9b4dff;
+      box-shadow: 0 0 20px #9b4dff;
     }
 
     .clear-btn {
       background: transparent;
       border: 1.5px solid #ff4d4d;
       color: #ff4d4d;
-      padding: 12px 24px;
-      font-size: 18px;
-      margin-top: 15px;
+      padding: 11px 22px;
+      font-size: 16px;
+      margin-top: 13px;
       width: auto;
       align-self: center;
     }
@@ -149,21 +150,21 @@
     .clear-btn:hover {
       background: #ff4d4d;
       color: white;
-      box-shadow: 0 0 15px #ff4d4d;
+      box-shadow: 0 0 13px #ff4d4d;
     }
 
     .price {
-      font-size: 48px;
+      font-size: 43px; /* 0.9x of 48px */
       color: #b266ff;
       text-align: center;
       font-weight: bold;
-      text-shadow: 0 0 15px rgba(178, 102, 255, 0.5);
+      text-shadow: 0 0 13px rgba(178, 102, 255, 0.5);
     }
 
     .formula-note {
-      font-size: 16px;
+      font-size: 14px;
       color: #555;
-      margin-top: 12px;
+      margin-top: 11px;
       text-align: center;
     }
   </style>
@@ -202,7 +203,8 @@
           <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix (2500)</label>
           <label><input type="checkbox" class="option" data-price="3000"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
           <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
-          <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
+          
+          <label class="centered-row"><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
         </div>
         <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
       </div>
@@ -257,4 +259,3 @@
   </script>
 </body>
 </html>
-
