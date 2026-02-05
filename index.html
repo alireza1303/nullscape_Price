@@ -199,14 +199,14 @@
       { name: "Real Wings", price: 25000, icon: "Real_Wings.png" }
     ];
 
-    const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, price: 0, icon: n.replace("?", "Unknown")+".png"}));
-
     const soloPrices = {
       "opt-grace": 200,
       "opt-barrier": 200,
       "opt-ninja": 300,
       "opt-shield": 1000
     };
+
+    const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, price: 0, icon: n.replace("?", "Unknown")+".png"}));
 
     let isTrapMode = false;
 
@@ -226,6 +226,20 @@
         grid.appendChild(label);
       });
       handlePlayerRules();
+    }
+
+    function updateLabelPrices(players) {
+      if (isTrapMode) return;
+      const isSolo = (players === 1);
+      
+      document.querySelectorAll(".upgrades-grid label").forEach(label => {
+        const checkbox = label.querySelector('input');
+        const priceSpan = label.querySelector('.price-val');
+        const base = Number(checkbox.dataset.price);
+        
+        let displayPrice = (isSolo && soloPrices[label.id]) ? soloPrices[label.id] : base;
+        priceSpan.textContent = `(${displayPrice})`;
+      });
     }
 
     function toggleTrapMode() {
@@ -268,26 +282,6 @@
       
       updateLabelPrices(players);
       calculate();
-    }
-
-    function updateLabelPrices(players) {
-      if (isTrapMode) return;
-      const isSolo = (players === 1);
-      const sqrtP = Math.sqrt(players);
-
-      document.querySelectorAll(".upgrades-grid label").forEach(label => {
-        const checkbox = label.querySelector('input');
-        const priceSpan = label.querySelector('.price-val');
-        const base = Number(checkbox.dataset.price);
-        let currentPrice;
-
-        if (isSolo && soloPrices[label.id]) {
-          currentPrice = soloPrices[label.id];
-        } else {
-          currentPrice = Math.ceil(base * sqrtP);
-        }
-        priceSpan.textContent = `(${currentPrice})`;
-      });
     }
 
     function calculate() {
