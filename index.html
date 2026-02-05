@@ -110,10 +110,6 @@
       width: 100%; box-sizing: border-box; padding: 15px; background: rgb(20, 20, 20);
       color: white; border: 3px solid var(--accent-dark); border-radius: 12px; font-size: 28px; text-align: center;
     }
-    .calc-btn {
-      width: 100%; padding: 25px; font-size: 32px; background: var(--accent-dark);
-      border: none; border-radius: 15px; color: white; cursor: pointer; font-weight: bold;
-    }
     .clear-btn {
       background: rgba(255, 77, 77, 0.1); border: 2px solid #ff4d4d; color: #ff4d4d;
       padding: 15px 30px; font-size: 20px; margin-top: 40px; border-radius: 10px; cursor: pointer;
@@ -170,10 +166,6 @@
             <option value="1.15">Hard Mode</option>
           </select>
         </div>
-      </div>
-
-      <div class="box" id="calc-button-box">
-          <button class="calc-btn" onclick="calculate()">Calculate Total</button>
       </div>
       
       <div class="box" id="results-container">
@@ -260,15 +252,8 @@
       document.getElementById('gridTitle').textContent = isTrapMode ? "Current Run Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
       
-      // Toggle logic for modes/buttons
-      document.getElementById('calc-button-box').style.display = isTrapMode ? "none" : "block";
       document.getElementById('upgrade-results').style.display = isTrapMode ? "none" : "block";
       document.getElementById('trap-results').style.display = isTrapMode ? "block" : "none";
-      
-      // Ensure mode selection is enabled when entering Trap Mode
-      if (isTrapMode) {
-          document.getElementById("mode").disabled = false;
-      }
       
       renderGrid();
     }
@@ -280,13 +265,11 @@
       
       const modeSelect = document.getElementById("mode");
       
-      // Mode selection logic: only force-disable in Upgrade Mode if solo
       if (!isTrapMode) {
         const isSolo = (players === 1);
         modeSelect.disabled = isSolo;
         if(isSolo) modeSelect.value = "1";
       } else {
-        // Always enabled in Trap Mode
         modeSelect.disabled = false;
       }
       
