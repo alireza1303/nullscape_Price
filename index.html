@@ -260,9 +260,15 @@
       document.getElementById('gridTitle').textContent = isTrapMode ? "Current Run Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
       
+      // Toggle logic for modes/buttons
       document.getElementById('calc-button-box').style.display = isTrapMode ? "none" : "block";
       document.getElementById('upgrade-results').style.display = isTrapMode ? "none" : "block";
       document.getElementById('trap-results').style.display = isTrapMode ? "block" : "none";
+      
+      // Ensure mode selection is enabled when entering Trap Mode
+      if (isTrapMode) {
+          document.getElementById("mode").disabled = false;
+      }
       
       renderGrid();
     }
@@ -271,12 +277,19 @@
       const playerInput = document.getElementById("players");
       let players = parseInt(playerInput.value) || 1;
       if (players > 20) { players = 20; playerInput.value = 20; }
+      
       const modeSelect = document.getElementById("mode");
+      
+      // Mode selection logic: only force-disable in Upgrade Mode if solo
       if (!isTrapMode) {
         const isSolo = (players === 1);
         modeSelect.disabled = isSolo;
         if(isSolo) modeSelect.value = "1";
+      } else {
+        // Always enabled in Trap Mode
+        modeSelect.disabled = false;
       }
+      
       updateLabels(players);
       calculate();
     }
