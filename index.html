@@ -77,28 +77,34 @@
     }
     .upgrades-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 columns for better readability with big text */
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 19px; /* Significantly bigger text */
+      font-size: 20px; 
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
-      padding: 5px;
+      padding: 8px;
     }
     .trap-active .enemy-label { color: var(--enemy-orange) !important; font-weight: bold; }
     .custom-icon { width: 45px; height: 45px; margin-right: 15px; flex-shrink: 0; }
     input[type="checkbox"] {
       margin-right: 15px;
-      transform: scale(1.8); /* Bigger checkboxes */
+      transform: scale(1.8);
       accent-color: var(--accent);
     }
     .enemy-count {
-      width: 60px; background: #111; border: 2px solid var(--enemy-orange);
-      color: white; border-radius: 8px; margin-right: 15px; padding: 10px; text-align: center; font-size: 20px;
+      width: 80px; background: #111; border: 2px solid var(--enemy-orange);
+      color: white; border-radius: 8px; margin-right: 15px; padding: 10px; text-align: center; font-size: 24px;
+    }
+    .after-trap-text {
+      margin-left: auto;
+      font-size: 16px;
+      color: #aaa;
+      font-style: italic;
     }
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
@@ -114,24 +120,17 @@
     .calc-btn {
       width: 100%; padding: 25px; font-size: 32px; background: var(--accent-dark);
       border: none; border-radius: 15px; color: white; cursor: pointer; font-weight: bold;
-      transition: transform 0.1s;
     }
-    .calc-btn:active { transform: scale(0.98); }
     .clear-btn {
       background: rgba(255, 77, 77, 0.1); border: 2px solid #ff4d4d; color: #ff4d4d;
       padding: 15px 30px; font-size: 20px; margin-top: 40px; border-radius: 10px; cursor: pointer;
     }
     .price-display { text-align: center; }
-    .price { font-size: 64px; color: var(--accent); font-weight: bold; }
+    .price { font-size: 58px; color: var(--accent); font-weight: bold; }
     .formula { font-size: 18px; color: #777; margin-top: 10px; font-family: monospace; }
-    .disabled-item { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
 
     @media (max-width: 1600px) { .upgrades-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 1200px) {
-      .layout { grid-template-columns: 1fr; padding: 0 20px; }
-      .controls { order: -1; }
-    }
-    @media (max-width: 600px) { .upgrades-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 1200px) { .layout { grid-template-columns: 1fr; } }
   </style>
 </head>
 
@@ -147,7 +146,7 @@
     <div class="box">
       <div class="box-title" id="gridTitle">Upgrades</div>
       <div class="upgrades-grid" id="mainGrid"></div>
-      <button class="clear-btn" id="clearBtn" onclick="clearAll()">Clear Selections</button>
+      <button class="clear-btn" id="clearBtn" onclick="clearAll()">Clear All</button>
     </div>
 
     <div class="controls">
@@ -160,11 +159,11 @@
           <div class="box-title" style="text-align:center; font-size:18px; margin-bottom:10px;">Mode</div>
           <select id="mode" onchange="calculate()">
             <option value="1">Normal</option>
-            <option value="1.15">Hard (+15%)</option>
+            <option value="1.15">Hard Mode</option>
           </select>
         </div>
       </div>
-      <div class="box"><button class="calc-btn" onclick="calculate()">Calculate Total</button></div>
+      <div class="box"><button class="calc-btn" onclick="calculate()">Refresh Total</button></div>
       <div class="box">
         <div class="price-display">
           <div class="price" id="result">Total: 0</div>
@@ -203,55 +202,51 @@
       { name: "Real Wings", price: 25000, icon: "Real_Wings.png" }
     ];
 
-    const soloPrices = {
-      "opt-grace": 200,
-      "opt-barrier": 200,
-      "opt-ninja": 300,
-      "opt-shield": 1000
-    };
+    const soloPrices = { "opt-grace": 200, "opt-barrier": 200, "opt-ninja": 300, "opt-shield": 1000 };
 
-    const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, price: 0, icon: n.replace("?", "Unknown")+".png"}));
+    const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, icon: n.replace("?", "Unknown")+".png"}));
 
     let isTrapMode = false;
 
     function renderGrid() {
       const grid = document.getElementById('mainGrid');
-      const list = isTrapMode ? enemiesList : upgradesList;
       grid.innerHTML = '';
-      list.forEach(item => {
-        const label = document.createElement('label');
-        if (isTrapMode) {
+      
+      if (isTrapMode) {
+        enemiesList.forEach(item => {
+          const label = document.createElement('label');
           label.className = "enemy-label";
-          label.innerHTML = `<input type="number" class="enemy-count" value="0" min="0" oninput="calculate()"><img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">${item.name}`;
-        } else {
+          label.innerHTML = `
+            <input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
+            <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
+            <span>${item.name}</span>
+            <span class="after-trap-text"></span>
+          `;
+          grid.appendChild(label);
+        });
+      } else {
+        upgradesList.forEach(item => {
+          const label = document.createElement('label');
           label.id = item.id || '';
-          label.innerHTML = `<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()"><img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"><span class="item-text">${item.name}</span> <span class="price-val" style="margin-left: 8px; color: #aaa;"></span>`;
-        }
-        grid.appendChild(label);
-      });
+          label.innerHTML = `
+            <input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
+            <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
+            <span class="item-text">${item.name}</span> 
+            <span class="price-val" style="margin-left: 8px; color: #aaa; font-size: 16px;"></span>
+          `;
+          grid.appendChild(label);
+        });
+      }
       handlePlayerRules();
-    }
-
-    function updateLabelPrices(players) {
-      if (isTrapMode) return;
-      const isSolo = (players === 1);
-      document.querySelectorAll(".upgrades-grid label").forEach(label => {
-        const checkbox = label.querySelector('input');
-        const priceSpan = label.querySelector('.price-val');
-        const base = Number(checkbox.dataset.price);
-        let displayPrice = (isSolo && soloPrices[label.id]) ? soloPrices[label.id] : base;
-        priceSpan.textContent = `(${displayPrice})`;
-      });
     }
 
     function toggleTrapMode() {
       isTrapMode = !isTrapMode;
       document.getElementById('mainBody').classList.toggle('trap-active');
-      document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card" : "Nullscape Prices";
-      document.getElementById('gridTitle').textContent = isTrapMode ? "Enemies" : "Upgrades";
+      document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card Calculator" : "Nullscape Price Calculator";
+      document.getElementById('gridTitle').textContent = isTrapMode ? "Current Run Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
-      document.getElementById('formula-text').style.opacity = isTrapMode ? "0" : "1";
-      document.getElementById('clearBtn').style.display = isTrapMode ? "none" : "block";
+      document.getElementById('formula-text').textContent = isTrapMode ? "Doubling Fixed Order Limit (8/16)" : "ceil(base * √players) * Mode";
       renderGrid();
     }
 
@@ -267,51 +262,81 @@
       if (!isTrapMode) {
         const isSolo = (players === 1);
         modeSelect.disabled = isSolo;
-        modeBox.classList.toggle("disabled-box", isSolo);
         if(isSolo) modeSelect.value = "1";
-
-        const adr = document.getElementById("opt-adrenaline");
-        const lrs = document.getElementById("opt-lrs");
-        if (adr) {
-          if (players > 1) adr.classList.add("disabled-item");
-          else adr.classList.remove("disabled-item");
-        }
-        if (lrs) {
-          if (players < 3) lrs.classList.add("disabled-item");
-          else lrs.classList.remove("disabled-item");
-        }
       }
       
-      updateLabelPrices(players);
+      updateLabels(players);
       calculate();
     }
 
-    function calculate() {
-      let players = parseInt(document.getElementById("players").value) || 1;
+    function updateLabels(players) {
+      if (isTrapMode) return;
       const isSolo = (players === 1);
-      const mult = parseFloat(document.getElementById("mode").value);
-      let total = 0;
-      
-      if (isTrapMode) {
-        document.querySelectorAll(".enemy-count").forEach(i => total += (parseInt(i.value)||0) * 0); 
-        total = Math.ceil(total * mult);
-      } else {
-        const sqrtP = Math.sqrt(players);
-        document.querySelectorAll(".option:checked").forEach(opt => {
-          const parentId = opt.parentElement.id;
-          let price;
-          if (isSolo && soloPrices[parentId]) {
-            price = soloPrices[parentId];
-          } else {
-            price = Math.ceil(Number(opt.dataset.price) * sqrtP);
-          }
-          total += Math.ceil(price * mult);
-        });
-      }
-      document.getElementById("result").textContent = "Total: " + total.toLocaleString();
+      document.querySelectorAll(".upgrades-grid label").forEach(label => {
+        const checkbox = label.querySelector('input');
+        const priceSpan = label.querySelector('.price-val');
+        const base = Number(checkbox.dataset.price);
+        let displayPrice = (isSolo && soloPrices[label.id]) ? soloPrices[label.id] : base;
+        priceSpan.textContent = `(${displayPrice})`;
+      });
     }
 
-    function clearAll() { document.querySelectorAll(".option").forEach(o => o.checked = false); calculate(); }
+    function calculate() {
+      const modeVal = document.getElementById("mode").value;
+      const isHard = (modeVal === "1.15");
+      let resultDisplay = document.getElementById("result");
+
+      if (isTrapMode) {
+        let doublingLimit = isHard ? 16 : 8;
+        let doubledCount = 0;
+        let finalEnemyTotal = 0;
+
+        document.querySelectorAll(".enemy-count").forEach(input => {
+          let currentAmount = parseInt(input.value) || 0;
+          let afterTrapSpan = input.parentElement.querySelector('.after-trap-text');
+          let canDouble = 0;
+
+          if (doubledCount < doublingLimit && currentAmount > 0) {
+            canDouble = Math.min(currentAmount, doublingLimit - doubledCount);
+            doubledCount += canDouble;
+          }
+          
+          let finalForThisEnemy = currentAmount + canDouble;
+          finalEnemyTotal += finalForThisEnemy;
+          
+          if (currentAmount > 0) {
+            afterTrapSpan.textContent = `After Trap: ${finalForThisEnemy}`;
+          } else {
+            afterTrapSpan.textContent = "";
+          }
+        });
+
+        resultDisplay.textContent = "Total After Trap: " + finalEnemyTotal;
+
+      } else {
+        let players = parseInt(document.getElementById("players").value) || 1;
+        const isSolo = (players === 1);
+        const mult = parseFloat(modeVal);
+        let total = 0;
+        const sqrtP = Math.sqrt(players);
+
+        document.querySelectorAll(".option:checked").forEach(opt => {
+          const parentId = opt.parentElement.id;
+          let price = (isSolo && soloPrices[parentId]) ? soloPrices[parentId] : Math.ceil(Number(opt.dataset.price) * sqrtP);
+          total += Math.ceil(price * mult);
+        });
+        resultDisplay.textContent = "Total: " + total.toLocaleString();
+      }
+    }
+
+    function clearAll() { 
+        if(isTrapMode) {
+            document.querySelectorAll(".enemy-count").forEach(i => i.value = 0);
+        } else {
+            document.querySelectorAll(".option").forEach(o => o.checked = false); 
+        }
+        calculate(); 
+    }
     window.onload = renderGrid;
   </script>
 </body>
