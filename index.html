@@ -169,7 +169,6 @@ h1{
   h1{margin-top:20px}
   .upgrades-grid{grid-template-columns:1fr}
   
-  /* Mobile Watermark - Top of Title */
   .watermark {
     text-align: center;
     font-size: 16px;
@@ -191,6 +190,27 @@ h1{
     overflow-y:auto;
     background: var(--box-bg);
   }
+
+  #trapList {
+    display: none;
+  }
+  #trapList.visible {
+    display: block;
+  }
+  #collapsible-title {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  #collapsible-title::after {
+    content: '▼';
+    font-size: 14px;
+  }
+  #collapsible-title.active::after {
+    content: '▲';
+  }
 }
 
 input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); flex-shrink:0; }
@@ -204,6 +224,7 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 
 .clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:22px; margin-top:25px; border-radius:12px; cursor:pointer; }
 #mobile-clear { display: none; }
+@media(max-width:900px){ #mobile-clear { display: block; } }
 </style>
 </head>
 <body>
@@ -239,7 +260,7 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
     <div class="formula">ceil(base × √players) × Mode</div>
   </div>
   <div id="trap-results" style="display:none">
-    <div class="box-title" style="font-size:18px;text-align:center">Enemies After Trap</div>
+    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
     <ul class="trap-results-list" id="trapList"></ul>
     <div class="formula" style="margin-top:15px; color:var(--enemy-orange); font-weight: bold;">
         Formula: (Enemies + Added) + 2 Randoms
@@ -293,6 +314,15 @@ const enemiesList=[
 ];
 
 let isTrapMode=false;
+
+function toggleMobileList() {
+    if(window.innerWidth <= 900) {
+        const list = document.getElementById("trapList");
+        const title = document.getElementById("collapsible-title");
+        list.classList.toggle("visible");
+        title.classList.toggle("active");
+    }
+}
 
 function renderGrid(){
  const grid=document.getElementById("mainGrid");
