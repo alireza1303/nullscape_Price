@@ -106,11 +106,11 @@ h1{
   padding:12px;
   border-radius:12px;
   cursor:pointer;
-  white-space:nowrap;
+  white-space:normal; /* allow names to wrap if needed */
 }
 .upgrades-grid span{
-  overflow:hidden;
-  text-overflow:ellipsis;
+  overflow:visible; /* show full name */
+  text-overflow:clip;
 }
 
 .custom-icon{
@@ -126,14 +126,14 @@ input[type="checkbox"]{
   flex-shrink:0;
 }
 
-.enemy-count{
-  width:90px;
-  height:60px;
+.enemy-count, #players{
+  width:80px; /* same fixed width for all number boxes */
+  height:50px;
   background:#000;
   border:2px solid var(--enemy-orange);
   color:white;
   border-radius:10px;
-  font-size:28px;
+  font-size:24px;
   text-align:center;
   margin-right:15px;
 }
@@ -145,21 +145,13 @@ input[type="checkbox"]{
 }
 
 input[type="number"],select{
-  width:100%;
-  padding:15px;
+  padding:10px;
   background:#111;
   color:white;
   border:2px solid var(--accent-dark);
   border-radius:12px;
-  font-size:24px;
+  font-size:20px;
   text-align:center;
-}
-#players{
-  width:140px;
-  min-width:140px;
-  max-width:140px;
-  margin:0 auto;
-  display:block;
 }
 
 .clear-btn{
@@ -198,11 +190,8 @@ input[type="number"],select{
   border-bottom:1px solid rgba(255,255,255,.1);
   display:flex;
   justify-content:space-between;
+  align-items:center;
   color:var(--enemy-orange);
-}
-.trap-results-list li span{
-  color:white;
-  font-weight:bold;
 }
 
 @media(max-width:900px){
@@ -291,7 +280,6 @@ const upgradesList=[
  {name:"Sport Shoes",price:1200,icon:"Sport_Shoes.png"},
  {name:"Real Wings",price:25000,icon:"Real_Wings.png"}
 ];
-
 const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000 };
 const enemiesList=["Mart","Baby","NIL","Voidbreaker","Springer","Bell","Voidbound Guardian","Skinwalker","Voidbound Baby","???","Telefragger","Flesh","Guardian","Cadence","ICBM"].map(n=>({name:n,icon:n.replace("?","Unknown")+".png"}));
 let isTrapMode=false;
