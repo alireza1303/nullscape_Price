@@ -6,7 +6,6 @@
   <title>Nullscape Price Calculator</title>
   
   <style>
-    /* Color Variables */
     :root {
       --accent: #b266ff;
       --accent-dark: #7a33ff;
@@ -15,7 +14,6 @@
       --btn-glow: rgba(255, 142, 66, 0.6);
     }
 
-    /* Trap Mode Overrides */
     .trap-active {
       --accent: rgb(255, 142, 66);
       --accent-dark: rgb(255, 142, 66);
@@ -34,7 +32,6 @@
       position: relative;
     }
 
-    /* THE SPECIAL TOGGLE BUTTON */
     .mode-toggle {
       position: absolute;
       top: 25px;
@@ -53,15 +50,7 @@
       z-index: 100;
     }
     
-    .mode-toggle:hover {
-        transform: scale(1.05);
-    }
-
-    .mode-toggle img {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-    }
+    .mode-toggle img { width: 50px; height: 50px; object-fit: contain; }
 
     h1 {
       text-align: center;
@@ -85,13 +74,8 @@
       background: rgb(32, 32, 32);
       border-radius: 24px;
       padding: 35px;
-      border: 1px solid transparent;
       box-shadow: 0 0 30px var(--glow);
       transition: 0.3s;
-    }
-
-    .trap-active .box {
-        border-color: var(--accent);
     }
 
     .box-title {
@@ -118,18 +102,9 @@
       white-space: nowrap;
     }
 
-    .disabled-label, .disabled-box {
-      opacity: 0.25;
-      cursor: not-allowed !important;
-      filter: grayscale(1);
-    }
-
     .custom-icon {
-      width: 40px; 
-      height: 40px;
-      margin-right: 10px; 
-      object-fit: contain;
-      filter: drop-shadow(0 0 5px rgb(136, 163, 232));
+      width: 40px; height: 40px;
+      margin-right: 10px; object-fit: contain;
       flex-shrink: 0; 
     }
 
@@ -148,11 +123,20 @@
       height: fit-content;
     }
 
+    /* PLAYER/MODE TRANSITION */
     .input-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
+      transition: 0.3s;
     }
+
+    .trap-active .input-row {
+        grid-template-columns: 1fr; /* Mode expands */
+    }
+
+    #player-box { transition: 0.3s; }
+    .trap-active #player-box { display: none; }
 
     input[type="number"], select {
       width: 100%;
@@ -163,47 +147,35 @@
       border-radius: 12px;
       font-size: 22px;
       text-align: center;
-      box-sizing: border-box;
       transition: 0.3s;
     }
 
-    button.calc-btn {
-      width: 100%;
-      padding: 20px;
-      font-size: 24px;
-      background: var(--accent-dark);
-      border: none;
-      border-radius: 14px;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
+    .calc-btn {
+      width: 100%; padding: 20px;
+      font-size: 24px; background: var(--accent-dark);
+      border: none; border-radius: 14px;
+      color: white; cursor: pointer;
       font-weight: bold;
     }
 
     .price {
-      font-size: 48px;
-      color: var(--accent);
-      text-align: center;
-      font-weight: bold;
+      font-size: 48px; color: var(--accent);
+      text-align: center; font-weight: bold;
       text-shadow: 0 0 15px var(--glow);
     }
 
     .credit {
-      position: fixed;
-      bottom: 15px;
-      right: 20px;
-      font-size: 14px;
-      color: var(--accent);
+      position: fixed; bottom: 15px; right: 20px;
+      font-size: 14px; color: var(--accent);
       text-shadow: 0 0 8px var(--glow);
       font-weight: bold;
-      transition: 0.3s;
     }
 
-    /* RESPONSIVE */
+    .disabled-label, .disabled-box { opacity: 0.25; filter: grayscale(1); }
+
     @media (max-width: 1300px) {
-      .layout { grid-template-columns: 1fr; padding: 0 20px; }
+      .layout { grid-template-columns: 1fr; }
       .right { position: static; order: -1; }
-      .mode-toggle { top: 15px; right: 15px; width: 60px; height: 60px; }
     }
     @media (max-width: 550px) {
       .upgrades-grid { grid-template-columns: 1fr; }
@@ -215,46 +187,21 @@
 <body id="mainBody">
 
   <button class="mode-toggle" onclick="toggleTrapMode()" id="toggleBtn">
-    <img src="Trap-Card.png" id="toggleIcon" alt="Trap Mode">
+    <img src="Trap-Card.png" id="toggleIcon">
   </button>
 
   <h1 id="mainTitle">Nullscape Price Calculator</h1>
 
   <div class="layout">
     <div class="box">
-      <div class="box-title">Upgrades</div>
-      <div class="upgrades-grid">
-        <label id="label-adrenaline"><input type="checkbox" class="option" data-price="50" id="opt-adrenaline"><img src="Adrenaline.png" class="custom-icon"> Adrenaline (50)</label>
-        <label><input type="checkbox" class="option" data-price="75"><img src="Business_License.png" class="custom-icon"> Business License (75)</label>
-        <label><input type="checkbox" class="option" data-price="30"><img src="Defuse_Kit.png" class="custom-icon"> Defuse Kit (30)</label>
-        <label><input type="checkbox" class="option" data-price="55"><img src="Paycheck.png" class="custom-icon"> Paycheck (55)</label>
-        <label><input type="checkbox" class="option" data-price="80"><img src="Swiftness_Ring.png" class="custom-icon"> Swiftness Ring (80)</label>
-        <label><input type="checkbox" class="option" data-price="100"><img src="Enemy_ESP.png" class="custom-icon"> Enemy ESP (100)</label>
-        <label><input type="checkbox" class="option" data-price="80"><img src="Better_Gift_Arrow.png" class="custom-icon"> Better Gift Arrow (80)</label>
-        <label><input type="checkbox" class="option" data-price="50"><img src="Better_Jump_Pads.png" class="custom-icon"> Better Jump Pads (50)</label>
-        <label><input type="checkbox" class="option" data-price="100"><img src="Double_Jump.png" class="custom-icon"> Double Jump (100)</label>
-        <label><input type="checkbox" class="option" data-price="250" id="opt-grace"><img src="Grace_Wings.png" class="custom-icon"> Grace Wings (250)</label>
-        <label><input type="checkbox" class="option" data-price="100"><img src="Grapple_Points.png" class="custom-icon"> Grapple Points (100)</label>
-        <label id="label-lrs"><input type="checkbox" class="option" data-price="200" id="opt-lrs"><img src="Last_Robloxian_Standing.png" class="custom-icon"> Last Robloxian Standing (200)</label>
-        <label><input type="checkbox" class="option" data-price="150"><img src="Pocket_Bell.png" class="custom-icon"> Pocket Bell (150)</label>
-        <label><input type="checkbox" class="option" data-price="400"><img src="Tripmine_ESP.png" class="custom-icon"> Tripmine ESP (400)</label>
-        <label><input type="checkbox" class="option" data-price="600"><img src="Advanced_Gravity_Coil.png" class="custom-icon"> Advanced Coil (600)</label>
-        <label><input type="checkbox" class="option" data-price="400"><img src="Ice_Skates.png" class="custom-icon"> Ice Skates (400)</label>
-        <label><input type="checkbox" class="option" data-price="600"><img src="Helmet.png" class="custom-icon"> Helmet (600)</label>
-        <label><input type="checkbox" class="option" data-price="600"><img src="More_Altars.png" class="custom-icon"> More Altars (600)</label>
-        <label><input type="checkbox" class="option" data-price="1000" id="opt-barrier"><img src="Subspacial_Barrier.png" class="custom-icon"> Barrier (1000)</label>
-        <label><input type="checkbox" class="option" data-price="500" id="opt-ninja"><img src="Ninja_Belt.png" class="custom-icon"> Ninja Belt (500)</label>
-        <label><input type="checkbox" class="option" data-price="2000"><img src="Gift_Magnet.png" class="custom-icon"> Gift Magnet (2000)</label>
-        <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix (2500)</label>
-        <label><input type="checkbox" class="option" data-price="3000" id="opt-shield"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
-        <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
-        <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
-      </div>
+      <div class="box-title" id="gridTitle">Upgrades</div>
+      <div class="upgrades-grid" id="mainGrid">
+        </div>
     </div>
 
     <div class="right">
       <div class="input-row">
-        <div class="box">
+        <div class="box" id="player-box">
           <div class="box-title" style="text-align:center;">Players</div>
           <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
         </div>
@@ -278,83 +225,114 @@
   <div class="credit">made by Alireza1303</div>
 
   <script>
+    const upgrades = [
+      { name: "Adrenaline", price: 50, icon: "Adrenaline.png", id: "opt-adrenaline" },
+      { name: "Business License", price: 75, icon: "Business_License.png" },
+      { name: "Defuse Kit", price: 30, icon: "Defuse_Kit.png" },
+      { name: "Paycheck", price: 55, icon: "Paycheck.png" },
+      { name: "Swiftness Ring", price: 80, icon: "Swiftness_Ring.png" },
+      { name: "Enemy ESP", price: 100, icon: "Enemy_ESP.png" },
+      { name: "Better Gift Arrow", price: 80, icon: "Better_Gift_Arrow.png" },
+      { name: "Better Jump Pads", price: 50, icon: "Better_Jump_Pads.png" },
+      { name: "Double Jump", price: 100, icon: "Double_Jump.png" },
+      { name: "Grace Wings", price: 250, icon: "Grace_Wings.png", id: "opt-grace" },
+      { name: "Grapple Points", price: 100, icon: "Grapple_Points.png" },
+      { name: "Last Robloxian Standing", price: 200, icon: "Last_Robloxian_Standing.png", id: "opt-lrs" },
+      { name: "Pocket Bell", price: 150, icon: "Pocket_Bell.png" },
+      { name: "Tripmine ESP", price: 400, icon: "Tripmine_ESP.png" },
+      { name: "Advanced Coil", price: 600, icon: "Advanced_Gravity_Coil.png" },
+      { name: "Ice Skates", price: 400, icon: "Ice_Skates.png" },
+      { name: "Helmet", price: 600, icon: "Helmet.png" },
+      { name: "More Altars", price: 600, icon: "More_Altars.png" },
+      { name: "Barrier", price: 1000, icon: "Subspacial_Barrier.png", id: "opt-barrier" },
+      { name: "Ninja Belt", price: 500, icon: "Ninja_Belt.png", id: "opt-ninja" },
+      { name: "Gift Magnet", price: 2000, icon: "Gift_Magnet.png" },
+      { name: "Matrix", price: 2500, icon: "Matrix_Tetrahedron.png" },
+      { name: "Shield", price: 3000, icon: "Shield.png", id: "opt-shield" },
+      { name: "Sport Shoes", price: 1200, icon: "Sport_Shoes.png" },
+      { name: "Real Wings", price: 25000, icon: "Real_Wings.png" }
+    ];
+
+    const enemies = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(name => ({
+      name: name, price: 0, icon: name.replace("?", "Unknown") + ".png" 
+    }));
+
+    let isTrapMode = false;
+
+    function renderGrid() {
+      const grid = document.getElementById('mainGrid');
+      const list = isTrapMode ? enemies : upgrades;
+      grid.innerHTML = '';
+      
+      list.forEach(item => {
+        const label = document.createElement('label');
+        if(item.id) label.id = "label-" + item.id.split('-')[1];
+        label.innerHTML = `<input type="checkbox" class="option" data-price="${item.price}" ${item.id ? `id="${item.id}"` : ''} onchange="calculate()">
+                           <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"> 
+                           ${item.name} ${!isTrapMode ? `(${item.price})` : ''}`;
+        grid.appendChild(label);
+      });
+      if(!isTrapMode) handlePlayerRules();
+    }
+
     function toggleTrapMode() {
+      isTrapMode = !isTrapMode;
       const body = document.getElementById('mainBody');
       const title = document.getElementById('mainTitle');
+      const gridTitle = document.getElementById('gridTitle');
       const icon = document.getElementById('toggleIcon');
       
       body.classList.toggle('trap-active');
+      title.textContent = isTrapMode ? "Nullscape Trap Card Calculator" : "Nullscape Price Calculator";
+      gridTitle.textContent = isTrapMode ? "Enemies" : "Upgrades";
+      icon.src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
       
-      if (body.classList.contains('trap-active')) {
-        title.textContent = "Nullscape Trap Card Calculator";
-        icon.src = "Defuse_Kit.png";
-      } else {
-        title.textContent = "Nullscape Price Calculator";
-        icon.src = "Trap-Card.png";
-      }
+      renderGrid();
+      calculate();
     }
 
     function handlePlayerRules() {
+      if (isTrapMode) return;
       let playerInput = document.getElementById("players");
-      let modeSelect = document.getElementById("mode");
-      let modeBox = document.getElementById("mode-box");
       let players = parseInt(playerInput.value);
 
       if (players > 20) { playerInput.value = 20; players = 20; }
       else if (players < 1 || isNaN(players)) { players = 1; }
 
+      const modeSelect = document.getElementById("mode");
       if (players === 1) {
-        modeSelect.value = "1";
-        modeSelect.disabled = true;
-        modeBox.classList.add("disabled-box");
+        modeSelect.value = "1"; modeSelect.disabled = true;
+        document.getElementById("mode-box").classList.add("disabled-box");
       } else {
         modeSelect.disabled = false;
-        modeBox.classList.remove("disabled-box");
+        document.getElementById("mode-box").classList.remove("disabled-box");
       }
 
-      const adrInput = document.getElementById("opt-adrenaline");
-      const lrsInput = document.getElementById("opt-lrs");
+      // Dynamic Solo Pricing
+      const grace = document.querySelector('[data-price][id*="grace"]');
+      const barrier = document.querySelector('[data-price][id*="barrier"]');
+      const ninja = document.querySelector('[data-price][id*="ninja"]');
+      const shield = document.querySelector('[data-price][id*="shield"]');
 
       if (players === 1) {
-        adrInput.disabled = false;
-        adrInput.parentElement.classList.remove("disabled-label");
-        document.getElementById("opt-grace").dataset.price = 200;
-        document.getElementById("opt-barrier").dataset.price = 200;
-        document.getElementById("opt-ninja").dataset.price = 300;
-        document.getElementById("opt-shield").dataset.price = 1000;
+        if(grace) grace.dataset.price = 200;
+        if(barrier) barrier.dataset.price = 200;
+        if(ninja) ninja.dataset.price = 300;
+        if(shield) shield.dataset.price = 1000;
       } else {
-        adrInput.checked = false;
-        adrInput.disabled = true;
-        adrInput.parentElement.classList.add("disabled-label");
-        document.getElementById("opt-grace").dataset.price = 250;
-        document.getElementById("opt-barrier").dataset.price = 1000;
-        document.getElementById("opt-ninja").dataset.price = 500;
-        document.getElementById("opt-shield").dataset.price = 3000;
+        if(grace) grace.dataset.price = 250;
+        if(barrier) barrier.dataset.price = 1000;
+        if(ninja) ninja.dataset.price = 500;
+        if(shield) shield.dataset.price = 3000;
       }
-
-      if (players >= 3) {
-        lrsInput.disabled = false;
-        lrsInput.parentElement.classList.remove("disabled-label");
-      } else {
-        lrsInput.checked = false;
-        lrsInput.disabled = true;
-        lrsInput.parentElement.classList.add("disabled-label");
-      }
-
-      document.querySelectorAll(".option").forEach(opt => {
-        const textNode = opt.parentElement.lastChild;
-        const name = textNode.textContent.split('(')[0].trim();
-        textNode.textContent = ` ${name} (${opt.dataset.price})`;
-      });
-
       calculate();
     }
 
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
-      const modeMultiplier = (players === 1) ? 1 : parseFloat(document.getElementById("mode").value);
+      const modeMultiplier = (players === 1 && !isTrapMode) ? 1 : parseFloat(document.getElementById("mode").value);
       let total = 0;
-      const sqrtP = Math.sqrt(players);
+      const sqrtP = isTrapMode ? 1 : Math.sqrt(players);
       
       document.querySelectorAll(".option:checked").forEach(opt => {
         let scaled = Math.ceil(Number(opt.dataset.price) * sqrtP);
@@ -363,7 +341,7 @@
       document.getElementById("result").textContent = "Total: " + total.toLocaleString();
     }
 
-    window.onload = handlePlayerRules;
+    window.onload = renderGrid;
   </script>
 </body>
 </html>
