@@ -6,6 +6,20 @@
   <title>Nullscape Price Calculator</title>
   
   <style>
+    /* CSS Variables for easy color swapping */
+    :root {
+      --accent: #b266ff;
+      --accent-dark: #7a33ff;
+      --glow: rgba(155, 77, 255, 0.4);
+    }
+
+    /* Trap Mode Overrides */
+    .trap-active {
+      --accent: rgb(255, 142, 66);
+      --accent-dark: rgb(255, 142, 66);
+      --glow: rgba(255, 142, 66, 0.4);
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -16,12 +30,37 @@
       position: relative;
     }
 
+    /* THE TOGGLE BUTTON */
+    .mode-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: rgb(32, 32, 32);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px var(--glow);
+      transition: 0.3s;
+      z-index: 100;
+    }
+    .mode-toggle img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+    }
+
     h1 {
       text-align: center;
       margin: 40px 10px;
       font-size: clamp(32px, 8vw, 64px); 
-      color: #b266ff;
-      text-shadow: 0 0 7px #b266ff, 0 0 20px #9b4dff, 0 0 40px #7a33ff;
+      color: var(--accent);
+      text-shadow: 0 0 7px var(--accent), 0 0 20px var(--accent-dark);
+      transition: 0.3s;
     }
 
     .layout {
@@ -37,14 +76,14 @@
       background: rgb(32, 32, 32);
       border-radius: 24px;
       padding: 35px;
-      box-shadow: 0 0 30px rgba(155, 77, 255, 0.2);
-      transition: opacity 0.3s ease;
+      box-shadow: 0 0 30px var(--glow);
+      transition: 0.3s;
     }
 
     .box-title {
       font-size: 28px;
       margin-bottom: 30px;
-      color: #b266ff;
+      color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 3px;
     }
@@ -84,8 +123,7 @@
     .upgrades-grid input {
       margin-right: 12px;
       transform: scale(1.5);
-      accent-color: #b266ff;
-      flex-shrink: 0;
+      accent-color: var(--accent);
     }
 
     .right {
@@ -108,18 +146,19 @@
       padding: 15px;
       background: rgb(20, 20, 20);
       color: white;
-      border: 2px solid #7a33ff;
+      border: 2px solid var(--accent-dark);
       border-radius: 12px;
       font-size: 22px;
       text-align: center;
       box-sizing: border-box;
+      transition: 0.3s;
     }
 
-    button {
+    button.calc-btn {
       width: 100%;
       padding: 20px;
       font-size: 24px;
-      background: #7a33ff;
+      background: var(--accent-dark);
       border: none;
       border-radius: 14px;
       color: white;
@@ -128,36 +167,12 @@
       font-weight: bold;
     }
 
-    .clear-btn {
-      background: transparent;
-      border: 2px solid #ff4d4d;
-      color: #ff4d4d;
-      padding: 12px 24px;
-      font-size: 16px;
-      margin-top: 25px;
-      width: auto;
-      align-self: flex-start;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .price-container {
-      text-align: center;
-    }
-
     .price {
       font-size: 48px;
-      color: #b266ff;
+      color: var(--accent);
+      text-align: center;
       font-weight: bold;
-      text-shadow: 0 0 15px rgba(178, 102, 255, 0.5);
-    }
-
-    .formula-scale {
-      font-size: 14px;
-      color: #666;
-      margin-top: 8px;
-      letter-spacing: 1px;
-      font-style: italic;
+      text-shadow: 0 0 15px var(--glow);
     }
 
     .credit {
@@ -165,33 +180,31 @@
       bottom: 15px;
       right: 20px;
       font-size: 14px;
-      color: #b266ff;
-      text-shadow: 0 0 8px rgba(178, 102, 255, 0.8);
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--glow);
       font-weight: bold;
-      pointer-events: none;
     }
 
     /* RESPONSIVE */
     @media (max-width: 1300px) {
       .layout { grid-template-columns: 1fr; padding: 0 20px; }
       .right { position: static; order: -1; }
+      .mode-toggle { top: 10px; right: 10px; width: 50px; height: 50px; }
     }
-
-    @media (max-width: 900px) {
-      .upgrades-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
     @media (max-width: 550px) {
       .upgrades-grid { grid-template-columns: 1fr; }
-      .upgrades-grid label { white-space: normal; font-size: 16px; }
-      .box { padding: 20px; }
+      .upgrades-grid label { white-space: normal; }
     }
   </style>
 </head>
 
-<body>
+<body id="mainBody">
 
-  <h1>Nullscape Price Calculator</h1>
+  <button class="mode-toggle" onclick="toggleTrapMode()" id="toggleBtn">
+    <img src="Trap-Card.png" id="toggleIcon" alt="Toggle Mode">
+  </button>
+
+  <h1 id="mainTitle">Nullscape Price Calculator</h1>
 
   <div class="layout">
     <div class="box">
@@ -223,7 +236,6 @@
         <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
         <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
       </div>
-      <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
     </div>
 
     <div class="right">
@@ -241,13 +253,10 @@
         </div>
       </div>
       <div class="box">
-        <button onclick="calculate()">Calculate Total</button>
+        <button class="calc-btn" onclick="calculate()">Calculate Total</button>
       </div>
       <div class="box">
-        <div class="price-container">
-          <div class="price" id="result">Total: 0</div>
-          <div class="formula-scale">ceil(base * √players) * Mode</div>
-        </div>
+        <div class="price" id="result">Total: 0</div>
       </div>
     </div>
   </div>
@@ -255,20 +264,31 @@
   <div class="credit">made by Alireza1303</div>
 
   <script>
+    function toggleTrapMode() {
+      const body = document.getElementById('mainBody');
+      const title = document.getElementById('mainTitle');
+      const icon = document.getElementById('toggleIcon');
+      
+      body.classList.toggle('trap-active');
+      
+      if (body.classList.contains('trap-active')) {
+        title.textContent = "Nullscape Trap Card Calculator";
+        icon.src = "Defuse_Kit.png";
+      } else {
+        title.textContent = "Nullscape Price Calculator";
+        icon.src = "Trap-Card.png";
+      }
+    }
+
     function handlePlayerRules() {
       let playerInput = document.getElementById("players");
       let modeSelect = document.getElementById("mode");
       let modeBox = document.getElementById("mode-box");
       let players = parseInt(playerInput.value);
 
-      if (players > 20) {
-        playerInput.value = 20;
-        players = 20;
-      } else if (players < 1 || isNaN(players)) {
-        players = 1; 
-      }
+      if (players > 20) { playerInput.value = 20; players = 20; }
+      else if (players < 1 || isNaN(players)) { players = 1; }
 
-      // Hard Mode Rule: Solo runs are always 1x (Normal)
       if (players === 1) {
         modeSelect.value = "1";
         modeSelect.disabled = true;
@@ -318,7 +338,6 @@
 
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
-      // Force multiplier to 1 if solo
       const modeMultiplier = (players === 1) ? 1 : parseFloat(document.getElementById("mode").value);
       let total = 0;
       const sqrtP = Math.sqrt(players);
@@ -328,13 +347,6 @@
         total += Math.ceil(scaled * modeMultiplier);
       });
       document.getElementById("result").textContent = "Total: " + total.toLocaleString();
-    }
-
-    function clearAll() {
-      document.querySelectorAll(".option").forEach(opt => { 
-        if(!opt.disabled) opt.checked = false; 
-      });
-      calculate();
     }
 
     window.onload = handlePlayerRules;
