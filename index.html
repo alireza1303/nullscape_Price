@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Nullscape Price Calculator</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+  
   <style>
     body {
       margin: 0;
@@ -25,7 +24,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 1fr 350px; /* Slightly wider to fit side-by-side boxes */
+      grid-template-columns: 1fr 350px;
       gap: 30px;
       padding: 0 60px 60px 60px;
     }
@@ -46,7 +45,12 @@
       text-align: center;
     }
 
-    /* Upgrades Grid */
+    .upgrades-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
     .upgrades-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -63,15 +67,19 @@
       text-shadow: 0 0 8px rgba(136, 163, 232, 0.4);
     }
 
-    .upgrades-grid i {
-      margin-right: 8px;
-      width: 18px;
-      text-align: center;
-      color: #b266ff;
-    }
-
     .upgrades-grid label:hover {
       color: white;
+      text-shadow: 0 0 12px rgba(136, 163, 232, 0.8);
+    }
+
+    /* CUSTOM ICON STYLING */
+    .custom-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      object-fit: contain;
+      /* Glow effect on icons */
+      filter: drop-shadow(0 0 3px #b266ff);
     }
 
     .upgrades-grid input {
@@ -79,14 +87,12 @@
       accent-color: #b266ff;
     }
 
-    /* Right Column Layout */
     .right {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
-    /* Side-by-Side Row */
     .input-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -105,11 +111,6 @@
       box-sizing: border-box;
     }
 
-    select {
-      cursor: pointer;
-      appearance: none; /* Cleaner look */
-    }
-
     button {
       width: 100%;
       padding: 14px;
@@ -126,6 +127,23 @@
     button:hover {
       background: #9b4dff;
       box-shadow: 0 0 15px #9b4dff;
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: 1px solid #ff4d4d;
+      color: #ff4d4d;
+      padding: 8px;
+      font-size: 12px;
+      margin-top: 10px;
+      width: auto;
+      align-self: center;
+    }
+
+    .clear-btn:hover {
+      background: #ff4d4d;
+      color: white;
+      box-shadow: 0 0 10px #ff4d4d;
     }
 
     .price {
@@ -153,32 +171,35 @@
 
     <div class="box">
       <div class="box-title" style="text-align: left;">Upgrades</div>
-      <div class="upgrades-grid">
-        <label><input type="checkbox" class="option" data-price="50"><img src="Adrenaline.png" class="custom-icon"> Adrenaline (50)</label>
-        <label><input type="checkbox" class="option" data-price="75"><i class="fas fa-file-signature"></i> Business License (75)</label>
-        <label><input type="checkbox" class="option" data-price="30"><i class="fas fa-tools"></i> Defuse Kit (30)</label>
-        <label><input type="checkbox" class="option" data-price="55"><i class="fas fa-money-bill-wave"></i> Paycheck (55)</label>
-        <label><input type="checkbox" class="option" data-price="80"><i class="fas fa-ring"></i> Swiftness Ring (80)</label>
-        <label><input type="checkbox" class="option" data-price="100"><i class="fas fa-eye"></i> Enemy ESP (100)</label>
-        <label><input type="checkbox" class="option" data-price="80"><i class="fas fa-location-arrow"></i> Better Gift Arrow (80)</label>
-        <label><input type="checkbox" class="option" data-price="50"><i class="fas fa-rocket"></i> Better Jump Pads (50)</label>
-        <label><input type="checkbox" class="option" data-price="100"><i class="fas fa-angles-up"></i> Double Jump (100)</label>
-        <label><input type="checkbox" class="option" data-price="250"><i class="fas fa-feather-pointed"></i> Grace Wings (250)</label>
-        <label><input type="checkbox" class="option" data-price="100"><i class="fas fa-anchor"></i> Grapple Points (100)</label>
-        <label><input type="checkbox" class="option" data-price="200"><i class="fas fa-trophy"></i> Last Robloxian Standing (200)</label>
-        <label><input type="checkbox" class="option" data-price="150"><i class="fas fa-bell"></i> Pocket Bell (150)</label>
-        <label><input type="checkbox" class="option" data-price="400"><i class="fas fa-bullseye"></i> Tripmine ESP (400)</label>
-        <label><input type="checkbox" class="option" data-price="600"><i class="fas fa-spiral-scale"></i> Advanced Gravity Coil (600)</label>
-        <label><input type="checkbox" class="option" data-price="400"><i class="fas fa-snowflake"></i> Ice Skates (400)</label>
-        <label><input type="checkbox" class="option" data-price="600"><i class="fas fa-hard-hat"></i> Helmet (600)</label>
-        <label><input type="checkbox" class="option" data-price="600"><i class="fas fa-place-of-worship"></i> More Altars (600)</label>
-        <label><input type="checkbox" class="option" data-price="1000"><i class="fas fa-shield-halved"></i> Subspacial Barrier (1000)</label>
-        <label><input type="checkbox" class="option" data-price="500"><i class="fas fa-mitten"></i> Ninja Belt (500)</label>
-        <label><input type="checkbox" class="option" data-price="2000"><i class="fas fa-magnet"></i> Gift Magnet (2000)</label>
-        <label><input type="checkbox" class="option" data-price="2500"><i class="fas fa-cube"></i> Matrix Tetrahedron (2500)</label>
-        <label><input type="checkbox" class="option" data-price="3000"><i class="fas fa-shield"></i> Shield (3000)</label>
-        <label><input type="checkbox" class="option" data-price="1200"><i class="fas fa-running"></i> Sport Shoes (1200)</label>
-        <label><input type="checkbox" class="option" data-price="25000"><i class="fas fa-dove"></i> Real Wings (25000)</label>
+      <div class="upgrades-container">
+        <div class="upgrades-grid">
+          <label><input type="checkbox" class="option" data-price="50"><img src="Adrenaline.png" class="custom-icon"> Adrenaline (50)</label>
+          <label><input type="checkbox" class="option" data-price="75"><img src="Business_License.png" class="custom-icon"> Business License (75)</label>
+          <label><input type="checkbox" class="option" data-price="30"><img src="Defuse_Kit.png" class="custom-icon"> Defuse Kit (30)</label>
+          <label><input type="checkbox" class="option" data-price="55"><img src="Paycheck.png" class="custom-icon"> Paycheck (55)</label>
+          <label><input type="checkbox" class="option" data-price="80"><img src="Swiftness_Ring.png" class="custom-icon"> Swiftness Ring (80)</label>
+          <label><input type="checkbox" class="option" data-price="100"><img src="Enemy_ESP.png" class="custom-icon"> Enemy ESP (100)</label>
+          <label><input type="checkbox" class="option" data-price="80"><img src="Better_Gift_Arrow.png" class="custom-icon"> Better Gift Arrow (80)</label>
+          <label><input type="checkbox" class="option" data-price="50"><img src="Better_Jump_Pads.png" class="custom-icon"> Better Jump Pads (50)</label>
+          <label><input type="checkbox" class="option" data-price="100"><img src="Double_Jump.png" class="custom-icon"> Double Jump (100)</label>
+          <label><input type="checkbox" class="option" data-price="250"><img src="Grace_Wings.png" class="custom-icon"> Grace Wings (250)</label>
+          <label><input type="checkbox" class="option" data-price="100"><img src="Grapple_Points.png" class="custom-icon"> Grapple Points (100)</label>
+          <label><input type="checkbox" class="option" data-price="200"><img src="Last_Robloxian_Standing.png" class="custom-icon"> Last Robloxian Standing (200)</label>
+          <label><input type="checkbox" class="option" data-price="150"><img src="Pocket_Bell.png" class="custom-icon"> Pocket Bell (150)</label>
+          <label><input type="checkbox" class="option" data-price="400"><img src="Tripmine_ESP.png" class="custom-icon"> Tripmine ESP (400)</label>
+          <label><input type="checkbox" class="option" data-price="600"><img src="Advanced_Gravity_Coil.png" class="custom-icon"> Advanced Gravity Coil (600)</label>
+          <label><input type="checkbox" class="option" data-price="400"><img src="Ice_Skates.png" class="custom-icon"> Ice Skates (400)</label>
+          <label><input type="checkbox" class="option" data-price="600"><img src="Helmet.png" class="custom-icon"> Helmet (600)</label>
+          <label><input type="checkbox" class="option" data-price="600"><img src="More_Altars.png" class="custom-icon"> More Altars (600)</label>
+          <label><input type="checkbox" class="option" data-price="1000"><img src="Subspacial_Barrier.png" class="custom-icon"> Subspacial Barrier (1000)</label>
+          <label><input type="checkbox" class="option" data-price="500"><img src="Ninja_Belt.png" class="custom-icon"> Ninja Belt (500)</label>
+          <label><input type="checkbox" class="option" data-price="2000"><img src="Gift_Magnet.png" class="custom-icon"> Gift Magnet (2000)</label>
+          <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix Tetrahedron (2500)</label>
+          <label><input type="checkbox" class="option" data-price="3000"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
+          <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
+          <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
+        </div>
+        <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
       </div>
     </div>
 
@@ -200,15 +221,15 @@
       </div>
 
       <div class="box">
-        <button onclick="calculate()">Calculate</button>
+        <button onclick="calculate()">Calculate Total</button>
       </div>
 
       <div class="box">
         <div class="price" id="result">Total: 0</div>
-        <div class="formula-note">Formula: ceil(base * √players) * Mode</div>
+        <div class="formula-note">ceil(base * √players) * Mode</div>
       </div>
-    </div>
 
+    </div>
   </div>
 
   <script>
@@ -216,6 +237,7 @@
       let players = parseInt(document.getElementById("players").value) || 1;
       const modeMultiplier = parseFloat(document.getElementById("mode").value);
       
+      // Enforce bounds
       if (players < 1) players = 1;
       if (players > 20) players = 20;
       document.getElementById("players").value = players;
@@ -225,17 +247,20 @@
 
       document.querySelectorAll(".option:checked").forEach(opt => {
         const basePrice = Number(opt.dataset.price);
-        // Scaled price for this item
+        // Formula: ceil(base * sqrt(players))
         const scaledPrice = Math.ceil(basePrice * sqrtPlayers);
-        // Add to total with difficulty multiplier applied
+        // Add mode multiplier on top
         grandTotal += Math.ceil(scaledPrice * modeMultiplier);
       });
 
       document.getElementById("result").textContent = "Total: " + grandTotal.toLocaleString();
     }
+
+    function clearAll() {
+      document.querySelectorAll(".option").forEach(opt => opt.checked = false);
+      document.getElementById("result").textContent = "Total: 0";
+    }
   </script>
 
 </body>
 </html>
-
-
