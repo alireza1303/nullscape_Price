@@ -119,8 +119,6 @@
       padding: 15px 30px; font-size: 20px; margin-top: 40px; border-radius: 10px; cursor: pointer;
     }
     
-    /* New Results Box Styles */
-    .results-display { text-align: left; }
     .trap-results-list {
       list-style: none;
       padding: 0;
@@ -173,7 +171,10 @@
           </select>
         </div>
       </div>
-      <div class="box"><button class="calc-btn" id="mainCalcBtn" onclick="calculate()">Refresh Counts</button></div>
+
+      <div class="box" id="calc-button-box">
+          <button class="calc-btn" onclick="calculate()">Calculate Total</button>
+      </div>
       
       <div class="box" id="results-container">
         <div id="upgrade-results">
@@ -218,7 +219,6 @@
     ];
 
     const soloPrices = { "opt-grace": 200, "opt-barrier": 200, "opt-ninja": 300, "opt-shield": 1000 };
-
     const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, icon: n.replace("?", "Unknown")+".png"}));
 
     let isTrapMode = false;
@@ -226,7 +226,6 @@
     function renderGrid() {
       const grid = document.getElementById('mainGrid');
       grid.innerHTML = '';
-      
       if (isTrapMode) {
         enemiesList.forEach(item => {
           const label = document.createElement('label');
@@ -260,8 +259,8 @@
       document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card Calculator" : "Nullscape Price Calculator";
       document.getElementById('gridTitle').textContent = isTrapMode ? "Current Run Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
-      document.getElementById('mainCalcBtn').textContent = isTrapMode ? "Refresh Counts" : "Calculate Total";
       
+      document.getElementById('calc-button-box').style.display = isTrapMode ? "none" : "block";
       document.getElementById('upgrade-results').style.display = isTrapMode ? "none" : "block";
       document.getElementById('trap-results').style.display = isTrapMode ? "block" : "none";
       
@@ -272,15 +271,12 @@
       const playerInput = document.getElementById("players");
       let players = parseInt(playerInput.value) || 1;
       if (players > 20) { players = 20; playerInput.value = 20; }
-      if (players < 1) players = 1;
-
       const modeSelect = document.getElementById("mode");
       if (!isTrapMode) {
         const isSolo = (players === 1);
         modeSelect.disabled = isSolo;
         if(isSolo) modeSelect.value = "1";
       }
-      
       updateLabels(players);
       calculate();
     }
@@ -318,14 +314,12 @@
           }
           
           let finalCount = currentAmount + canDouble;
-          
           if (currentAmount > 0) {
             const li = document.createElement('li');
             li.innerHTML = `${enemyName} <span>${finalCount}</span>`;
             trapList.appendChild(li);
           }
         });
-
       } else {
         let resultDisplay = document.getElementById("result");
         let players = parseInt(document.getElementById("players").value) || 1;
