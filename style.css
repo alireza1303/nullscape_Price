@@ -55,10 +55,9 @@ h1 {
     box-shadow: 0 0 20px var(--glow);
 }
 
-/* FIX: Player Box Overflow */
 input[type="number"], select {
     width: 100%;
-    box-sizing: border-box; /* Crucial: includes padding in width calculation */
+    box-sizing: border-box; 
     padding: 12px;
     background: #111;
     color: white;
@@ -68,7 +67,6 @@ input[type="number"], select {
     text-align: center;
 }
 
-/* Centered & Transparent Formula */
 .formula-container {
     width: 100%;
     display: flex;
@@ -79,7 +77,7 @@ input[type="number"], select {
 
 .formula-text {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.4); /* Transparent/Muted text */
+    color: rgba(255, 255, 255, 0.4); 
     font-family: monospace;
 }
 
