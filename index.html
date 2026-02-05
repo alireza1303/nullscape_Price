@@ -68,14 +68,16 @@
       white-space: nowrap; 
     }
 
-    /* Logic for hiding specific elements */
-    .hidden-upgrade {
-      display: none !important;
-    }
-
-    .upgrades-grid label:hover {
+    .upgrades-grid label:hover:not(.disabled-label) {
       color: white;
       text-shadow: 0 0 16px rgba(136, 163, 232, 0.8);
+    }
+
+    /* THE GRAYED OUT STYLE */
+    .disabled-label {
+      opacity: 0.25;
+      cursor: not-allowed !important;
+      filter: grayscale(1);
     }
 
     .custom-icon {
@@ -179,7 +181,6 @@
       <div class="upgrades-container">
         <div class="upgrades-grid">
           <label id="label-adrenaline"><input type="checkbox" class="option" data-price="50" id="opt-adrenaline"><img src="Adrenaline.png" class="custom-icon"> Adrenaline <span class="disp-p">(50)</span></label>
-          
           <label><input type="checkbox" class="option" data-price="75"><img src="Business_License.png" class="custom-icon"> Business License <span class="disp-p">(75)</span></label>
           <label><input type="checkbox" class="option" data-price="30"><img src="Defuse_Kit.png" class="custom-icon"> Defuse Kit <span class="disp-p">(30)</span></label>
           <label><input type="checkbox" class="option" data-price="55"><img src="Paycheck.png" class="custom-icon"> Paycheck <span class="disp-p">(55)</span></label>
@@ -244,29 +245,33 @@
       let players = parseInt(document.getElementById("players").value) || 1;
       if (players < 1) players = 1;
       if (players > 20) players = 20;
-      document.getElementById("players").value = players;
 
-      // Visibility Rules
-      const adrenaline = document.getElementById("label-adrenaline");
-      const lrs = document.getElementById("label-lrs");
+      const adrLabel = document.getElementById("label-adrenaline");
+      const adrInput = document.getElementById("opt-adrenaline");
+      const lrsLabel = document.getElementById("label-lrs");
+      const lrsInput = document.getElementById("opt-lrs");
 
-      // Adrenaline: Solo Only
+      // Adrenaline Rule: Solo only
       if (players === 1) {
-        adrenaline.classList.remove("hidden-upgrade");
+        adrInput.disabled = false;
+        adrLabel.classList.remove("disabled-label");
       } else {
-        adrenaline.classList.add("hidden-upgrade");
-        document.getElementById("opt-adrenaline").checked = false;
+        adrInput.checked = false;
+        adrInput.disabled = true;
+        adrLabel.classList.add("disabled-label");
       }
 
-      // LRS: 3+ Players
+      // LRS Rule: 3+ Players
       if (players >= 3) {
-        lrs.classList.remove("hidden-upgrade");
+        lrsInput.disabled = false;
+        lrsLabel.classList.remove("disabled-label");
       } else {
-        lrs.classList.add("hidden-upgrade");
-        document.getElementById("opt-lrs").checked = false;
+        lrsInput.checked = false;
+        lrsInput.disabled = true;
+        lrsLabel.classList.add("disabled-label");
       }
 
-      // Price Overrides for Solo
+      // Solo Price Overrides
       if (players === 1) {
         document.getElementById("opt-grace").dataset.price = 200;
         document.getElementById("opt-barrier").dataset.price = 200;
@@ -279,7 +284,7 @@
         document.getElementById("opt-shield").dataset.price = 3000;
       }
 
-      // Update text displays for all prices
+      // Update text displays
       document.querySelectorAll(".option").forEach(opt => {
         const span = opt.parentElement.querySelector(".disp-p");
         if(span) span.textContent = "(" + opt.dataset.price + ")";
@@ -295,9 +300,6 @@
       let grandTotal = 0;
       const sqrtPlayers = Math.sqrt(players);
       document.querySelectorAll(".option:checked").forEach(opt => {
-        // Skip hidden items in the calculation
-        if (opt.parentElement.classList.contains("hidden-upgrade")) return;
-        
         const basePrice = Number(opt.dataset.price);
         const scaledPrice = Math.ceil(basePrice * sqrtPlayers);
         grandTotal += Math.ceil(scaledPrice * modeMultiplier);
@@ -306,11 +308,12 @@
     }
 
     function clearAll() {
-      document.querySelectorAll(".option").forEach(opt => opt.checked = false);
+      document.querySelectorAll(".option").forEach(opt => {
+          if(!opt.disabled) opt.checked = false;
+      });
       calculate();
     }
 
-    // Initialize on load
     window.onload = handlePlayerRules;
   </script>
 </body>
