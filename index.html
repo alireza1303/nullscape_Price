@@ -32,101 +32,97 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       background: rgb(32, 32, 32);
-      border: 4px solid var(--btn-border);
-      border-radius: 16px;
+      border: 3px solid var(--btn-border);
+      border-radius: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px var(--btn-glow);
+      box-shadow: 0 0 15px var(--btn-glow);
       z-index: 1000;
     }
-    .mode-toggle img { width: 50px; height: 50px; object-fit: contain; }
+    .mode-toggle img { width: 45px; height: 45px; object-fit: contain; }
     h1 {
       text-align: center;
       margin: 40px 0;
-      font-size: clamp(40px, 6vw, 72px); 
+      font-size: clamp(30px, 5vw, 56px); 
       color: var(--accent);
-      text-shadow: 0 0 20px var(--accent);
+      text-shadow: 0 0 15px var(--accent);
     }
     .layout {
       display: grid;
       grid-template-columns: 2.5fr 1fr;
       gap: 30px;
       padding: 0 40px;
-      max-width: 1900px; 
+      max-width: 1800px; 
       margin: 0 auto;
     }
     .box {
       background: rgb(32, 32, 32);
       border-radius: 24px;
-      padding: 35px;
+      padding: 30px;
       box-shadow: 0 0 30px var(--glow);
       border: 1px solid rgba(255,255,255,0.05);
     }
     .box-title {
-      font-size: 28px;
-      margin-bottom: 30px;
+      font-size: 24px;
+      margin-bottom: 25px;
       color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: 4px;
-      font-weight: bold;
+      letter-spacing: 3px;
     }
     .upgrades-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 columns for better readability with big text */
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
     }
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 19px; /* Significantly bigger text */
+      font-size: 13px; 
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
-      padding: 5px;
     }
     .trap-active .enemy-label { color: var(--enemy-orange) !important; font-weight: bold; }
-    .custom-icon { width: 45px; height: 45px; margin-right: 15px; flex-shrink: 0; }
+    .custom-icon { width: 30px; height: 30px; margin-right: 8px; flex-shrink: 0; }
     input[type="checkbox"] {
-      margin-right: 15px;
-      transform: scale(1.8); /* Bigger checkboxes */
+      margin-right: 8px;
+      transform: scale(1.1);
       accent-color: var(--accent);
     }
     .enemy-count {
-      width: 60px; background: #111; border: 2px solid var(--enemy-orange);
-      color: white; border-radius: 8px; margin-right: 15px; padding: 10px; text-align: center; font-size: 20px;
+      width: 45px; background: #111; border: 2px solid var(--enemy-orange);
+      color: white; border-radius: 8px; margin-right: 8px; padding: 5px; text-align: center;
     }
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
     
-    #player-box { flex: 0 0 160px; overflow: hidden; }
+    #player-box { flex: 0 0 130px; overflow: hidden; }
     #mode-box { flex: 1; }
     .trap-active #player-box { display: none; }
     
     input[type="number"], select {
-      width: 100%; box-sizing: border-box; padding: 15px; background: rgb(20, 20, 20);
-      color: white; border: 3px solid var(--accent-dark); border-radius: 12px; font-size: 28px; text-align: center;
+      width: 100%; box-sizing: border-box; padding: 12px; background: rgb(20, 20, 20);
+      color: white; border: 2px solid var(--accent-dark); border-radius: 12px; font-size: 20px; text-align: center;
     }
     .calc-btn {
-      width: 100%; padding: 25px; font-size: 32px; background: var(--accent-dark);
+      width: 100%; padding: 20px; font-size: 22px; background: var(--accent-dark);
       border: none; border-radius: 15px; color: white; cursor: pointer; font-weight: bold;
-      transition: transform 0.1s;
     }
-    .calc-btn:active { transform: scale(0.98); }
     .clear-btn {
       background: rgba(255, 77, 77, 0.1); border: 2px solid #ff4d4d; color: #ff4d4d;
-      padding: 15px 30px; font-size: 20px; margin-top: 40px; border-radius: 10px; cursor: pointer;
+      padding: 12px 25px; font-size: 16px; margin-top: 30px; border-radius: 10px; cursor: pointer;
     }
     .price-display { text-align: center; }
-    .price { font-size: 64px; color: var(--accent); font-weight: bold; }
-    .formula { font-size: 18px; color: #777; margin-top: 10px; font-family: monospace; }
-    .disabled-item { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
+    .price { font-size: 48px; color: var(--accent); font-weight: bold; }
+    .formula { font-size: 14px; color: #777; margin-top: 8px; font-family: monospace; }
+    .disabled-item { opacity: 0.2; filter: grayscale(1); pointer-events: none; cursor: not-allowed; }
 
-    @media (max-width: 1600px) { .upgrades-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 1400px) { .upgrades-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 1200px) {
       .layout { grid-template-columns: 1fr; padding: 0 20px; }
       .controls { order: -1; }
@@ -153,11 +149,11 @@
     <div class="controls">
       <div class="input-row">
         <div class="box" id="player-box">
-          <div class="box-title" style="text-align:center; font-size:18px; margin-bottom:10px;">Players</div>
+          <div class="box-title" style="text-align:center; font-size:14px; margin-bottom:10px;">Players</div>
           <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
         </div>
         <div class="box" id="mode-box">
-          <div class="box-title" style="text-align:center; font-size:18px; margin-bottom:10px;">Mode</div>
+          <div class="box-title" style="text-align:center; font-size:14px; margin-bottom:10px;">Mode</div>
           <select id="mode" onchange="calculate()">
             <option value="1">Normal</option>
             <option value="1.15">Hard (+15%)</option>
@@ -225,7 +221,7 @@
           label.innerHTML = `<input type="number" class="enemy-count" value="0" min="0" oninput="calculate()"><img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">${item.name}`;
         } else {
           label.id = item.id || '';
-          label.innerHTML = `<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()"><img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"><span class="item-text">${item.name}</span> <span class="price-val" style="margin-left: 8px; color: #aaa;"></span>`;
+          label.innerHTML = `<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()"><img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"><span class="item-text">${item.name}</span> <span class="price-val"></span>`;
         }
         grid.appendChild(label);
       });
@@ -235,10 +231,13 @@
     function updateLabelPrices(players) {
       if (isTrapMode) return;
       const isSolo = (players === 1);
+      
       document.querySelectorAll(".upgrades-grid label").forEach(label => {
         const checkbox = label.querySelector('input');
         const priceSpan = label.querySelector('.price-val');
         const base = Number(checkbox.dataset.price);
+        
+        // Only show solo price OR the standard base price
         let displayPrice = (isSolo && soloPrices[label.id]) ? soloPrices[label.id] : base;
         priceSpan.textContent = `(${displayPrice})`;
       });
@@ -247,7 +246,7 @@
     function toggleTrapMode() {
       isTrapMode = !isTrapMode;
       document.getElementById('mainBody').classList.toggle('trap-active');
-      document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card" : "Nullscape Prices";
+      document.getElementById('mainTitle').textContent = isTrapMode ? "Nullscape Trap Card Calculator" : "Nullscape Price Calculator";
       document.getElementById('gridTitle').textContent = isTrapMode ? "Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
       document.getElementById('formula-text').style.opacity = isTrapMode ? "0" : "1";
@@ -273,12 +272,12 @@
         const adr = document.getElementById("opt-adrenaline");
         const lrs = document.getElementById("opt-lrs");
         if (adr) {
-          if (players > 1) adr.classList.add("disabled-item");
-          else adr.classList.remove("disabled-item");
+          if (players > 1) { adr.classList.add("disabled-item"); adr.querySelector('input').checked = false; }
+          else { adr.classList.remove("disabled-item"); }
         }
         if (lrs) {
-          if (players < 3) lrs.classList.add("disabled-item");
-          else lrs.classList.remove("disabled-item");
+          if (players < 3) { lrs.classList.add("disabled-item"); lrs.querySelector('input').checked = false; }
+          else { lrs.classList.remove("disabled-item"); }
         }
       }
       
