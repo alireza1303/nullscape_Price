@@ -25,7 +25,6 @@
         0 0 30px #7a33ff;
     }
 
-    /* Main layout */
     .layout {
       display: grid;
       grid-template-columns: 1fr 300px;
@@ -33,7 +32,6 @@
       padding: 0 60px;
     }
 
-    /* Shared box style */
     .box {
       background: rgb(32, 32, 32);
       border-radius: 14px;
@@ -45,10 +43,9 @@
       font-size: 22px;
       margin-bottom: 20px;
       color: #b266ff;
-      text-align: center; /* Centered the title */
+      text-align: center;
     }
 
-    /* Upgrades box */
     .upgrades {
       min-height: 420px;
     }
@@ -65,25 +62,23 @@
       transform: scale(1.2);
     }
 
-    /* Right column */
     .right {
       display: flex;
       flex-direction: column;
       gap: 25px;
     }
 
-    /* Shortened and Centered Input */
     input[type="number"] {
       display: block;
-      width: 80px;         /* Shorter width */
-      margin: 0 auto;      /* Center the box horizontally */
+      width: 80px;
+      margin: 0 auto;
       padding: 10px;
       background: rgb(20, 20, 20);
       color: white;
       border: 1px solid #7a33ff;
       border-radius: 8px;
       font-size: 16px;
-      text-align: center;  /* Center the number inside */
+      text-align: center;
     }
 
     button {
@@ -140,7 +135,7 @@
 
       <div class="box">
         <div class="box-title">Players</div>
-        <input type="number" id="players" min="1" value="1">
+        <input type="number" id="players" min="1" max="20" value="1">
       </div>
 
       <div class="box">
@@ -157,9 +152,14 @@
 
   <script>
     function calculate() {
-      const players = parseInt(document.getElementById("players").value) || 0;
-      let total = 0;
+      let players = parseInt(document.getElementById("players").value) || 1;
+      
+      // Enforce min 1 and max 20 in the logic
+      if (players < 1) players = 1;
+      if (players > 20) players = 20;
+      document.getElementById("players").value = players;
 
+      let total = 0;
       document.querySelectorAll(".option:checked").forEach(opt => {
         total += Number(opt.dataset.price);
       });
