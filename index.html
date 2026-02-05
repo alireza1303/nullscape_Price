@@ -25,13 +25,21 @@
 
 @media (min-width:901px){
   .scaler-container{
-    zoom: 0.8;
+    zoom: 0.9;
     -moz-transform: scale(1.15);
     -moz-transform-origin: top center;
   }
   .layout {
     grid-template-columns: 3fr 1fr !important;
     max-width: 1800px !important;
+  }
+  .watermark {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    font-size: 24px;
+    opacity: 0.6;
+    text-align: right;
   }
 }
 
@@ -41,7 +49,7 @@ body{
   background:var(--bg);
   color:white;
   font-family:'Segoe UI',Arial,sans-serif;
-  padding-bottom:150px; /* Space for watermark */
+  padding-bottom:120px;
 }
 
 .mode-toggle{
@@ -64,7 +72,7 @@ body{
 
 h1{
   text-align:center;
-  margin:20px 0;
+  margin:10px 0 30px 0;
   font-size:clamp(32px, 5vw, 64px);
   color:var(--accent);
   text-shadow:0 0 15px var(--accent);
@@ -122,13 +130,6 @@ h1{
   object-fit: contain;
 }
 
-input[type="checkbox"]{
-  width:25px;
-  height:25px;
-  accent-color:var(--accent);
-  flex-shrink:0;
-}
-
 .enemy-count{
   width:60px;
   height:45px;
@@ -148,114 +149,34 @@ input[type="checkbox"]{
   flex: 1;
 }
 
-#players{
-  width:80px;
-  height:35px; 
-  background:#000;
-  border:2px solid var(--accent);
-  color:white;
-  border-radius:10px;
-  font-size:24px;
-  text-align:center;
-  margin-right:15px;
-  box-shadow: 0 0 10px var(--glow);
-}
-
-.controls{
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-input[type="number"],select{
-  padding:5px 10px;
-  background:#111;
-  color:white;
-  border:2px solid var(--accent-dark);
-  border-radius:12px;
-  font-size:20px;
-  text-align:center;
-}
-
-.clear-btn{
-  width:100%;
-  background:rgba(255,77,77,.15);
-  border:2px solid #ff4d4d;
-  color:#ff4d4d;
-  padding:15px;
-  font-size:22px;
-  margin-top:25px;
-  border-radius:12px;
-  cursor:pointer;
-  transition: all 0.2s;
-}
-
-.clear-btn:active {
-  background:rgba(255,77,77,.3);
-}
-
-.price{
-  font-size:52px;
-  color:var(--accent);
-  font-weight:bold;
-  text-align:center;
-}
-.formula{
-  font-size:16px;
-  color:#888;
-  text-align:center;
-  margin-top:5px;
-}
-
-.trap-results-list{
-  list-style:none;
-  padding:0;
-  margin:0;
-  font-size:24px;
-}
-.trap-results-list li{
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.1);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  color:var(--enemy-orange);
-}
-
-.trap-item-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    min-width: 0;
-}
-
 .watermark {
-    text-align: center;
-    padding: 20px;
-    color: rgba(255,255,255,0.3);
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-shadow: 0 0 5px var(--accent);
-    width: 100%;
+    color: rgba(255,255,255,0.4);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--accent);
+    pointer-events: none;
+    font-style: italic;
 }
 
 /* MOBILE SPECIFIC OVERRIDES */
 @media(max-width:900px){
-  body { padding-bottom: 250px; } 
+  body { padding-bottom: 220px; } 
   .layout{
     display: flex !important;
     flex-direction: column;
   }
-  .controls {
-    order: -1;
-  }
-  h1{margin-top:80px}
+  .controls { order: -1; }
+  h1{margin-top:20px}
   .upgrades-grid{grid-template-columns:1fr}
   
-  .box .clear-btn { display: none; }
-  
-  #mobile-clear { display: block !important; margin-top: 15px; padding: 10px; }
+  /* Mobile Watermark - Top of Title */
+  .watermark {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 80px;
+    display: block;
+    width: 100%;
+  }
 
   #results-container{
     position:fixed;
@@ -272,14 +193,26 @@ input[type="number"],select{
   }
 }
 
-#mobile-clear { display: none; }
+input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); flex-shrink:0; }
+input[type="number"],select{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
 
+.price{ font-size:52px; color:var(--accent); font-weight:bold; text-align:center; }
+.formula{ font-size:16px; color:#888; text-align:center; margin-top:5px; }
+
+.trap-results-list{ list-style:none; padding:0; margin:0; font-size:24px; }
+.trap-results-list li{ padding:12px 0; border-bottom:1px solid rgba(255,255,255,.1); display:flex; justify-content:space-between; align-items:center; color:var(--enemy-orange); }
+
+.clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:22px; margin-top:25px; border-radius:12px; cursor:pointer; }
+#mobile-clear { display: none; }
 </style>
 </head>
 <body>
 <button class="mode-toggle" onclick="toggleTrapMode()">
   <img src="Trap-Card.png" id="toggleIcon">
 </button>
+
+<div class="watermark">Made by alireza1303</div>
+
 <div class="scaler-container">
 <h1 id="mainTitle">Nullscape Price Calculator</h1>
 <div class="layout">
@@ -303,18 +236,19 @@ input[type="number"],select{
 <div class="box" id="results-container">
   <div id="upgrade-results">
     <div class="price" id="result">Total: 0</div>
-    <div class="formula" id="main-formula">ceil(base × √players) × Mode</div>
+    <div class="formula">ceil(base × √players) × Mode</div>
   </div>
   <div id="trap-results" style="display:none">
-    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
+    <div class="box-title" style="font-size:18px;text-align:center">Enemies After Trap</div>
     <ul class="trap-results-list" id="trapList"></ul>
-    <div class="formula" style="margin-top:15px; color:var(--enemy-orange)">Limit: 8/16 (Normal/Hard) + 2 Randoms</div>
+    <div class="formula" style="margin-top:15px; color:var(--enemy-orange); font-weight: bold;">
+        Formula: (Enemies + Added) + 2 Randoms
+    </div>
   </div>
   <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
 </div>
 </div>
 </div>
-<div class="watermark">Made by alireza1303</div>
 </div>
 
 <script>
@@ -349,33 +283,16 @@ const upgradesList=[
 const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000 };
 
 const enemiesList=[
-    {name:"Mart", icon:"Mart.png"},
-    {name:"Baby", icon:"baby.png"},
-    {name:"NIL", icon:"nil.png"},
-    {name:"Voidbreaker", icon:"voidbreaker.png"},
-    {name:"Springer", icon:"springer.png"},
-    {name:"Bell", icon:"bell.png"},
-    {name:"Voidbound Guardian", icon:"vbg.png"},
-    {name:"Skinwalker", icon:"skinwalker.png"},
-    {name:"Voidbound Baby", icon:"voidBaby.png"},
-    {name:"???", icon:"random.png"},
-    {name:"Telefragger", icon:"tele.png"},
-    {name:"Flesh", icon:"flesh.png"},
-    {name:"Guardian", icon:"guardian.png"},
-    {name:"Cadence", icon:"Cadance.png"},
-    {name:"ICBM", icon:"icbm.png"}
+    {name:"Mart", icon:"Mart.png"}, {name:"Baby", icon:"baby.png"}, {name:"NIL", icon:"nil.png"},
+    {name:"Voidbreaker", icon:"voidbreaker.png"}, {name:"Springer", icon:"springer.png"},
+    {name:"Bell", icon:"bell.png"}, {name:"Voidbound Guardian", icon:"vbg.png"},
+    {name:"Skinwalker", icon:"skinwalker.png"}, {name:"Voidbound Baby", icon:"voidBaby.png"},
+    {name:"???", icon:"random.png"}, {name:"Telefragger", icon:"tele.png"},
+    {name:"Flesh", icon:"flesh.png"}, {name:"Guardian", icon:"guardian.png"},
+    {name:"Cadence", icon:"Cadance.png"}, {name:"ICBM", icon:"icbm.png"}
 ];
 
 let isTrapMode=false;
-
-function toggleMobileList() {
-    if(window.innerWidth <= 900) {
-        const list = document.getElementById("trapList");
-        const title = document.getElementById("collapsible-title");
-        list.classList.toggle("visible");
-        title.classList.toggle("active");
-    }
-}
 
 function renderGrid(){
  const grid=document.getElementById("mainGrid");
@@ -384,7 +301,7 @@ function renderGrid(){
    enemiesList.forEach(item=>{
      const label=document.createElement("label");
      label.innerHTML=`<input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
-       <div class="trap-item-container">
+       <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
          <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
          <span class="enemy-name-text">${item.name}</span>
        </div>`;
@@ -416,23 +333,23 @@ function toggleTrapMode(){
 }
 
 function handlePlayerRules(){
- const playersInput=document.getElementById("players");
- const players=Math.min(20,Math.max(1,parseInt(playersInput.value)||1));
- playersInput.value=players;
+ const pInput=document.getElementById("players");
+ let p=Math.min(20,Math.max(1,parseInt(pInput.value)||1));
+ pInput.value=p;
  const modeSelect=document.getElementById("mode");
  if(!isTrapMode){
-   modeSelect.disabled=(players===1);
-   if(players===1) modeSelect.value="1";
+   modeSelect.disabled=(p===1);
+   if(p===1) modeSelect.value="1";
    document.querySelectorAll(".upgrades-grid label").forEach(label=>{
      const checkbox=label.querySelector("input");
      const priceSpan=label.querySelector(".price-val");
      const base=Number(checkbox.dataset.price);
-     let display=(players===1 && soloPrices[label.id])?soloPrices[label.id]:base;
+     let display=(p===1 && soloPrices[label.id])?soloPrices[label.id]:base;
      priceSpan.textContent=`(${display})`;
-     if(label.id==="opt-adrenaline"){checkbox.disabled=players>1;if(players>1)checkbox.checked=false;}
-     if(label.id==="opt-lrs"){checkbox.disabled=players<3;if(players<3)checkbox.checked=false;}
+     if(label.id==="opt-adrenaline"){checkbox.disabled=p>1;if(p>1)checkbox.checked=false;}
+     if(label.id==="opt-lrs"){checkbox.disabled=p<3;if(p<3)checkbox.checked=false;}
    });
- }else modeSelect.disabled=false;
+ }
  calculate();
 }
 
@@ -451,11 +368,11 @@ function calculate(){
      if(count>0){const li=document.createElement("li");li.innerHTML=`${name} <span>${count+added}</span>`;list.appendChild(li);}
    });
  }else{
-   let players=parseInt(document.getElementById("players").value)||1;
+   let p=parseInt(document.getElementById("players").value)||1;
    let total=0;
-   const sqrtP=Math.sqrt(players);
+   const sqrtP=Math.sqrt(p);
    document.querySelectorAll(".option:checked").forEach(opt=>{
-     let price=(players===1 && soloPrices[opt.parentElement.id])?soloPrices[opt.parentElement.id]:Math.ceil(Number(opt.dataset.price)*sqrtP);
+     let price=(p===1 && soloPrices[opt.parentElement.id])?soloPrices[opt.parentElement.id]:Math.ceil(Number(opt.dataset.price)*sqrtP);
      total+=Math.ceil(price*modeVal);
    });
    document.getElementById("result").textContent="Total: "+total.toLocaleString();
