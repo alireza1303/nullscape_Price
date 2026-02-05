@@ -173,6 +173,11 @@ input[type="number"],select{
   margin-top:25px;
   border-radius:12px;
   cursor:pointer;
+  transition: all 0.2s;
+}
+
+.clear-btn:active {
+  background:rgba(255,77,77,.3);
 }
 
 .price{
@@ -205,16 +210,23 @@ input[type="number"],select{
 
 /* MOBILE SPECIFIC OVERRIDES */
 @media(max-width:900px){
+  body { padding-bottom: 200px; } /* More space for the bigger footer */
   .layout{
     display: flex;
     flex-direction: column;
-    padding-bottom:140px;
   }
   .controls {
-    order: -1; /* Forces the controls box to the top of the flex container */
+    order: -1;
   }
   h1{margin-top:80px}
   .upgrades-grid{grid-template-columns:1fr}
+  
+  /* Hide the static Clear All button inside the box */
+  .box .clear-btn { display: none; }
+  
+  /* Show the mobile Clear All button in the results container */
+  #mobile-clear { display: block !important; margin-top: 15px; padding: 10px; }
+
   #results-container{
     position:fixed;
     bottom:0;
@@ -223,13 +235,17 @@ input[type="number"],select{
     z-index:1000;
     border-radius:20px 20px 0 0;
     padding:15px 25px;
-    box-shadow:0 -10px 30px rgba(0,0,0,.5);
-    max-height:40vh;
+    box-shadow:0 -10px 30px rgba(0,0,0,.7);
+    max-height:50vh;
     overflow-y:auto;
-    order: 2; /* Keeps result box at the bottom (fixed) */
+    background: var(--box-bg);
   }
   .price{font-size:40px}
 }
+
+/* Hidden by default on PC */
+#mobile-clear { display: none; }
+
 </style>
 </head>
 <body>
@@ -265,6 +281,7 @@ input[type="number"],select{
     <div class="box-title" style="font-size:18px;text-align:center">Enemies After Trap</div>
     <ul class="trap-results-list" id="trapList"></ul>
   </div>
+  <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
 </div>
 </div>
 </div>
