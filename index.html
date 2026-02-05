@@ -175,6 +175,7 @@ input[type="number"],select{
   margin-top:25px;
   border-radius:12px;
   cursor:pointer;
+  transition: 0.2s;
 }
 
 .price{
@@ -197,7 +198,6 @@ input[type="number"],select{
   color:var(--enemy-orange);
 }
 
-/* WATERMARK STYLING */
 .watermark {
   position: fixed;
   bottom: 15px;
@@ -209,13 +209,11 @@ input[type="number"],select{
   font-size: 14px;
   letter-spacing: 1px;
   z-index: 2000;
-  pointer-events: none; /* Allows clicking through it if needed */
+  pointer-events: none;
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: color 0.3s;
 }
 
-/* MOBILE SPECIFIC */
 @media(max-width:900px){
   body { padding-bottom: 250px; } 
   .layout{ display: flex !important; flex-direction: column; }
@@ -235,16 +233,9 @@ input[type="number"],select{
   }
   #trapList { display: none; }
   #trapList.visible { display: block; }
-  
-  /* Adjust watermark for mobile result container */
-  .watermark { 
-    bottom: auto;
-    top: 15px;
-    right: 85px; /* Moved away from toggle icon */
-  }
+  .watermark { bottom: auto; top: 15px; right: 85px; }
 }
 #mobile-clear { display: none; }
-
 </style>
 </head>
 <body>
@@ -279,7 +270,7 @@ input[type="number"],select{
     <div class="price" id="result">Total: 0</div>
   </div>
   <div id="trap-results" style="display:none">
-    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
+    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center;cursor:pointer;" onclick="toggleMobileList()">Enemies After Trap ▼</div>
     <ul class="trap-results-list" id="trapList"></ul>
   </div>
   <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
@@ -289,7 +280,6 @@ input[type="number"],select{
 </div>
 
 <script>
-// Data and Functions keep previous logic...
 const upgradesList=[
  {name:"Adrenaline",price:50,icon:"Adrenaline.png",id:"opt-adrenaline"},
  {name:"Business License",price:75,icon:"Business_License.png"},
@@ -333,7 +323,9 @@ let isTrapMode=false;
 
 function toggleMobileList() {
     if(window.innerWidth <= 900) {
-        document.getElementById("trapList").classList.toggle("visible");
+        const list = document.getElementById("trapList");
+        list.classList.toggle("visible");
+        document.getElementById("collapsible-title").innerHTML = list.classList.contains("visible") ? "Enemies After Trap ▲" : "Enemies After Trap ▼";
     }
 }
 
@@ -392,11 +384,12 @@ function calculate(){
    document.querySelectorAll(".enemy-count").forEach(input=>{
      let count=parseInt(input.value)||0;
      let name=input.parentElement.querySelector(".enemy-name-text").textContent;
-     let added=0;
      
+     let doubledCount = count * 2;
+     let added = 0;
      let bonusAmt = (name === "???") ? 2 : 1;
 
-     if(used < limit && count >= 0){
+     if(used < limit){
         if(count > 0 || name === "???") {
             added = Math.min(bonusAmt, limit - used);
             used += added;
@@ -405,7 +398,7 @@ function calculate(){
      
      if(count > 0 || added > 0){
         const li=document.createElement("li");
-        li.innerHTML=`${name} <span>${count + added}</span>`;
+        li.innerHTML=`${name} <span>${doubledCount + added}</span>`;
         list.appendChild(li);
      }
    });
