@@ -1,58 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nullscape Price Calculator</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nullscape Price Calculator</title>
+<style>
+:root{
+  --accent:#b266ff;
+  --accent-dark:#7a33ff;
+  --glow:rgba(155,77,255,.4);
+  --btn-border:rgb(255,142,66);
+  --btn-glow:rgba(255,142,66,.6);
+  --enemy-orange:rgb(255,142,66);
+  --bg:rgb(26,26,26);
+  --box-bg:rgb(32,32,32);
+}
+.trap-active{
+  --accent:rgb(255,142,66);
+  --accent-dark:rgb(255,142,66);
+  --glow:rgba(255,142,66,.5);
+  --btn-border:rgb(136,163,232);
+  --btn-glow:rgba(136,163,232,.6);
+}
+
+@media (min-width:901px){
+  .scaler-container{
+    zoom: 0.9;
+    -moz-transform: scale(1.15);
+    -moz-transform-origin: top center;
+  }
+  .layout {
+    grid-template-columns: 3fr 1fr !important;
+    max-width: 1800px !important;
+  }
+  .watermark {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    font-size: 24px;
+    opacity: 0.6;
+    text-align: right;
+  }
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:white;
+  font-family:'Segoe UI',Arial,sans-serif;
+  padding-bottom:120px;
+}
+
+.mode-toggle{
+  position:fixed;
+  top:15px;
+  right:15px;
+  width:60px;
+  height:60px;
+  background:var(--box-bg);
+  border:3px solid var(--btn-border);
+  border-radius:12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 15px var(--btn-glow);
+  z-index:1001;
+}
+.mode-toggle img{width:40px;height:40px}
+
+h1{
+  text-align:center;
+  margin:10px 0 30px 0;
+  font-size:clamp(32px, 5vw, 64px);
+  color:var(--accent);
+  text-shadow:0 0 15px var(--accent);
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+  padding:0 20px;
+  max-width:1600px;
+  margin:0 auto;
+}
+
+.box{
+  background:var(--box-bg);
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 0 25px var(--glow);
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.box-title{
+  font-size:clamp(20px,4vw,26px);
+  margin-bottom:20px;
+  color:var(--accent);
+  text-transform:uppercase;
+  letter-spacing:2px;
+  font-weight:bold;
+}
+
+.upgrades-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:12px;
+}
+
+.upgrades-grid label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:18px;
+  background:rgba(255,255,255,.03);
+  padding:10px;
+  border-radius:12px;
+  cursor:pointer;
+  min-height:65px;
+  overflow:hidden;
+}
+
+.custom-icon{
+  width:45px;
+  height:45px;
+  flex-shrink:0;
+  object-fit: contain;
+}
+
+.enemy-count{
+  width:60px;
+  height:45px;
+  background:#000;
+  border:2px solid var(--enemy-orange);
+  color:white;
+  border-radius:10px;
+  font-size:20px;
+  text-align:center;
+  flex-shrink:0;
+}
+
+.enemy-name-text {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+  flex: 1;
+}
+
+.watermark {
+    color: rgba(255,255,255,0.4);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--accent);
+    pointer-events: none;
+    font-style: italic;
+}
+
+/* MOBILE SPECIFIC OVERRIDES */
+@media(max-width:900px){
+  body { padding-bottom: 220px; } 
+  .layout{
+    display: flex !important;
+    flex-direction: column;
+  }
+  .controls { order: -1; }
+  h1{margin-top:20px}
+  .upgrades-grid{grid-template-columns:1fr}
+  
+  .watermark {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 80px;
+    display: block;
+    width: 100%;
+  }
+
+  #results-container{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    border-radius:20px 20px 0 0;
+    padding:15px 25px;
+    box-shadow:0 -10px 30px rgba(0,0,0,.7);
+    max-height:60vh;
+    overflow-y:auto;
+    background: var(--box-bg);
+  }
+
+  #trapList {
+    display: none;
+  }
+  #trapList.visible {
+    display: block;
+  }
+  #collapsible-title {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  #collapsible-title::after {
+    content: '▼';
+    font-size: 14px;
+  }
+  #collapsible-title.active::after {
+    content: '▲';
+  }
+}
+
+input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); flex-shrink:0; }
+input[type="number"],select{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
+
+.price{ font-size:52px; color:var(--accent); font-weight:bold; text-align:center; }
+.formula{ font-size:16px; color:#888; text-align:center; margin-top:5px; }
+
+.trap-results-list{ list-style:none; padding:0; margin:0; font-size:24px; }
+.trap-results-list li{ padding:12px 0; border-bottom:1px solid rgba(255,255,255,.1); display:flex; justify-content:space-between; align-items:center; color:var(--enemy-orange); }
+
+.clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:22px; margin-top:25px; border-radius:12px; cursor:pointer; }
+#mobile-clear { display: none; }
+@media(max-width:900px){ #mobile-clear { display: block; } }
+</style>
 </head>
 <body>
-    <button class="mode-toggle" onclick="toggleTrapMode()">
-        <img src="Trap-Card.png" id="toggleIcon">
-    </button>
+<button class="mode-toggle" onclick="toggleTrapMode()">
+  <img src="Trap-Card.png" id="toggleIcon">
+</button>
 
-    <div class="watermark">Made by alireza1303</div>
+<div class="watermark">Made by alireza1303</div>
 
-    <div class="scaler-container">
-        <h1 id="mainTitle">Nullscape Price Calculator</h1>
-        <div class="layout">
-            <div class="box main-content">
-                <div class="box-title" id="gridTitle">Upgrades</div>
-                <div class="upgrades-grid" id="mainGrid"></div>
-                <button class="clear-btn" onclick="clearAll()">Clear All</button>
-            </div>
-            
-            <div class="controls">
-                <div class="box">
-                    <div id="player-group">
-                        <div class="box-title" style="font-size:16px">Number of Players</div>
-                        <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
-                    </div>
-                    <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
-                    <select id="mode" onchange="calculate()">
-                        <option value="1">Normal</option>
-                        <option value="1.15">Hard Mode</option>
-                    </select>
-                </div>
-
-                <div class="box" id="results-container">
-                    <div id="upgrade-results">
-                        <div class="price" id="result">Total: 0</div>
-                        <div class="formula">ceil(base × √players) × Mode</div>
-                    </div>
-                    <div id="trap-results" style="display:none">
-                        <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
-                        <ul class="trap-results-list" id="trapList"></ul>
-                        <div class="formula" style="margin-top:15px; color:var(--enemy-orange); font-weight: bold;">
-                            Formula: (Enemies + Added) + 2 Randoms
-                        </div>
-                    </div>
-                    <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
-                </div>
-            </div>
-        </div>
+<div class="scaler-container">
+<h1 id="mainTitle">Nullscape Price Calculator</h1>
+<div class="layout">
+<div class="box main-content">
+  <div class="box-title" id="gridTitle">Upgrades</div>
+  <div class="upgrades-grid" id="mainGrid"></div>
+  <button class="clear-btn" onclick="clearAll()">Clear All</button>
+</div>
+<div class="controls">
+<div class="box">
+  <div id="player-group">
+    <div class="box-title" style="font-size:16px">Number of Players</div>
+    <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
+  </div>
+  <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
+  <select id="mode" onchange="calculate()">
+    <option value="1">Normal</option>
+    <option value="1.15">Hard Mode</option>
+  </select>
+</div>
+<div class="box" id="results-container">
+  <div id="upgrade-results">
+    <div class="price" id="result">Total: 0</div>
+    <div class="formula">ceil(base × √players) × Mode</div>
+  </div>
+  <div id="trap-results" style="display:none">
+    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
+    <ul class="trap-results-list" id="trapList"></ul>
+    <div class="formula" style="margin-top:15px; color:var(--enemy-orange); font-weight: bold;">
+        Formula: (Enemies + Added) + 2 Randoms
     </div>
+  </div>
+  <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
+</div>
+</div>
+</div>
+</div>
 
-    <script src="script.js"></script>
+<script>
+const upgradesList=[
+ {name:"Adrenaline",price:50,icon:"Adrenaline.png",id:"opt-adrenaline"},
+ {name:"Business License",price:75,icon:"Business_License.png"},
+ {name:"Defuse Kit",price:30,icon:"Defuse_Kit.png"},
+ {name:"Paycheck",price:55,icon:"Paycheck.png"},
+ {name:"Swiftness Ring",price:80,icon:"Swiftness_Ring.png"},
+ {name:"Enemy ESP",price:100,icon:"Enemy_ESP.png"},
+ {name:"Better Gift Arrow",price:80,icon:"Better_Gift_Arrow.png"},
+ {name:"Better Jump Pads",price:50,icon:"Better_Jump_Pads.png"},
+ {name:"Double Jump",price:100,icon:"Double_Jump.png"},
+ {name:"Grace Wings",price:250,icon:"Grace_Wings.png",id:"opt-grace"},
+ {name:"Grapple Points",price:100,icon:"Grapple_Points.png"},
+ {name:"Last Robloxian Standing",price:200,icon:"Last_Robloxian_Standing.png",id:"opt-lrs"},
+ {name:"Pocket Bell",price:150,icon:"Pocket_Bell.png"},
+ {name:"Tripmine ESP",price:400,icon:"Tripmine_ESP.png"},
+ {name:"Advanced Coil",price:600,icon:"Advanced_Gravity_Coil.png"},
+ {name:"Ice Skates",price:400,icon:"Ice_Skates.png"},
+ {name:"Helmet",price:600,icon:"Helmet.png"},
+ {name:"More Altars",price:600,icon:"More_Altars.png"},
+ {name:"Barrier",price:1000,icon:"Subspacial_Barrier.png",id:"opt-barrier"},
+ {name:"Ninja Belt",price:500,icon:"Ninja_Belt.png",id:"opt-ninja"},
+ {name:"Gift Magnet",price:2000,icon:"Gift_Magnet.png"},
+ {name:"Matrix",price:2500,icon:"Matrix_Tetrahedron.png"},
+ {name:"Shield",price:3000,icon:"Shield.png",id:"opt-shield"},
+ {name:"Sport Shoes",price:1200,icon:"Sport_Shoes.png"},
+ {name:"Real Wings",price:25000,icon:"Real_Wings.png"}
+];
+
+const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000 };
+
+const enemiesList=[
+    {name:"Mart", icon:"Mart.png"}, {name:"Baby", icon:"baby.png"}, {name:"NIL", icon:"nil.png"},
+    {name:"Voidbreaker", icon:"voidbreaker.png"}, {name:"Springer", icon:"springer.png"},
+    {name:"Bell", icon:"bell.png"}, {name:"Voidbound Guardian", icon:"vbg.png"},
+    {name:"Skinwalker", icon:"skinwalker.png"}, {name:"Voidbound Baby", icon:"voidBaby.png"},
+    {name:"???", icon:"random.png"}, {name:"Telefragger", icon:"tele.png"},
+    {name:"Flesh", icon:"flesh.png"}, {name:"Guardian", icon:"guardian.png"},
+    {name:"Cadence", icon:"Cadance.png"}, {name:"ICBM", icon:"icbm.png"}
+];
+
+let isTrapMode=false;
+
+function toggleMobileList() {
+    if(window.innerWidth <= 900) {
+        const list = document.getElementById("trapList");
+        const title = document.getElementById("collapsible-title");
+        list.classList.toggle("visible");
+        title.classList.toggle("active");
+    }
+}
+
+function renderGrid(){
+ const grid=document.getElementById("mainGrid");
+ grid.innerHTML="";
+ if(isTrapMode){
+   enemiesList.forEach(item=>{
+     const label=document.createElement("label");
+     label.innerHTML=`<input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
+       <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+         <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
+         <span class="enemy-name-text">${item.name}</span>
+       </div>`;
+     grid.appendChild(label);
+   });
+ }else{
+   upgradesList.forEach(item=>{
+     const label=document.createElement("label");
+     label.id=item.id||"";
+     label.innerHTML=`<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
+       <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
+       <span>${item.name} <small class="price-val"></small></span>`;
+     grid.appendChild(label);
+   });
+ }
+ handlePlayerRules();
+}
+
+function toggleTrapMode(){
+  isTrapMode=!isTrapMode;
+  document.body.classList.toggle('trap-active');
+  document.getElementById("mainTitle").textContent=isTrapMode?"Nullscape Trap Card Calculator":"Nullscape Price Calculator";
+  document.getElementById("gridTitle").textContent=isTrapMode?"Current Run Enemies":"Upgrades";
+  document.getElementById("toggleIcon").src=isTrapMode?"Defuse_Kit.png":"Trap-Card.png";
+  document.getElementById("player-group").style.display=isTrapMode?"none":"block";
+  document.getElementById("upgrade-results").style.display=isTrapMode?"none":"block";
+  document.getElementById("trap-results").style.display=isTrapMode?"block":"none";
+  renderGrid();
+}
+
+function handlePlayerRules(){
+ const pInput=document.getElementById("players");
+ let p = Math.min(20, Math.max(1, parseInt(pInput.value) || 1));
+ pInput.value = p;
+ 
+ const modeSelect = document.getElementById("mode");
+ 
+ // Only disable/auto-switch mode if NOT in Trap Mode
+ if(!isTrapMode){
+   modeSelect.disabled = (p === 1);
+   if(p === 1) modeSelect.value = "1";
+   
+   document.querySelectorAll(".upgrades-grid label").forEach(label=>{
+     const checkbox=label.querySelector("input");
+     const priceSpan=label.querySelector(".price-val");
+     const base=Number(checkbox.dataset.price);
+     let display=(p===1 && soloPrices[label.id])?soloPrices[label.id]:base;
+     priceSpan.textContent=`(${display})`;
+     if(label.id==="opt-adrenaline"){checkbox.disabled=p>1;if(p>1)checkbox.checked=false;}
+     if(label.id==="opt-lrs"){checkbox.disabled=p<3;if(p<3)checkbox.checked=false;}
+   });
+ } else {
+   // Always enabled in Trap Mode
+   modeSelect.disabled = false;
+ }
+ calculate();
+}
+
+function calculate(){
+ const modeVal = parseFloat(document.getElementById("mode").value);
+ if(isTrapMode){
+   let limit = (modeVal > 1) ? 16 : 8;
+   let used = 0;
+   const list = document.getElementById("trapList");
+   list.innerHTML = "";
+   document.querySelectorAll(".enemy-count").forEach(input => {
+     let count = parseInt(input.value) || 0;
+     let name = input.parentElement.querySelector(".enemy-name-text").textContent;
+     let added = 0;
+     if(used < limit && count > 0) {
+       added = Math.min(count, limit - used);
+       used += added;
+     }
+     if(count > 0) {
+       const li = document.createElement("li");
+       li.innerHTML = `${name} <span>${count + added}</span>`;
+       list.appendChild(li);
+     }
+   });
+ } else {
+   let p = parseInt(document.getElementById("players").value) || 1;
+   let total = 0;
+   const sqrtP = Math.sqrt(p);
+   document.querySelectorAll(".option:checked").forEach(opt => {
+     let price = (p === 1 && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Math.ceil(Number(opt.dataset.price) * sqrtP);
+     total += Math.ceil(price * modeVal);
+   });
+   document.getElementById("result").textContent = "Total: " + total.toLocaleString();
+ }
+}
+
+function clearAll(){
+ document.querySelectorAll(isTrapMode ? ".enemy-count" : ".option").forEach(i => isTrapMode ? i.value = 0 : i.checked = false);
+ calculate();
+}
+
+window.onload=renderGrid;
+</script>
 </body>
-</html>
+</html> 
