@@ -364,12 +364,16 @@ function toggleTrapMode(){
 
 function handlePlayerRules(){
  const pInput=document.getElementById("players");
- let p=Math.min(20,Math.max(1,parseInt(pInput.value)||1));
- pInput.value=p;
- const modeSelect=document.getElementById("mode");
+ let p = Math.min(20, Math.max(1, parseInt(pInput.value) || 1));
+ pInput.value = p;
+ 
+ const modeSelect = document.getElementById("mode");
+ 
+ // Only disable/auto-switch mode if NOT in Trap Mode
  if(!isTrapMode){
-   modeSelect.disabled=(p===1);
-   if(p===1) modeSelect.value="1";
+   modeSelect.disabled = (p === 1);
+   if(p === 1) modeSelect.value = "1";
+   
    document.querySelectorAll(".upgrades-grid label").forEach(label=>{
      const checkbox=label.querySelector("input");
      const priceSpan=label.querySelector(".price-val");
@@ -379,38 +383,48 @@ function handlePlayerRules(){
      if(label.id==="opt-adrenaline"){checkbox.disabled=p>1;if(p>1)checkbox.checked=false;}
      if(label.id==="opt-lrs"){checkbox.disabled=p<3;if(p<3)checkbox.checked=false;}
    });
+ } else {
+   // Always enabled in Trap Mode
+   modeSelect.disabled = false;
  }
  calculate();
 }
 
 function calculate(){
- const modeVal=parseFloat(document.getElementById("mode").value);
+ const modeVal = parseFloat(document.getElementById("mode").value);
  if(isTrapMode){
-   let limit=(modeVal>1)?16:8;
-   let used=0;
-   const list=document.getElementById("trapList");
-   list.innerHTML="";
-   document.querySelectorAll(".enemy-count").forEach(input=>{
-     let count=parseInt(input.value)||0;
-     let name=input.parentElement.querySelector(".enemy-name-text").textContent;
-     let added=0;
-     if(used<limit && count>0){added=Math.min(count,limit-used);used+=added;}
-     if(count>0){const li=document.createElement("li");li.innerHTML=`${name} <span>${count+added}</span>`;list.appendChild(li);}
+   let limit = (modeVal > 1) ? 16 : 8;
+   let used = 0;
+   const list = document.getElementById("trapList");
+   list.innerHTML = "";
+   document.querySelectorAll(".enemy-count").forEach(input => {
+     let count = parseInt(input.value) || 0;
+     let name = input.parentElement.querySelector(".enemy-name-text").textContent;
+     let added = 0;
+     if(used < limit && count > 0) {
+       added = Math.min(count, limit - used);
+       used += added;
+     }
+     if(count > 0) {
+       const li = document.createElement("li");
+       li.innerHTML = `${name} <span>${count + added}</span>`;
+       list.appendChild(li);
+     }
    });
- }else{
-   let p=parseInt(document.getElementById("players").value)||1;
-   let total=0;
-   const sqrtP=Math.sqrt(p);
-   document.querySelectorAll(".option:checked").forEach(opt=>{
-     let price=(p===1 && soloPrices[opt.parentElement.id])?soloPrices[opt.parentElement.id]:Math.ceil(Number(opt.dataset.price)*sqrtP);
-     total+=Math.ceil(price*modeVal);
+ } else {
+   let p = parseInt(document.getElementById("players").value) || 1;
+   let total = 0;
+   const sqrtP = Math.sqrt(p);
+   document.querySelectorAll(".option:checked").forEach(opt => {
+     let price = (p === 1 && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Math.ceil(Number(opt.dataset.price) * sqrtP);
+     total += Math.ceil(price * modeVal);
    });
-   document.getElementById("result").textContent="Total: "+total.toLocaleString();
+   document.getElementById("result").textContent = "Total: " + total.toLocaleString();
  }
 }
 
 function clearAll(){
- document.querySelectorAll(isTrapMode?".enemy-count":".option").forEach(i=>isTrapMode?i.value=0:i.checked=false);
+ document.querySelectorAll(isTrapMode ? ".enemy-count" : ".option").forEach(i => isTrapMode ? i.value = 0 : i.checked = false);
  calculate();
 }
 
