@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Price Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="number"] {
+      width: 60px;
+    }
+    button {
+      margin-top: 10px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Price Calculator</h2>
+
+  <label><input type="checkbox" class="option" data-price="10"> Option A (€10)</label>
+  <label><input type="checkbox" class="option" data-price="15"> Option B (€15)</label>
+  <label><input type="checkbox" class="option" data-price="20"> Option C (€20)</label>
+
+  <label>
+    Number of Players:
+    <input type="number" id="players" min="1" value="1">
+  </label>
+
+  <button id="calculate">Calculate Price</button>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById("calculate").addEventListener("click", function() {
+      const players = parseInt(document.getElementById("players").value) || 0;
+      let total = 0;
+
+      document.querySelectorAll(".option:checked").forEach(item => {
+        total += parseFloat(item.dataset.price);
+      });
+
+      const finalPrice = total * players;
+
+      document.getElementById("result").textContent =
+        "Final Price: €" + finalPrice.toFixed(2);
+    });
+  </script>
+</body>
+</html>
