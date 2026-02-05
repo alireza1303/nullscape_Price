@@ -12,7 +12,8 @@
       background-color: rgb(26, 26, 26);
       color: white;
       font-family: Arial, Helvetica, sans-serif;
-      padding-bottom: 40px;
+      padding-bottom: 60px;
+      position: relative;
     }
 
     h1 {
@@ -37,6 +38,7 @@
       border-radius: 24px;
       padding: 35px;
       box-shadow: 0 0 30px rgba(155, 77, 255, 0.2);
+      transition: opacity 0.3s ease;
     }
 
     .box-title {
@@ -61,11 +63,11 @@
       color: #88a3e8;
       transition: 0.2s;
       text-shadow: 0 0 11px rgba(136, 163, 232, 0.4);
-      white-space: nowrap; /* PC remains single-line */
+      white-space: nowrap;
     }
 
-    .disabled-label {
-      opacity: 0.2;
+    .disabled-label, .disabled-box {
+      opacity: 0.25;
       cursor: not-allowed !important;
       filter: grayscale(1);
     }
@@ -139,15 +141,37 @@
       cursor: pointer;
     }
 
+    .price-container {
+      text-align: center;
+    }
+
     .price {
       font-size: 48px;
       color: #b266ff;
-      text-align: center;
       font-weight: bold;
       text-shadow: 0 0 15px rgba(178, 102, 255, 0.5);
     }
 
-    /* RESPONSIVE FIXES */
+    .formula-scale {
+      font-size: 14px;
+      color: #666;
+      margin-top: 8px;
+      letter-spacing: 1px;
+      font-style: italic;
+    }
+
+    .credit {
+      position: fixed;
+      bottom: 15px;
+      right: 20px;
+      font-size: 14px;
+      color: #b266ff;
+      text-shadow: 0 0 8px rgba(178, 102, 255, 0.8);
+      font-weight: bold;
+      pointer-events: none;
+    }
+
+    /* RESPONSIVE */
     @media (max-width: 1300px) {
       .layout { grid-template-columns: 1fr; padding: 0 20px; }
       .right { position: static; order: -1; }
@@ -159,10 +183,7 @@
 
     @media (max-width: 550px) {
       .upgrades-grid { grid-template-columns: 1fr; }
-      .upgrades-grid label { 
-        white-space: normal; /* Wraps text on mobile */
-        font-size: 16px; 
-      }
+      .upgrades-grid label { white-space: normal; font-size: 16px; }
       .box { padding: 20px; }
     }
   </style>
@@ -211,7 +232,7 @@
           <div class="box-title" style="text-align:center;">Players</div>
           <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
         </div>
-        <div class="box">
+        <div class="box" id="mode-box">
           <div class="box-title" style="text-align:center;">Mode</div>
           <select id="mode" onchange="calculate()">
             <option value="1">Normal</option>
@@ -223,29 +244,43 @@
         <button onclick="calculate()">Calculate Total</button>
       </div>
       <div class="box">
-        <div class="price" id="result">Total: 0</div>
+        <div class="price-container">
+          <div class="price" id="result">Total: 0</div>
+          <div class="formula-scale">ceil(base * √players) * Mode</div>
+        </div>
       </div>
     </div>
   </div>
 
+  <div class="credit">made by Alireza1303</div>
+
   <script>
     function handlePlayerRules() {
       let playerInput = document.getElementById("players");
+      let modeSelect = document.getElementById("mode");
+      let modeBox = document.getElementById("mode-box");
       let players = parseInt(playerInput.value);
 
-      // FIX: Check manual typing and clamp between 1 and 20
       if (players > 20) {
         playerInput.value = 20;
         players = 20;
       } else if (players < 1 || isNaN(players)) {
-        // We allow empty string while typing, but calculations treat it as 1
         players = 1; 
+      }
+
+      // Hard Mode Rule: Solo runs are always 1x (Normal)
+      if (players === 1) {
+        modeSelect.value = "1";
+        modeSelect.disabled = true;
+        modeBox.classList.add("disabled-box");
+      } else {
+        modeSelect.disabled = false;
+        modeBox.classList.remove("disabled-box");
       }
 
       const adrInput = document.getElementById("opt-adrenaline");
       const lrsInput = document.getElementById("opt-lrs");
 
-      // Update base prices based on solo vs multiplayer
       if (players === 1) {
         adrInput.disabled = false;
         adrInput.parentElement.classList.remove("disabled-label");
@@ -263,7 +298,6 @@
         document.getElementById("opt-shield").dataset.price = 3000;
       }
 
-      // LRS Rule: Only available for 3+ players
       if (players >= 3) {
         lrsInput.disabled = false;
         lrsInput.parentElement.classList.remove("disabled-label");
@@ -273,7 +307,6 @@
         lrsInput.parentElement.classList.add("disabled-label");
       }
 
-      // Refresh displayed price text
       document.querySelectorAll(".option").forEach(opt => {
         const textNode = opt.parentElement.lastChild;
         const name = textNode.textContent.split('(')[0].trim();
@@ -285,12 +318,12 @@
 
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
-      const modeMultiplier = parseFloat(document.getElementById("mode").value);
+      // Force multiplier to 1 if solo
+      const modeMultiplier = (players === 1) ? 1 : parseFloat(document.getElementById("mode").value);
       let total = 0;
       const sqrtP = Math.sqrt(players);
       
       document.querySelectorAll(".option:checked").forEach(opt => {
-        // Nullscape Formula: ceil(base * sqrt(players)) * Mode
         let scaled = Math.ceil(Number(opt.dataset.price) * sqrtP);
         total += Math.ceil(scaled * modeMultiplier);
       });
