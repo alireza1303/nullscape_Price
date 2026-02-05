@@ -23,15 +23,15 @@
   --btn-glow:rgba(136,163,232,.6);
 }
 
-/* PC ONLY ADJUSTMENTS */
+/* PC ONLY ADJUSTMENTS - 1.15x SCALE */
 @media (min-width:901px){
   .scaler-container{
-    zoom:.8;
-    -moz-transform:scale(.8);
-    -moz-transform-origin:top center;
+    zoom: 1.15;
+    -moz-transform: scale(1.15);
+    -moz-transform-origin: top center;
   }
   .layout {
-    grid-template-columns: 3fr 1fr !important; /* Makes the upgrade box wider on PC */
+    grid-template-columns: 3fr 1fr !important;
     max-width: 1800px !important;
   }
 }
@@ -66,7 +66,7 @@ body{
 h1{
   text-align:center;
   margin:20px 0;
-  font-size:clamp(32px,8vw,64px);
+  font-size:clamp(32px, 5vw, 64px);
   color:var(--accent);
   text-shadow:0 0 15px var(--accent);
 }
@@ -99,45 +99,55 @@ h1{
 
 .upgrades-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:15px;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:12px;
 }
+
+/* Updated Label for Trap Mode Fit */
 .upgrades-grid label{
   display:flex;
   align-items:center;
-  gap:12px;
-  font-size:22px;
+  gap:10px;
+  font-size:18px;
   background:rgba(255,255,255,.03);
-  padding:12px;
+  padding:10px;
   border-radius:12px;
   cursor:pointer;
-  white-space:normal;
+  min-height:65px;
+  overflow:hidden;
 }
 
 .custom-icon{
-  width:50px;
-  height:50px;
+  width:45px;
+  height:45px;
   flex-shrink:0;
   object-fit: contain;
 }
 
 input[type="checkbox"]{
-  width:30px;
-  height:30px;
+  width:25px;
+  height:25px;
   accent-color:var(--accent);
   flex-shrink:0;
 }
 
 .enemy-count{
-  width:80px;
-  height:50px;
+  width:60px;
+  height:45px;
   background:#000;
   border:2px solid var(--enemy-orange);
   color:white;
   border-radius:10px;
-  font-size:24px;
+  font-size:20px;
   text-align:center;
-  margin-right:15px;
+  flex-shrink:0;
+}
+
+.enemy-name-text {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+  flex: 1;
 }
 
 #players{
@@ -217,7 +227,9 @@ input[type="number"],select{
 .trap-item-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
 }
 
 /* MOBILE SPECIFIC OVERRIDES */
