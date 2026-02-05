@@ -29,7 +29,7 @@
       display: grid;
       grid-template-columns: 1fr 300px;
       gap: 40px;
-      padding: 0 60px;
+      padding: 0 60px 40px 60px;
     }
 
     .box {
@@ -48,18 +48,26 @@
 
     .upgrades {
       min-height: 420px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+      align-content: start;
     }
 
+    /* Target the text color for checkboxes */
     .upgrades label {
-      display: block;
-      margin-bottom: 15px;
-      font-size: 18px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 16px;
       cursor: pointer;
+      color: #88a3e8; 
     }
 
     .upgrades input {
-      margin-right: 10px;
+      margin-right: 12px;
       transform: scale(1.2);
+      cursor: pointer;
     }
 
     .right {
@@ -112,27 +120,38 @@
 
   <div class="layout">
 
-    <div class="box upgrades">
+    <div class="box">
       <div class="box-title" style="text-align: left;">Upgrades</div>
-
-      <label>
-        <input type="checkbox" class="option" data-price="10">
-        Basic Package (€10)
-      </label>
-
-      <label>
-        <input type="checkbox" class="option" data-price="20">
-        Advanced Package (€20)
-      </label>
-
-      <label>
-        <input type="checkbox" class="option" data-price="30">
-        Elite Package (€30)
-      </label>
+      <div class="upgrades">
+        <label><input type="checkbox" class="option" data-price="50"> Adrenaline (€50)</label>
+        <label><input type="checkbox" class="option" data-price="75"> Business License (€75)</label>
+        <label><input type="checkbox" class="option" data-price="30"> Defuse Kit (€30)</label>
+        <label><input type="checkbox" class="option" data-price="55"> Paycheck (€55)</label>
+        <label><input type="checkbox" class="option" data-price="80"> Swiftness Ring (€80)</label>
+        <label><input type="checkbox" class="option" data-price="100"> Enemy ESP (€100)</label>
+        <label><input type="checkbox" class="option" data-price="80"> Better Gift Arrow (€80)</label>
+        <label><input type="checkbox" class="option" data-price="50"> Better Jump Pads (€50)</label>
+        <label><input type="checkbox" class="option" data-price="100"> Double Jump (€100)</label>
+        <label><input type="checkbox" class="option" data-price="250"> Grace Wings (€250)</label>
+        <label><input type="checkbox" class="option" data-price="100"> Grapple Points (€100)</label>
+        <label><input type="checkbox" class="option" data-price="200"> Last Robloxian Standing (€200)</label>
+        <label><input type="checkbox" class="option" data-price="150"> Pocket Bell (€150)</label>
+        <label><input type="checkbox" class="option" data-price="400"> Tripmine ESP (€400)</label>
+        <label><input type="checkbox" class="option" data-price="600"> Advanced Gravity Coil (€600)</label>
+        <label><input type="checkbox" class="option" data-price="400"> Ice Skates (€400)</label>
+        <label><input type="checkbox" class="option" data-price="600"> Helmet (€600)</label>
+        <label><input type="checkbox" class="option" data-price="600"> More Altars (€600)</label>
+        <label><input type="checkbox" class="option" data-price="1000"> Subspacial Barrier (€1000)</label>
+        <label><input type="checkbox" class="option" data-price="500"> Ninja Belt (€500)</label>
+        <label><input type="checkbox" class="option" data-price="2000"> Gift Magnet (€2000)</label>
+        <label><input type="checkbox" class="option" data-price="2500"> Matrix Tetrahedron (€2500)</label>
+        <label><input type="checkbox" class="option" data-price="3000"> Shield (€3000)</label>
+        <label><input type="checkbox" class="option" data-price="1200"> Sport Shoes (€1200)</label>
+        <label><input type="checkbox" class="option" data-price="25000"> Real Wings (€25000)</label>
+      </div>
     </div>
 
     <div class="right">
-
       <div class="box">
         <div class="box-title">Players</div>
         <input type="number" id="players" min="1" max="20" value="1">
@@ -145,7 +164,6 @@
       <div class="box">
         <div class="price" id="result">Price = €0</div>
       </div>
-
     </div>
 
   </div>
@@ -154,7 +172,6 @@
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
       
-      // Enforce min 1 and max 20 in the logic
       if (players < 1) players = 1;
       if (players > 20) players = 20;
       document.getElementById("players").value = players;
@@ -165,7 +182,7 @@
       });
 
       document.getElementById("result").textContent =
-        "Price = €" + (total * players);
+        "Price = €" + (total * players).toLocaleString();
     }
   </script>
 
