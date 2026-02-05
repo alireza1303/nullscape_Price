@@ -73,16 +73,6 @@
       text-shadow: 0 0 16px rgba(136, 163, 232, 0.8);
     }
 
-    /* FIXES THE WINGS POSITIONING */
-    .centered-row {
-      grid-column: 1 / -1; /* Makes it span all 3 columns */
-      display: flex;
-      justify-content: center; /* Centers the content within that span */
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 1px solid rgba(136, 163, 232, 0.1);
-    }
-
     .custom-icon {
       width: 40px; 
       height: 40px;
@@ -207,10 +197,7 @@
           <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix (2500)</label>
           <label><input type="checkbox" class="option" data-price="3000"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
           <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
-          
-          <div class="centered-row">
-            <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
-          </div>
+          <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
         </div>
         <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
       </div>
