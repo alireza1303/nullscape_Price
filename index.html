@@ -61,7 +61,7 @@
       color: #88a3e8;
       transition: 0.2s;
       text-shadow: 0 0 11px rgba(136, 163, 232, 0.4);
-      white-space: nowrap; /* Forces one line on PC */
+      white-space: nowrap; /* PC remains single-line */
     }
 
     .disabled-label {
@@ -160,7 +160,7 @@
     @media (max-width: 550px) {
       .upgrades-grid { grid-template-columns: 1fr; }
       .upgrades-grid label { 
-        white-space: normal; /* Allows wrapping on small mobile */
+        white-space: normal; /* Wraps text on mobile */
         font-size: 16px; 
       }
       .box { padding: 20px; }
@@ -230,13 +230,22 @@
 
   <script>
     function handlePlayerRules() {
-      let players = parseInt(document.getElementById("players").value) || 1;
-      if (players < 1) players = 1;
+      let playerInput = document.getElementById("players");
+      let players = parseInt(playerInput.value);
+
+      // FIX: Check manual typing and clamp between 1 and 20
+      if (players > 20) {
+        playerInput.value = 20;
+        players = 20;
+      } else if (players < 1 || isNaN(players)) {
+        // We allow empty string while typing, but calculations treat it as 1
+        players = 1; 
+      }
 
       const adrInput = document.getElementById("opt-adrenaline");
       const lrsInput = document.getElementById("opt-lrs");
 
-      // Adrenaline & Solo pricing logic
+      // Update base prices based on solo vs multiplayer
       if (players === 1) {
         adrInput.disabled = false;
         adrInput.parentElement.classList.remove("disabled-label");
@@ -254,7 +263,7 @@
         document.getElementById("opt-shield").dataset.price = 3000;
       }
 
-      // LRS Rule
+      // LRS Rule: Only available for 3+ players
       if (players >= 3) {
         lrsInput.disabled = false;
         lrsInput.parentElement.classList.remove("disabled-label");
@@ -264,12 +273,13 @@
         lrsInput.parentElement.classList.add("disabled-label");
       }
 
-      // Update text labels
+      // Refresh displayed price text
       document.querySelectorAll(".option").forEach(opt => {
         const textNode = opt.parentElement.lastChild;
         const name = textNode.textContent.split('(')[0].trim();
         textNode.textContent = ` ${name} (${opt.dataset.price})`;
       });
+
       calculate();
     }
 
@@ -280,15 +290,20 @@
       const sqrtP = Math.sqrt(players);
       
       document.querySelectorAll(".option:checked").forEach(opt => {
-        total += Math.ceil(Math.ceil(Number(opt.dataset.price) * sqrtP) * modeMultiplier);
+        // Nullscape Formula: ceil(base * sqrt(players)) * Mode
+        let scaled = Math.ceil(Number(opt.dataset.price) * sqrtP);
+        total += Math.ceil(scaled * modeMultiplier);
       });
       document.getElementById("result").textContent = "Total: " + total.toLocaleString();
     }
 
     function clearAll() {
-      document.querySelectorAll(".option").forEach(opt => { if(!opt.disabled) opt.checked = false; });
+      document.querySelectorAll(".option").forEach(opt => { 
+        if(!opt.disabled) opt.checked = false; 
+      });
       calculate();
     }
+
     window.onload = handlePlayerRules;
   </script>
 </body>
