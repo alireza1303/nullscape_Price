@@ -23,6 +23,7 @@
   --btn-glow:rgba(136,163,232,.6);
 }
 
+/* PC ONLY ADJUSTMENTS */
 @media (min-width:901px){
   .scaler-container{
     zoom:.8;
@@ -196,18 +197,22 @@ input[type="number"],select{
   color:var(--enemy-orange);
 }
 
-.trap-item-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-footer {
-  text-align: center;
-  padding: 40px 0;
-  color: #555;
-  font-size: 18px;
+/* WATERMARK STYLING */
+.watermark {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  padding: 8px 15px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 14px;
   letter-spacing: 1px;
+  z-index: 2000;
+  pointer-events: none; /* Allows clicking through it if needed */
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: color 0.3s;
 }
 
 /* MOBILE SPECIFIC */
@@ -230,6 +235,13 @@ footer {
   }
   #trapList { display: none; }
   #trapList.visible { display: block; }
+  
+  /* Adjust watermark for mobile result container */
+  .watermark { 
+    bottom: auto;
+    top: 15px;
+    right: 85px; /* Moved away from toggle icon */
+  }
 }
 #mobile-clear { display: none; }
 
@@ -239,6 +251,9 @@ footer {
 <button class="mode-toggle" onclick="toggleTrapMode()">
   <img src="Trap-Card.png" id="toggleIcon">
 </button>
+
+<div class="watermark">made by alireza1303</div>
+
 <div class="scaler-container">
 <h1 id="mainTitle">Nullscape Price Calculator</h1>
 <div class="layout">
@@ -271,10 +286,10 @@ footer {
 </div>
 </div>
 </div>
-<footer>made by alireza1303</footer>
 </div>
 
 <script>
+// Data and Functions keep previous logic...
 const upgradesList=[
  {name:"Adrenaline",price:50,icon:"Adrenaline.png",id:"opt-adrenaline"},
  {name:"Business License",price:75,icon:"Business_License.png"},
