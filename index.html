@@ -54,10 +54,10 @@
     }
     .layout {
       display: grid;
-      grid-template-columns: 1.5fr 1fr; 
+      grid-template-columns: 2.5fr 1fr; 
       gap: 30px;
       padding: 0 40px;
-      max-width: 1600px; 
+      max-width: 1800px; 
       margin: 0 auto;
     }
     .box {
@@ -94,42 +94,30 @@
       transform: scale(1.4);
       accent-color: var(--accent);
     }
-
     .enemy-count {
       width: 50px; background: #111; border: 2px solid var(--enemy-orange);
       color: white; border-radius: 8px; margin-right: 10px; padding: 6px; text-align: center;
     }
-
-
-    
-
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
-
-    #player-box { flex: 0 0 120px; }
+    #player-box { flex: 0 0 130px; }
     #mode-box { flex: 1; }
     .trap-active #player-box { display: none; }
-
     input[type="number"], select {
       width: 100%; box-sizing: border-box; padding: 12px; background: rgb(20, 20, 20);
       color: white; border: 2px solid var(--accent-dark); border-radius: 12px; font-size: 20px; text-align: center;
     }
-
     .calc-btn {
       width: 100%; padding: 20px; font-size: 22px; background: var(--accent-dark);
       border: none; border-radius: 15px; color: white; cursor: pointer; font-weight: bold;
     }
-
     .clear-btn {
       background: rgba(255, 77, 77, 0.1); border: 2px solid #ff4d4d; color: #ff4d4d;
       padding: 12px 25px; font-size: 16px; margin-top: 30px; border-radius: 10px; cursor: pointer;
     }
-
     .price-display { text-align: center; }
     .price { font-size: 48px; color: var(--accent); font-weight: bold; }
     .formula { font-size: 14px; color: #777; margin-top: 8px; font-family: monospace; }
-
-    
     .disabled-item { opacity: 0.2; filter: grayscale(1); pointer-events: none; cursor: not-allowed; }
 
     @media (max-width: 1200px) {
@@ -141,8 +129,6 @@
   </style>
 </head>
 
-
-  
 <body id="mainBody">
 
   <button class="mode-toggle" onclick="toggleTrapMode()" id="toggleBtn">
@@ -182,10 +168,7 @@
     </div>
   </div>
 
-  
   <script>
-
-    
     const upgradesList = [
       { name: "Adrenaline", price: 50, icon: "Adrenaline.png", id: "opt-adrenaline" },
       { name: "Business License", price: 75, icon: "Business_License.png" },
@@ -214,8 +197,6 @@
       { name: "Real Wings", price: 25000, icon: "Real_Wings.png" }
     ];
 
-
-    
     const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, price: 0, icon: n.replace("?", "Unknown")+".png"}));
 
     let isTrapMode = false;
@@ -252,34 +233,47 @@
     function handlePlayerRules() {
       const modeSelect = document.getElementById("mode");
       const modeBox = document.getElementById("mode-box");
-      if (isTrapMode) { modeSelect.disabled = false; modeBox.classList.remove("disabled-box"); return; }
-
-      let players = parseInt(document.getElementById("players").value) || 1;
-      if (players > 20) players = 20;
-
-      const isSolo = (players === 1);
-      modeSelect.disabled = isSolo;
-      modeBox.classList.toggle("disabled-box", isSolo);
-      if(isSolo) modeSelect.value = "1";
-
-      const adr = document.getElementById("opt-adrenaline");
-      const lrs = document.getElementById("opt-lrs");
-
-      if (adr) {
-        if (players > 1) { adr.classList.add("disabled-item"); adr.querySelector('input').checked = false; }
-        else { adr.classList.remove("disabled-item"); }
+      const playerInput = document.getElementById("players");
+      
+      let players = parseInt(playerInput.value) || 1;
+      
+      if (players > 20) {
+        players = 20;
+        playerInput.value = 20;
       }
-      if (lrs) {
-        if (players < 3) { lrs.classList.add("disabled-item"); lrs.querySelector('input').checked = false; }
-        else { lrs.classList.remove("disabled-item"); }
+      if (players < 1) players = 1;
+
+      if (isTrapMode) { 
+        modeSelect.disabled = false; 
+        modeBox.classList.remove("disabled-box"); 
+      } else {
+        const isSolo = (players === 1);
+        modeSelect.disabled = isSolo;
+        modeBox.classList.toggle("disabled-box", isSolo);
+        if(isSolo) modeSelect.value = "1";
+
+        const adr = document.getElementById("opt-adrenaline");
+        const lrs = document.getElementById("opt-lrs");
+
+        if (adr) {
+          if (players > 1) { adr.classList.add("disabled-item"); adr.querySelector('input').checked = false; }
+          else { adr.classList.remove("disabled-item"); }
+        }
+        if (lrs) {
+          if (players < 3) { lrs.classList.add("disabled-item"); lrs.querySelector('input').checked = false; }
+          else { lrs.classList.remove("disabled-item"); }
+        }
       }
       calculate();
     }
 
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
+      if (players > 20) players = 20;
+      
       const mult = parseFloat(document.getElementById("mode").value);
       let total = 0;
+      
       if (isTrapMode) {
         document.querySelectorAll(".enemy-count").forEach(i => total += (parseInt(i.value)||0) * 0); 
         total = Math.ceil(total * mult);
@@ -295,7 +289,5 @@
     function clearAll() { document.querySelectorAll(".option").forEach(o => o.checked = false); calculate(); }
     window.onload = renderGrid;
   </script>
-
-  
 </body>
 </html>
