@@ -23,20 +23,19 @@
       text-shadow: 0 0 7px #b266ff, 0 0 20px #9b4dff, 0 0 40px #7a33ff;
     }
 
-    /* BIGGER PC BOX: Increased max-width and adjusted column ratio */
     .layout {
       display: grid;
-      grid-template-columns: 1.4fr 450px; 
+      grid-template-columns: 1.6fr 450px; /* Widened left column for single-line names */
       gap: 40px;
       padding: 0 40px;
-      max-width: 1600px; /* Expanded for PC */
+      max-width: 1700px; 
       margin: 0 auto;
     }
 
     .box {
       background: rgb(32, 32, 32);
       border-radius: 24px;
-      padding: 35px; /* More internal breathing room */
+      padding: 35px;
       box-shadow: 0 0 30px rgba(155, 77, 255, 0.2);
     }
 
@@ -46,23 +45,23 @@
       color: #b266ff;
       text-transform: uppercase;
       letter-spacing: 3px;
-      text-align: left;
     }
 
     .upgrades-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px 30px;
+      gap: 20px 35px;
     }
 
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 19px;
+      font-size: 18px; /* Slightly smaller font to help fit lines */
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
       text-shadow: 0 0 11px rgba(136, 163, 232, 0.4);
+      white-space: nowrap; /* FORCES SINGLE LINE */
     }
 
     .upgrades-grid label:hover:not(.disabled-label) {
@@ -77,20 +76,21 @@
     }
 
     .custom-icon {
-      width: 44px; 
-      height: 44px;
-      margin-right: 12px; 
+      width: 40px; 
+      height: 40px;
+      margin-right: 10px; 
       object-fit: contain;
       filter: drop-shadow(0 0 5px rgb(136, 163, 232));
+      flex-shrink: 0; /* Prevents icon from squishing */
     }
 
     .upgrades-grid input {
       margin-right: 12px;
-      transform: scale(1.6);
+      transform: scale(1.5);
       accent-color: #b266ff;
+      flex-shrink: 0;
     }
 
-    /* RIGHT COLUMN STICKY ON PC */
     .right {
       display: flex;
       flex-direction: column;
@@ -149,11 +149,6 @@
       cursor: pointer;
     }
 
-    .clear-btn:hover {
-      background: #ff4d4d;
-      color: white;
-    }
-
     .price {
       font-size: 48px;
       color: #b266ff;
@@ -169,27 +164,29 @@
       text-align: center;
     }
 
-    /* RESPONSIVE UPDATES */
-    @media (max-width: 1200px) {
+    /* RESPONSIVE */
+    @media (max-width: 1300px) {
       .layout {
         grid-template-columns: 1fr;
-        padding: 0 20px;
       }
       .right {
         position: static;
-        order: -1; /* Calculator stays on top for mobile */
+        order: -1;
       }
+    }
+
+    @media (max-width: 850px) {
       .upgrades-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 500px) {
       .upgrades-grid {
         grid-template-columns: 1fr;
       }
-      .box {
-        padding: 20px;
+      .upgrades-grid label {
+        font-size: 16px; /* Smaller font on phones to prevent overflow */
       }
     }
   </style>
@@ -204,31 +201,31 @@
       <div class="box-title">Upgrades</div>
       <div class="upgrades-container">
         <div class="upgrades-grid">
-          <label id="label-adrenaline"><input type="checkbox" class="option" data-price="50" id="opt-adrenaline"><img src="Adrenaline.png" class="custom-icon"> Adrenaline <span class="disp-p">(50)</span></label>
-          <label><input type="checkbox" class="option" data-price="75"><img src="Business_License.png" class="custom-icon"> Business License <span class="disp-p">(75)</span></label>
-          <label><input type="checkbox" class="option" data-price="30"><img src="Defuse_Kit.png" class="custom-icon"> Defuse Kit <span class="disp-p">(30)</span></label>
-          <label><input type="checkbox" class="option" data-price="55"><img src="Paycheck.png" class="custom-icon"> Paycheck <span class="disp-p">(55)</span></label>
-          <label><input type="checkbox" class="option" data-price="80"><img src="Swiftness_Ring.png" class="custom-icon"> Swiftness Ring <span class="disp-p">(80)</span></label>
-          <label><input type="checkbox" class="option" data-price="100"><img src="Enemy_ESP.png" class="custom-icon"> Enemy ESP <span class="disp-p">(100)</span></label>
-          <label><input type="checkbox" class="option" data-price="80"><img src="Better_Gift_Arrow.png" class="custom-icon"> Better Gift Arrow <span class="disp-p">(80)</span></label>
-          <label><input type="checkbox" class="option" data-price="50"><img src="Better_Jump_Pads.png" class="custom-icon"> Better Jump Pads <span class="disp-p">(50)</span></label>
-          <label><input type="checkbox" class="option" data-price="100"><img src="Double_Jump.png" class="custom-icon"> Double Jump <span class="disp-p">(100)</span></label>
-          <label><input type="checkbox" class="option" data-price="250" id="opt-grace"><img src="Grace_Wings.png" class="custom-icon"> Grace Wings <span class="disp-p">(250)</span></label>
-          <label><input type="checkbox" class="option" data-price="100"><img src="Grapple_Points.png" class="custom-icon"> Grapple Points <span class="disp-p">(100)</span></label>
-          <label id="label-lrs"><input type="checkbox" class="option" data-price="200" id="opt-lrs"><img src="Last_Robloxian_Standing.png" class="custom-icon"> Last Robloxian Standing <span class="disp-p">(200)</span></label>
-          <label><input type="checkbox" class="option" data-price="150"><img src="Pocket_Bell.png" class="custom-icon"> Pocket Bell <span class="disp-p">(150)</span></label>
-          <label><input type="checkbox" class="option" data-price="400"><img src="Tripmine_ESP.png" class="custom-icon"> Tripmine ESP <span class="disp-p">(400)</span></label>
-          <label><input type="checkbox" class="option" data-price="600"><img src="Advanced_Gravity_Coil.png" class="custom-icon"> Advanced Coil <span class="disp-p">(600)</span></label>
-          <label><input type="checkbox" class="option" data-price="400"><img src="Ice_Skates.png" class="custom-icon"> Ice Skates <span class="disp-p">(400)</span></label>
-          <label><input type="checkbox" class="option" data-price="600"><img src="Helmet.png" class="custom-icon"> Helmet <span class="disp-p">(600)</span></label>
-          <label><input type="checkbox" class="option" data-price="600"><img src="More_Altars.png" class="custom-icon"> More Altars <span class="disp-p">(600)</span></label>
-          <label><input type="checkbox" class="option" data-price="1000" id="opt-barrier"><img src="Subspacial_Barrier.png" class="custom-icon"> Barrier <span class="disp-p">(1000)</span></label>
-          <label><input type="checkbox" class="option" data-price="500" id="opt-ninja"><img src="Ninja_Belt.png" class="custom-icon"> Ninja Belt <span class="disp-p">(500)</span></label>
-          <label><input type="checkbox" class="option" data-price="2000"><img src="Gift_Magnet.png" class="custom-icon"> Gift Magnet <span class="disp-p">(2000)</span></label>
-          <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix <span class="disp-p">(2500)</span></label>
-          <label><input type="checkbox" class="option" data-price="3000" id="opt-shield"><img src="Shield.png" class="custom-icon"> Shield <span class="disp-p">(3000)</span></label>
-          <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes <span class="disp-p">(1200)</span></label>
-          <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings <span class="disp-p">(25000)</span></label>
+          <label id="label-adrenaline"><input type="checkbox" class="option" data-price="50" id="opt-adrenaline"><img src="Adrenaline.png" class="custom-icon"> Adrenaline (50)</label>
+          <label><input type="checkbox" class="option" data-price="75"><img src="Business_License.png" class="custom-icon"> Business License (75)</label>
+          <label><input type="checkbox" class="option" data-price="30"><img src="Defuse_Kit.png" class="custom-icon"> Defuse Kit (30)</label>
+          <label><input type="checkbox" class="option" data-price="55"><img src="Paycheck.png" class="custom-icon"> Paycheck (55)</label>
+          <label><input type="checkbox" class="option" data-price="80"><img src="Swiftness_Ring.png" class="custom-icon"> Swiftness Ring (80)</label>
+          <label><input type="checkbox" class="option" data-price="100"><img src="Enemy_ESP.png" class="custom-icon"> Enemy ESP (100)</label>
+          <label><input type="checkbox" class="option" data-price="80"><img src="Better_Gift_Arrow.png" class="custom-icon"> Better Gift Arrow (80)</label>
+          <label><input type="checkbox" class="option" data-price="50"><img src="Better_Jump_Pads.png" class="custom-icon"> Better Jump Pads (50)</label>
+          <label><input type="checkbox" class="option" data-price="100"><img src="Double_Jump.png" class="custom-icon"> Double Jump (100)</label>
+          <label><input type="checkbox" class="option" data-price="250" id="opt-grace"><img src="Grace_Wings.png" class="custom-icon"> Grace Wings (250)</label>
+          <label><input type="checkbox" class="option" data-price="100"><img src="Grapple_Points.png" class="custom-icon"> Grapple Points (100)</label>
+          <label id="label-lrs"><input type="checkbox" class="option" data-price="200" id="opt-lrs"><img src="Last_Robloxian_Standing.png" class="custom-icon"> Last Robloxian Standing (200)</label>
+          <label><input type="checkbox" class="option" data-price="150"><img src="Pocket_Bell.png" class="custom-icon"> Pocket Bell (150)</label>
+          <label><input type="checkbox" class="option" data-price="400"><img src="Tripmine_ESP.png" class="custom-icon"> Tripmine ESP (400)</label>
+          <label><input type="checkbox" class="option" data-price="600"><img src="Advanced_Gravity_Coil.png" class="custom-icon"> Advanced Coil (600)</label>
+          <label><input type="checkbox" class="option" data-price="400"><img src="Ice_Skates.png" class="custom-icon"> Ice Skates (400)</label>
+          <label><input type="checkbox" class="option" data-price="600"><img src="Helmet.png" class="custom-icon"> Helmet (600)</label>
+          <label><input type="checkbox" class="option" data-price="600"><img src="More_Altars.png" class="custom-icon"> More Altars (600)</label>
+          <label><input type="checkbox" class="option" data-price="1000" id="opt-barrier"><img src="Subspacial_Barrier.png" class="custom-icon"> Barrier (1000)</label>
+          <label><input type="checkbox" class="option" data-price="500" id="opt-ninja"><img src="Ninja_Belt.png" class="custom-icon"> Ninja Belt (500)</label>
+          <label><input type="checkbox" class="option" data-price="2000"><img src="Gift_Magnet.png" class="custom-icon"> Gift Magnet (2000)</label>
+          <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix (2500)</label>
+          <label><input type="checkbox" class="option" data-price="3000" id="opt-shield"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
+          <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
+          <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
         </div>
         <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
       </div>
@@ -269,7 +266,6 @@
       const lrsLabel = document.getElementById("label-lrs");
       const lrsInput = document.getElementById("opt-lrs");
 
-      // Adrenaline Rule: Solo only
       if (players === 1) {
         adrInput.disabled = false;
         adrLabel.classList.remove("disabled-label");
@@ -287,7 +283,6 @@
         document.getElementById("opt-shield").dataset.price = 3000;
       }
 
-      // LRS Rule: 3+ Players
       if (players >= 3) {
         lrsInput.disabled = false;
         lrsLabel.classList.remove("disabled-label");
@@ -297,10 +292,12 @@
         lrsLabel.classList.add("disabled-label");
       }
 
-      // Update text displays
       document.querySelectorAll(".option").forEach(opt => {
-        const span = opt.parentElement.querySelector(".disp-p");
-        if(span) span.textContent = "(" + opt.dataset.price + ")";
+        const textNode = opt.parentElement.lastChild;
+        if (textNode.nodeType === Node.TEXT_NODE) {
+          const name = textNode.textContent.split('(')[0].trim();
+          textNode.textContent = ` ${name} (${opt.dataset.price})`;
+        }
       });
       
       calculate();
