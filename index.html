@@ -41,7 +41,7 @@ body{
   background:var(--bg);
   color:white;
   font-family:'Segoe UI',Arial,sans-serif;
-  padding-bottom:120px;
+  padding-bottom:150px; /* Space for watermark */
 }
 
 .mode-toggle{
@@ -230,8 +230,19 @@ input[type="number"],select{
     min-width: 0;
 }
 
+.watermark {
+    text-align: center;
+    padding: 20px;
+    color: rgba(255,255,255,0.3);
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px var(--accent);
+    width: 100%;
+}
+
+/* MOBILE SPECIFIC OVERRIDES */
 @media(max-width:900px){
-  body { padding-bottom: 220px; } 
+  body { padding-bottom: 250px; } 
   .layout{
     display: flex !important;
     flex-direction: column;
@@ -258,28 +269,6 @@ input[type="number"],select{
     max-height:60vh;
     overflow-y:auto;
     background: var(--box-bg);
-  }
-  .price{font-size:40px}
-
-  #trapList {
-    display: none;
-  }
-  #trapList.visible {
-    display: block;
-  }
-  #collapsible-title {
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-  }
-  #collapsible-title::after {
-    content: '▼';
-    font-size: 14px;
-  }
-  #collapsible-title.active::after {
-    content: '▲';
   }
 }
 
@@ -314,16 +303,18 @@ input[type="number"],select{
 <div class="box" id="results-container">
   <div id="upgrade-results">
     <div class="price" id="result">Total: 0</div>
-    <div class="formula">ceil(base × √players) × Mode</div>
+    <div class="formula" id="main-formula">ceil(base × √players) × Mode</div>
   </div>
   <div id="trap-results" style="display:none">
     <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
     <ul class="trap-results-list" id="trapList"></ul>
+    <div class="formula" style="margin-top:15px; color:var(--enemy-orange)">Limit: 8/16 (Normal/Hard) + 2 Randoms</div>
   </div>
   <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
 </div>
 </div>
 </div>
+<div class="watermark">Made by alireza1303</div>
 </div>
 
 <script>
@@ -480,5 +471,3 @@ window.onload=renderGrid;
 </script>
 </body>
 </html>
-
-
