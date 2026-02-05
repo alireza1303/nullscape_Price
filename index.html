@@ -101,7 +101,6 @@
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
     
-    /* Fixed width for player box to prevent clipping */
     #player-box { flex: 0 0 130px; overflow: hidden; }
     #mode-box { flex: 1; }
     .trap-active #player-box { display: none; }
@@ -125,7 +124,7 @@
 
     @media (max-width: 1200px) {
       .layout { grid-template-columns: 1fr; padding: 0 20px; }
-      .controls { order: -1; } /* On mobile, calculator stays at top */
+      .controls { order: -1; }
       .upgrades-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 600px) { .upgrades-grid { grid-template-columns: 1fr; } }
@@ -239,11 +238,7 @@
       const playerInput = document.getElementById("players");
       
       let players = parseInt(playerInput.value) || 1;
-      
-      if (players > 20) {
-        players = 20;
-        playerInput.value = 20;
-      }
+      if (players > 20) { players = 20; playerInput.value = 20; }
       if (players < 1) players = 1;
 
       if (isTrapMode) { 
@@ -273,6 +268,7 @@
       let players = parseInt(document.getElementById("players").value) || 1;
       if (players > 20) players = 20;
       
+      const isSolo = (players === 1);
       const mult = parseFloat(document.getElementById("mode").value);
       let total = 0;
       
@@ -280,10 +276,21 @@
         document.querySelectorAll(".enemy-count").forEach(i => total += (parseInt(i.value)||0) * 0); 
         total = Math.ceil(total * mult);
       } else {
-        const sqrtP = (players === 1) ? 1 : Math.sqrt(players);
+        const sqrtP = isSolo ? 1 : Math.sqrt(players);
+        
+        // Custom Solo Prices Object
+        const customPrices = {
+          "opt-grace": isSolo ? 200 : 250,
+          "opt-barrier": isSolo ? 200 : 1000,
+          "opt-ninja": isSolo ? 300 : 500,
+          "opt-shield": isSolo ? 1000 : 3000
+        };
+
         document.querySelectorAll(".option:checked").forEach(opt => {
-          let base = Number(opt.dataset.price);
-          let scaled = Math.ceil(base * sqrtP);
+          const parentId = opt.parentElement.id;
+          let basePrice = customPrices[parentId] || Number(opt.dataset.price);
+          
+          let scaled = Math.ceil(basePrice * sqrtP);
           total += Math.ceil(scaled * mult);
         });
       }
