@@ -23,11 +23,16 @@
   --btn-glow:rgba(136,163,232,.6);
 }
 
+/* PC ONLY ADJUSTMENTS */
 @media (min-width:901px){
   .scaler-container{
     zoom:.8;
     -moz-transform:scale(.8);
     -moz-transform-origin:top center;
+  }
+  .layout {
+    grid-template-columns: 3fr 1fr !important; /* Makes the upgrade box wider on PC */
+    max-width: 1800px !important;
   }
 }
 
@@ -219,7 +224,7 @@ input[type="number"],select{
 @media(max-width:900px){
   body { padding-bottom: 220px; } 
   .layout{
-    display: flex;
+    display: flex !important;
     flex-direction: column;
   }
   .controls {
@@ -228,10 +233,8 @@ input[type="number"],select{
   h1{margin-top:80px}
   .upgrades-grid{grid-template-columns:1fr}
   
-  /* Hide the static Clear All button inside the box on mobile */
   .box .clear-btn { display: none; }
   
-  /* Show the mobile Clear All button in the fixed footer */
   #mobile-clear { display: block !important; margin-top: 15px; padding: 10px; }
 
   #results-container{
@@ -249,9 +252,8 @@ input[type="number"],select{
   }
   .price{font-size:40px}
 
-  /* Mobile Collapsible logic */
   #trapList {
-    display: none; /* Collapsed by default */
+    display: none;
   }
   #trapList.visible {
     display: block;
