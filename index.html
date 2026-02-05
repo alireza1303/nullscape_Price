@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nullscape Price Calculator</title>
   
   <style>
@@ -11,28 +12,42 @@
       background-color: rgb(26, 26, 26);
       color: white;
       font-family: Arial, Helvetica, sans-serif;
+      padding-bottom: 40px;
     }
 
     h1 {
       text-align: center;
-      margin-top: 36px;
-      margin-bottom: 54px;
-      font-size: 56px;
+      margin: 20px 10px;
+      font-size: clamp(32px, 8vw, 56px); /* Fluid sizing for mobile */
       color: #b266ff;
       text-shadow: 0 0 7px #b266ff, 0 0 20px #9b4dff, 0 0 40px #7a33ff;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.1fr 472px;
-      gap: 40px;
-      padding: 0 81px 81px 81px;
+      grid-template-columns: 1.1fr 425px; /* 0.9x base */
+      gap: 30px;
+      padding: 0 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* MOBILE RESPONSIVENESS */
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr; /* Stack columns */
+        padding: 0 20px;
+      }
+      
+      .right {
+        order: -1; /* Put calculator on top for mobile users */
+      }
     }
 
     .box {
       background: rgb(32, 32, 32);
       border-radius: 19px;
-      padding: 27px;
+      padding: 22px;
       box-shadow: 0 0 27px rgba(155, 77, 255, 0.25);
     }
 
@@ -45,35 +60,34 @@
       text-align: center;
     }
 
-    .upgrades-container {
-      display: flex;
-      flex-direction: column;
-      gap: 27px;
-    }
-
     .upgrades-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px 31px;
+      gap: 15px 20px;
+    }
+
+    /* Adjust grid for smaller tablets/phones */
+    @media (max-width: 768px) {
+      .upgrades-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 480px) {
+      .upgrades-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 19px;
+      font-size: 17px;
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
       text-shadow: 0 0 11px rgba(136, 163, 232, 0.4);
-      white-space: nowrap; 
     }
 
-    .upgrades-grid label:hover:not(.disabled-label) {
-      color: white;
-      text-shadow: 0 0 16px rgba(136, 163, 232, 0.8);
-    }
-
-    /* THE GRAYED OUT STYLE */
     .disabled-label {
       opacity: 0.25;
       cursor: not-allowed !important;
@@ -81,47 +95,47 @@
     }
 
     .custom-icon {
-      width: 40px; 
-      height: 40px;
-      margin-right: 7px; 
+      width: 36px; 
+      height: 36px;
+      margin-right: 8px; 
       object-fit: contain;
       filter: drop-shadow(0 0 4px rgb(136, 163, 232));
     }
 
     .upgrades-grid input {
-      margin-right: 13px;
-      transform: scale(1.6);
+      margin-right: 10px;
+      transform: scale(1.4);
       accent-color: #b266ff;
     }
 
     .right {
       display: flex;
       flex-direction: column;
-      gap: 27px;
+      gap: 25px;
     }
 
     .input-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 15px;
     }
 
     input[type="number"], select {
       width: 100%;
-      padding: 13px;
+      padding: 12px;
       background: rgb(20, 20, 20);
       color: white;
       border: 1.5px solid #7a33ff;
       border-radius: 11px;
-      font-size: 21px;
+      font-size: 19px;
       text-align: center;
       box-sizing: border-box;
     }
 
     button {
       width: 100%;
-      padding: 19px;
-      font-size: 24px;
+      padding: 16px;
+      font-size: 22px;
       background: #7a33ff;
       border: none;
       border-radius: 13px;
@@ -131,31 +145,20 @@
       font-weight: bold;
     }
 
-    button:hover {
-      background: #9b4dff;
-      box-shadow: 0 0 20px #9b4dff;
-    }
-
     .clear-btn {
       background: transparent;
       border: 1.5px solid #ff4d4d;
       color: #ff4d4d;
-      padding: 11px 22px;
-      font-size: 16px;
-      margin-top: 13px;
+      padding: 10px 20px;
+      font-size: 14px;
+      margin-top: 15px;
       width: auto;
       align-self: center;
       border-radius: 8px;
     }
 
-    .clear-btn:hover {
-      background: #ff4d4d;
-      color: white;
-      box-shadow: 0 0 13px #ff4d4d;
-    }
-
     .price {
-      font-size: 43px;
+      font-size: 40px;
       color: #b266ff;
       text-align: center;
       font-weight: bold;
@@ -163,9 +166,9 @@
     }
 
     .formula-note {
-      font-size: 14px;
-      color: #555;
-      margin-top: 11px;
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
       text-align: center;
     }
   </style>
@@ -251,17 +254,23 @@
       const lrsLabel = document.getElementById("label-lrs");
       const lrsInput = document.getElementById("opt-lrs");
 
-      // Adrenaline Rule: Solo only
       if (players === 1) {
         adrInput.disabled = false;
         adrLabel.classList.remove("disabled-label");
+        document.getElementById("opt-grace").dataset.price = 200;
+        document.getElementById("opt-barrier").dataset.price = 200;
+        document.getElementById("opt-ninja").dataset.price = 300;
+        document.getElementById("opt-shield").dataset.price = 1000;
       } else {
         adrInput.checked = false;
         adrInput.disabled = true;
         adrLabel.classList.add("disabled-label");
+        document.getElementById("opt-grace").dataset.price = 250;
+        document.getElementById("opt-barrier").dataset.price = 1000;
+        document.getElementById("opt-ninja").dataset.price = 500;
+        document.getElementById("opt-shield").dataset.price = 3000;
       }
 
-      // LRS Rule: 3+ Players
       if (players >= 3) {
         lrsInput.disabled = false;
         lrsLabel.classList.remove("disabled-label");
@@ -271,20 +280,6 @@
         lrsLabel.classList.add("disabled-label");
       }
 
-      // Solo Price Overrides
-      if (players === 1) {
-        document.getElementById("opt-grace").dataset.price = 200;
-        document.getElementById("opt-barrier").dataset.price = 200;
-        document.getElementById("opt-ninja").dataset.price = 300;
-        document.getElementById("opt-shield").dataset.price = 1000;
-      } else {
-        document.getElementById("opt-grace").dataset.price = 250;
-        document.getElementById("opt-barrier").dataset.price = 1000;
-        document.getElementById("opt-ninja").dataset.price = 500;
-        document.getElementById("opt-shield").dataset.price = 3000;
-      }
-
-      // Update text displays
       document.querySelectorAll(".option").forEach(opt => {
         const span = opt.parentElement.querySelector(".disp-p");
         if(span) span.textContent = "(" + opt.dataset.price + ")";
@@ -296,7 +291,6 @@
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
       const modeMultiplier = parseFloat(document.getElementById("mode").value);
-
       let grandTotal = 0;
       const sqrtPlayers = Math.sqrt(players);
       document.querySelectorAll(".option:checked").forEach(opt => {
