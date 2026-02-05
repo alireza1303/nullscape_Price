@@ -77,13 +77,13 @@
     }
     .upgrades-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, 1fr); /* 3 columns for better readability with big text */
       gap: 20px;
     }
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 19px; 
+      font-size: 19px; /* Significantly bigger text */
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
@@ -93,12 +93,12 @@
     .custom-icon { width: 45px; height: 45px; margin-right: 15px; flex-shrink: 0; }
     input[type="checkbox"] {
       margin-right: 15px;
-      transform: scale(1.8);
+      transform: scale(1.8); /* Bigger checkboxes */
       accent-color: var(--accent);
     }
     .enemy-count {
-      width: 75px; background: #111; border: 2px solid var(--enemy-orange);
-      color: white; border-radius: 8px; margin-right: 15px; padding: 10px; text-align: center; font-size: 24px;
+      width: 60px; background: #111; border: 2px solid var(--enemy-orange);
+      color: white; border-radius: 8px; margin-right: 15px; padding: 10px; text-align: center; font-size: 20px;
     }
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
@@ -124,6 +124,7 @@
     .price-display { text-align: center; }
     .price { font-size: 64px; color: var(--accent); font-weight: bold; }
     .formula { font-size: 18px; color: #777; margin-top: 10px; font-family: monospace; }
+    .disabled-item { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
 
     @media (max-width: 1600px) { .upgrades-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 1200px) {
@@ -209,39 +210,47 @@
       "opt-shield": 1000
     };
 
-    const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, icon: n.replace("?", "Unknown")+".png"}));
+    const enemiesList = ["Mart", "Baby", "NIL", "Voidbreaker", "Springer", "Bell", "Voidbound Guardian", "Skinwalker", "Voidbound Baby", "???", "Telefragger", "Flesh", "Guardian", "Cadence", "ICBM"].map(n => ({name: n, price: 0, icon: n.replace("?", "Unknown")+".png"}));
 
     let isTrapMode = false;
 
     function renderGrid() {
       const grid = document.getElementById('mainGrid');
+      const list = isTrapMode ? enemiesList : upgradesList;
       grid.innerHTML = '';
-      
-      if (isTrapMode) {
-        enemiesList.forEach(item => {
-          const label = document.createElement('label');
+      list.forEach(item => {
+        const label = document.createElement('label');
+        if (isTrapMode) {
           label.className = "enemy-label";
           label.innerHTML = `<input type="number" class="enemy-count" value="0" min="0" oninput="calculate()"><img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">${item.name}`;
-          grid.appendChild(label);
-        });
-      } else {
-        upgradesList.forEach(item => {
-          const label = document.createElement('label');
+        } else {
           label.id = item.id || '';
           label.innerHTML = `<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()"><img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"><span class="item-text">${item.name}</span> <span class="price-val" style="margin-left: 8px; color: #aaa;"></span>`;
-          grid.appendChild(label);
-        });
-      }
+        }
+        grid.appendChild(label);
+      });
       handlePlayerRules();
+    }
+
+    function updateLabelPrices(players) {
+      if (isTrapMode) return;
+      const isSolo = (players === 1);
+      document.querySelectorAll(".upgrades-grid label").forEach(label => {
+        const checkbox = label.querySelector('input');
+        const priceSpan = label.querySelector('.price-val');
+        const base = Number(checkbox.dataset.price);
+        let displayPrice = (isSolo && soloPrices[label.id]) ? soloPrices[label.id] : base;
+        priceSpan.textContent = `(${displayPrice})`;
+      });
     }
 
     function toggleTrapMode() {
       isTrapMode = !isTrapMode;
       document.getElementById('mainBody').classList.toggle('trap-active');
       document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card" : "Nullscape Prices";
-      document.getElementById('gridTitle').textContent = isTrapMode ? "Current Enemies" : "Upgrades";
+      document.getElementById('gridTitle').textContent = isTrapMode ? "Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
-      document.getElementById('formula-text').textContent = isTrapMode ? "Fixed Order Doubling Logic" : "ceil(base * √players) * Mode";
+      document.getElementById('formula-text').style.opacity = isTrapMode ? "0" : "1";
       document.getElementById('clearBtn').style.display = isTrapMode ? "none" : "block";
       renderGrid();
     }
@@ -260,75 +269,49 @@
         modeSelect.disabled = isSolo;
         modeBox.classList.toggle("disabled-box", isSolo);
         if(isSolo) modeSelect.value = "1";
-      } else {
-        modeSelect.disabled = false;
-        modeBox.classList.remove("disabled-box");
+
+        const adr = document.getElementById("opt-adrenaline");
+        const lrs = document.getElementById("opt-lrs");
+        if (adr) {
+          if (players > 1) adr.classList.add("disabled-item");
+          else adr.classList.remove("disabled-item");
+        }
+        if (lrs) {
+          if (players < 3) lrs.classList.add("disabled-item");
+          else lrs.classList.remove("disabled-item");
+        }
       }
       
       updateLabelPrices(players);
       calculate();
     }
 
-    function updateLabelPrices(players) {
-      if (isTrapMode) return;
-      const isSolo = (players === 1);
-      document.querySelectorAll(".upgrades-grid label").forEach(label => {
-        const checkbox = label.querySelector('input');
-        const priceSpan = label.querySelector('.price-val');
-        const base = Number(checkbox.dataset.price);
-        let displayPrice = (isSolo && soloPrices[label.id]) ? soloPrices[label.id] : base;
-        priceSpan.textContent = `(${displayPrice})`;
-      });
-    }
-
     function calculate() {
-      const modeVal = document.getElementById("mode").value;
-      const isHard = (modeVal === "1.15");
-      let resultDisplay = document.getElementById("result");
-
+      let players = parseInt(document.getElementById("players").value) || 1;
+      const isSolo = (players === 1);
+      const mult = parseFloat(document.getElementById("mode").value);
+      let total = 0;
+      
       if (isTrapMode) {
-        let doublingLimit = isHard ? 16 : 8;
-        let doubledCount = 0;
-        let finalEnemyTotal = 0;
-
-        document.querySelectorAll(".enemy-count").forEach(input => {
-          let currentAmount = parseInt(input.value) || 0;
-          
-          if (doubledCount < doublingLimit && currentAmount > 0) {
-            let canDouble = Math.min(currentAmount, doublingLimit - doubledCount);
-            finalEnemyTotal += (currentAmount + canDouble);
-            doubledCount += canDouble;
-          } else {
-            finalEnemyTotal += currentAmount;
-          }
-        });
-
-        resultDisplay.textContent = "Final: " + finalEnemyTotal + " Enemies";
-
+        document.querySelectorAll(".enemy-count").forEach(i => total += (parseInt(i.value)||0) * 0); 
+        total = Math.ceil(total * mult);
       } else {
-        let players = parseInt(document.getElementById("players").value) || 1;
-        const isSolo = (players === 1);
-        const mult = parseFloat(modeVal);
-        let total = 0;
         const sqrtP = Math.sqrt(players);
-
         document.querySelectorAll(".option:checked").forEach(opt => {
           const parentId = opt.parentElement.id;
-          let price = (isSolo && soloPrices[parentId]) ? soloPrices[parentId] : Math.ceil(Number(opt.dataset.price) * sqrtP);
+          let price;
+          if (isSolo && soloPrices[parentId]) {
+            price = soloPrices[parentId];
+          } else {
+            price = Math.ceil(Number(opt.dataset.price) * sqrtP);
+          }
           total += Math.ceil(price * mult);
         });
-        resultDisplay.textContent = "Total: " + total.toLocaleString();
       }
+      document.getElementById("result").textContent = "Total: " + total.toLocaleString();
     }
 
-    function clearAll() { 
-        if(isTrapMode) {
-            document.querySelectorAll(".enemy-count").forEach(i => i.value = 0);
-        } else {
-            document.querySelectorAll(".option").forEach(o => o.checked = false); 
-        }
-        calculate(); 
-    }
+    function clearAll() { document.querySelectorAll(".option").forEach(o => o.checked = false); calculate(); }
     window.onload = renderGrid;
   </script>
 </body>
