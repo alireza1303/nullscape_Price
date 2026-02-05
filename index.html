@@ -54,7 +54,7 @@
     }
     .layout {
       display: grid;
-      grid-template-columns: 2.5fr 1fr; 
+      grid-template-columns: 2.5fr 1fr;
       gap: 30px;
       padding: 0 40px;
       max-width: 1800px; 
@@ -100,9 +100,12 @@
     }
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
-    #player-box { flex: 0 0 130px; }
+    
+    /* Fixed width for player box to prevent clipping */
+    #player-box { flex: 0 0 130px; overflow: hidden; }
     #mode-box { flex: 1; }
     .trap-active #player-box { display: none; }
+    
     input[type="number"], select {
       width: 100%; box-sizing: border-box; padding: 12px; background: rgb(20, 20, 20);
       color: white; border: 2px solid var(--accent-dark); border-radius: 12px; font-size: 20px; text-align: center;
@@ -122,7 +125,7 @@
 
     @media (max-width: 1200px) {
       .layout { grid-template-columns: 1fr; padding: 0 20px; }
-      .controls { order: -1; }
+      .controls { order: -1; } /* On mobile, calculator stays at top */
       .upgrades-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 600px) { .upgrades-grid { grid-template-columns: 1fr; } }
@@ -254,7 +257,6 @@
 
         const adr = document.getElementById("opt-adrenaline");
         const lrs = document.getElementById("opt-lrs");
-
         if (adr) {
           if (players > 1) { adr.classList.add("disabled-item"); adr.querySelector('input').checked = false; }
           else { adr.classList.remove("disabled-item"); }
@@ -278,9 +280,11 @@
         document.querySelectorAll(".enemy-count").forEach(i => total += (parseInt(i.value)||0) * 0); 
         total = Math.ceil(total * mult);
       } else {
-        const sqrtP = Math.sqrt(players);
+        const sqrtP = (players === 1) ? 1 : Math.sqrt(players);
         document.querySelectorAll(".option:checked").forEach(opt => {
-          total += Math.ceil(Math.ceil(Number(opt.dataset.price) * sqrtP) * mult);
+          let base = Number(opt.dataset.price);
+          let scaled = Math.ceil(base * sqrtP);
+          total += Math.ceil(scaled * mult);
         });
       }
       document.getElementById("result").textContent = "Total: " + total.toLocaleString();
