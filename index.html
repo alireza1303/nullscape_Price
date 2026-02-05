@@ -76,27 +76,27 @@
     }
     .upgrades-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr); /* Expanded to 4 columns for PC */
+      gap: 15px;
     }
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 16px; 
+      font-size: 14px; 
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
     }
     .trap-active .enemy-label { color: var(--enemy-orange) !important; font-weight: bold; }
-    .custom-icon { width: 35px; height: 35px; margin-right: 10px; flex-shrink: 0; }
+    .custom-icon { width: 30px; height: 30px; margin-right: 8px; flex-shrink: 0; }
     input[type="checkbox"] {
-      margin-right: 12px;
-      transform: scale(1.4);
+      margin-right: 10px;
+      transform: scale(1.2);
       accent-color: var(--accent);
     }
     .enemy-count {
-      width: 50px; background: #111; border: 2px solid var(--enemy-orange);
-      color: white; border-radius: 8px; margin-right: 10px; padding: 6px; text-align: center;
+      width: 45px; background: #111; border: 2px solid var(--enemy-orange);
+      color: white; border-radius: 8px; margin-right: 8px; padding: 5px; text-align: center;
     }
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
@@ -122,10 +122,10 @@
     .formula { font-size: 14px; color: #777; margin-top: 8px; font-family: monospace; }
     .disabled-item { opacity: 0.2; filter: grayscale(1); pointer-events: none; cursor: not-allowed; }
 
+    @media (max-width: 1400px) { .upgrades-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 1200px) {
       .layout { grid-template-columns: 1fr; padding: 0 20px; }
       .controls { order: -1; }
-      .upgrades-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 600px) { .upgrades-grid { grid-template-columns: 1fr; } }
   </style>
@@ -164,7 +164,7 @@
       <div class="box">
         <div class="price-display">
           <div class="price" id="result">Total: 0</div>
-          <div class="formula" id="formula-text">ceil(base * √players) * Mode</div>
+          <div class="formula" id="formula-text">Solo Logic: On</div>
         </div>
       </div>
     </div>
@@ -227,7 +227,7 @@
       document.getElementById('mainTitle').textContent = isTrapMode ? "Nullscape Trap Card Calculator" : "Nullscape Price Calculator";
       document.getElementById('gridTitle').textContent = isTrapMode ? "Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
-      document.getElementById('formula-text').style.opacity = isTrapMode ? "0" : "1";
+      document.getElementById('formula-text').textContent = isTrapMode ? "" : "Solo Logic: On";
       document.getElementById('clearBtn').style.display = isTrapMode ? "none" : "block";
       renderGrid();
     }
@@ -241,10 +241,7 @@
       if (players > 20) { players = 20; playerInput.value = 20; }
       if (players < 1) players = 1;
 
-      if (isTrapMode) { 
-        modeSelect.disabled = false; 
-        modeBox.classList.remove("disabled-box"); 
-      } else {
+      if (!isTrapMode) {
         const isSolo = (players === 1);
         modeSelect.disabled = isSolo;
         modeBox.classList.toggle("disabled-box", isSolo);
@@ -260,6 +257,9 @@
           if (players < 3) { lrs.classList.add("disabled-item"); lrs.querySelector('input').checked = false; }
           else { lrs.classList.remove("disabled-item"); }
         }
+      } else {
+        modeSelect.disabled = false;
+        modeBox.classList.remove("disabled-box");
       }
       calculate();
     }
@@ -276,22 +276,27 @@
         document.querySelectorAll(".enemy-count").forEach(i => total += (parseInt(i.value)||0) * 0); 
         total = Math.ceil(total * mult);
       } else {
-        const sqrtP = isSolo ? 1 : Math.sqrt(players);
+        const sqrtP = Math.sqrt(players);
         
-        // Custom Solo Prices Object
-        const customPrices = {
-          "opt-grace": isSolo ? 200 : 250,
-          "opt-barrier": isSolo ? 200 : 1000,
-          "opt-ninja": isSolo ? 300 : 500,
-          "opt-shield": isSolo ? 1000 : 3000
+        const soloPrices = {
+          "opt-grace": 200,
+          "opt-barrier": 200,
+          "opt-ninja": 300,
+          "opt-shield": 1000
         };
 
         document.querySelectorAll(".option:checked").forEach(opt => {
           const parentId = opt.parentElement.id;
-          let basePrice = customPrices[parentId] || Number(opt.dataset.price);
+          let price;
+
+          if (isSolo && soloPrices[parentId]) {
+            price = soloPrices[parentId];
+          } else {
+            let base = Number(opt.dataset.price);
+            price = Math.ceil(base * sqrtP);
+          }
           
-          let scaled = Math.ceil(basePrice * sqrtP);
-          total += Math.ceil(scaled * mult);
+          total += Math.ceil(price * mult);
         });
       }
       document.getElementById("result").textContent = "Total: " + total.toLocaleString();
