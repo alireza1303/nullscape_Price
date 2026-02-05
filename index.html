@@ -25,7 +25,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 1.6fr 450px; /* Widened left column for single-line names */
+      grid-template-columns: 1.6fr 450px; 
       gap: 40px;
       padding: 0 40px;
       max-width: 1700px; 
@@ -56,17 +56,12 @@
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 18px; /* Slightly smaller font to help fit lines */
+      font-size: 18px; 
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
       text-shadow: 0 0 11px rgba(136, 163, 232, 0.4);
-      white-space: nowrap; /* FORCES SINGLE LINE */
-    }
-
-    .upgrades-grid label:hover:not(.disabled-label) {
-      color: white;
-      text-shadow: 0 0 16px rgba(136, 163, 232, 0.8);
+      white-space: nowrap; /* Forces one line on PC */
     }
 
     .disabled-label {
@@ -81,7 +76,7 @@
       margin-right: 10px; 
       object-fit: contain;
       filter: drop-shadow(0 0 5px rgb(136, 163, 232));
-      flex-shrink: 0; /* Prevents icon from squishing */
+      flex-shrink: 0; 
     }
 
     .upgrades-grid input {
@@ -131,11 +126,6 @@
       font-weight: bold;
     }
 
-    button:hover {
-      background: #9b4dff;
-      box-shadow: 0 0 25px #9b4dff;
-    }
-
     .clear-btn {
       background: transparent;
       border: 2px solid #ff4d4d;
@@ -157,37 +147,23 @@
       text-shadow: 0 0 15px rgba(178, 102, 255, 0.5);
     }
 
-    .formula-note {
-      font-size: 14px;
-      color: #555;
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    /* RESPONSIVE */
+    /* RESPONSIVE FIXES */
     @media (max-width: 1300px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-      .right {
-        position: static;
-        order: -1;
-      }
+      .layout { grid-template-columns: 1fr; padding: 0 20px; }
+      .right { position: static; order: -1; }
     }
 
-    @media (max-width: 850px) {
-      .upgrades-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    @media (max-width: 900px) {
+      .upgrades-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    @media (max-width: 500px) {
-      .upgrades-grid {
-        grid-template-columns: 1fr;
+    @media (max-width: 550px) {
+      .upgrades-grid { grid-template-columns: 1fr; }
+      .upgrades-grid label { 
+        white-space: normal; /* Allows wrapping on small mobile */
+        font-size: 16px; 
       }
-      .upgrades-grid label {
-        font-size: 16px; /* Smaller font on phones to prevent overflow */
-      }
+      .box { padding: 20px; }
     }
   </style>
 </head>
@@ -199,36 +175,34 @@
   <div class="layout">
     <div class="box">
       <div class="box-title">Upgrades</div>
-      <div class="upgrades-container">
-        <div class="upgrades-grid">
-          <label id="label-adrenaline"><input type="checkbox" class="option" data-price="50" id="opt-adrenaline"><img src="Adrenaline.png" class="custom-icon"> Adrenaline (50)</label>
-          <label><input type="checkbox" class="option" data-price="75"><img src="Business_License.png" class="custom-icon"> Business License (75)</label>
-          <label><input type="checkbox" class="option" data-price="30"><img src="Defuse_Kit.png" class="custom-icon"> Defuse Kit (30)</label>
-          <label><input type="checkbox" class="option" data-price="55"><img src="Paycheck.png" class="custom-icon"> Paycheck (55)</label>
-          <label><input type="checkbox" class="option" data-price="80"><img src="Swiftness_Ring.png" class="custom-icon"> Swiftness Ring (80)</label>
-          <label><input type="checkbox" class="option" data-price="100"><img src="Enemy_ESP.png" class="custom-icon"> Enemy ESP (100)</label>
-          <label><input type="checkbox" class="option" data-price="80"><img src="Better_Gift_Arrow.png" class="custom-icon"> Better Gift Arrow (80)</label>
-          <label><input type="checkbox" class="option" data-price="50"><img src="Better_Jump_Pads.png" class="custom-icon"> Better Jump Pads (50)</label>
-          <label><input type="checkbox" class="option" data-price="100"><img src="Double_Jump.png" class="custom-icon"> Double Jump (100)</label>
-          <label><input type="checkbox" class="option" data-price="250" id="opt-grace"><img src="Grace_Wings.png" class="custom-icon"> Grace Wings (250)</label>
-          <label><input type="checkbox" class="option" data-price="100"><img src="Grapple_Points.png" class="custom-icon"> Grapple Points (100)</label>
-          <label id="label-lrs"><input type="checkbox" class="option" data-price="200" id="opt-lrs"><img src="Last_Robloxian_Standing.png" class="custom-icon"> Last Robloxian Standing (200)</label>
-          <label><input type="checkbox" class="option" data-price="150"><img src="Pocket_Bell.png" class="custom-icon"> Pocket Bell (150)</label>
-          <label><input type="checkbox" class="option" data-price="400"><img src="Tripmine_ESP.png" class="custom-icon"> Tripmine ESP (400)</label>
-          <label><input type="checkbox" class="option" data-price="600"><img src="Advanced_Gravity_Coil.png" class="custom-icon"> Advanced Coil (600)</label>
-          <label><input type="checkbox" class="option" data-price="400"><img src="Ice_Skates.png" class="custom-icon"> Ice Skates (400)</label>
-          <label><input type="checkbox" class="option" data-price="600"><img src="Helmet.png" class="custom-icon"> Helmet (600)</label>
-          <label><input type="checkbox" class="option" data-price="600"><img src="More_Altars.png" class="custom-icon"> More Altars (600)</label>
-          <label><input type="checkbox" class="option" data-price="1000" id="opt-barrier"><img src="Subspacial_Barrier.png" class="custom-icon"> Barrier (1000)</label>
-          <label><input type="checkbox" class="option" data-price="500" id="opt-ninja"><img src="Ninja_Belt.png" class="custom-icon"> Ninja Belt (500)</label>
-          <label><input type="checkbox" class="option" data-price="2000"><img src="Gift_Magnet.png" class="custom-icon"> Gift Magnet (2000)</label>
-          <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix (2500)</label>
-          <label><input type="checkbox" class="option" data-price="3000" id="opt-shield"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
-          <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
-          <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
-        </div>
-        <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
+      <div class="upgrades-grid">
+        <label id="label-adrenaline"><input type="checkbox" class="option" data-price="50" id="opt-adrenaline"><img src="Adrenaline.png" class="custom-icon"> Adrenaline (50)</label>
+        <label><input type="checkbox" class="option" data-price="75"><img src="Business_License.png" class="custom-icon"> Business License (75)</label>
+        <label><input type="checkbox" class="option" data-price="30"><img src="Defuse_Kit.png" class="custom-icon"> Defuse Kit (30)</label>
+        <label><input type="checkbox" class="option" data-price="55"><img src="Paycheck.png" class="custom-icon"> Paycheck (55)</label>
+        <label><input type="checkbox" class="option" data-price="80"><img src="Swiftness_Ring.png" class="custom-icon"> Swiftness Ring (80)</label>
+        <label><input type="checkbox" class="option" data-price="100"><img src="Enemy_ESP.png" class="custom-icon"> Enemy ESP (100)</label>
+        <label><input type="checkbox" class="option" data-price="80"><img src="Better_Gift_Arrow.png" class="custom-icon"> Better Gift Arrow (80)</label>
+        <label><input type="checkbox" class="option" data-price="50"><img src="Better_Jump_Pads.png" class="custom-icon"> Better Jump Pads (50)</label>
+        <label><input type="checkbox" class="option" data-price="100"><img src="Double_Jump.png" class="custom-icon"> Double Jump (100)</label>
+        <label><input type="checkbox" class="option" data-price="250" id="opt-grace"><img src="Grace_Wings.png" class="custom-icon"> Grace Wings (250)</label>
+        <label><input type="checkbox" class="option" data-price="100"><img src="Grapple_Points.png" class="custom-icon"> Grapple Points (100)</label>
+        <label id="label-lrs"><input type="checkbox" class="option" data-price="200" id="opt-lrs"><img src="Last_Robloxian_Standing.png" class="custom-icon"> Last Robloxian Standing (200)</label>
+        <label><input type="checkbox" class="option" data-price="150"><img src="Pocket_Bell.png" class="custom-icon"> Pocket Bell (150)</label>
+        <label><input type="checkbox" class="option" data-price="400"><img src="Tripmine_ESP.png" class="custom-icon"> Tripmine ESP (400)</label>
+        <label><input type="checkbox" class="option" data-price="600"><img src="Advanced_Gravity_Coil.png" class="custom-icon"> Advanced Coil (600)</label>
+        <label><input type="checkbox" class="option" data-price="400"><img src="Ice_Skates.png" class="custom-icon"> Ice Skates (400)</label>
+        <label><input type="checkbox" class="option" data-price="600"><img src="Helmet.png" class="custom-icon"> Helmet (600)</label>
+        <label><input type="checkbox" class="option" data-price="600"><img src="More_Altars.png" class="custom-icon"> More Altars (600)</label>
+        <label><input type="checkbox" class="option" data-price="1000" id="opt-barrier"><img src="Subspacial_Barrier.png" class="custom-icon"> Barrier (1000)</label>
+        <label><input type="checkbox" class="option" data-price="500" id="opt-ninja"><img src="Ninja_Belt.png" class="custom-icon"> Ninja Belt (500)</label>
+        <label><input type="checkbox" class="option" data-price="2000"><img src="Gift_Magnet.png" class="custom-icon"> Gift Magnet (2000)</label>
+        <label><input type="checkbox" class="option" data-price="2500"><img src="Matrix_Tetrahedron.png" class="custom-icon"> Matrix (2500)</label>
+        <label><input type="checkbox" class="option" data-price="3000" id="opt-shield"><img src="Shield.png" class="custom-icon"> Shield (3000)</label>
+        <label><input type="checkbox" class="option" data-price="1200"><img src="Sport_Shoes.png" class="custom-icon"> Sport Shoes (1200)</label>
+        <label><input type="checkbox" class="option" data-price="25000"><img src="Real_Wings.png" class="custom-icon"> Real Wings (25000)</label>
       </div>
+      <button class="clear-btn" onclick="clearAll()">Clear All Selections</button>
     </div>
 
     <div class="right">
@@ -250,7 +224,6 @@
       </div>
       <div class="box">
         <div class="price" id="result">Total: 0</div>
-        <div class="formula-note">ceil(base * √players) * Mode</div>
       </div>
     </div>
   </div>
@@ -259,16 +232,14 @@
     function handlePlayerRules() {
       let players = parseInt(document.getElementById("players").value) || 1;
       if (players < 1) players = 1;
-      if (players > 20) players = 20;
 
-      const adrLabel = document.getElementById("label-adrenaline");
       const adrInput = document.getElementById("opt-adrenaline");
-      const lrsLabel = document.getElementById("label-lrs");
       const lrsInput = document.getElementById("opt-lrs");
 
+      // Adrenaline & Solo pricing logic
       if (players === 1) {
         adrInput.disabled = false;
-        adrLabel.classList.remove("disabled-label");
+        adrInput.parentElement.classList.remove("disabled-label");
         document.getElementById("opt-grace").dataset.price = 200;
         document.getElementById("opt-barrier").dataset.price = 200;
         document.getElementById("opt-ninja").dataset.price = 300;
@@ -276,54 +247,48 @@
       } else {
         adrInput.checked = false;
         adrInput.disabled = true;
-        adrLabel.classList.add("disabled-label");
+        adrInput.parentElement.classList.add("disabled-label");
         document.getElementById("opt-grace").dataset.price = 250;
         document.getElementById("opt-barrier").dataset.price = 1000;
         document.getElementById("opt-ninja").dataset.price = 500;
         document.getElementById("opt-shield").dataset.price = 3000;
       }
 
+      // LRS Rule
       if (players >= 3) {
         lrsInput.disabled = false;
-        lrsLabel.classList.remove("disabled-label");
+        lrsInput.parentElement.classList.remove("disabled-label");
       } else {
         lrsInput.checked = false;
         lrsInput.disabled = true;
-        lrsLabel.classList.add("disabled-label");
+        lrsInput.parentElement.classList.add("disabled-label");
       }
 
+      // Update text labels
       document.querySelectorAll(".option").forEach(opt => {
         const textNode = opt.parentElement.lastChild;
-        if (textNode.nodeType === Node.TEXT_NODE) {
-          const name = textNode.textContent.split('(')[0].trim();
-          textNode.textContent = ` ${name} (${opt.dataset.price})`;
-        }
+        const name = textNode.textContent.split('(')[0].trim();
+        textNode.textContent = ` ${name} (${opt.dataset.price})`;
       });
-      
       calculate();
     }
 
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
       const modeMultiplier = parseFloat(document.getElementById("mode").value);
-      let grandTotal = 0;
-      const sqrtPlayers = Math.sqrt(players);
+      let total = 0;
+      const sqrtP = Math.sqrt(players);
       
       document.querySelectorAll(".option:checked").forEach(opt => {
-        const basePrice = Number(opt.dataset.price);
-        const scaledPrice = Math.ceil(basePrice * sqrtPlayers);
-        grandTotal += Math.ceil(scaledPrice * modeMultiplier);
+        total += Math.ceil(Math.ceil(Number(opt.dataset.price) * sqrtP) * modeMultiplier);
       });
-      document.getElementById("result").textContent = "Total: " + grandTotal.toLocaleString();
+      document.getElementById("result").textContent = "Total: " + total.toLocaleString();
     }
 
     function clearAll() {
-      document.querySelectorAll(".option").forEach(opt => {
-          if(!opt.disabled) opt.checked = false;
-      });
+      document.querySelectorAll(".option").forEach(opt => { if(!opt.disabled) opt.checked = false; });
       calculate();
     }
-
     window.onload = handlePlayerRules;
   </script>
 </body>
