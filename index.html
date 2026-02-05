@@ -22,14 +22,25 @@
       --btn-border: rgb(136, 163, 232);
       --btn-glow: rgba(136, 163, 232, 0.6);
     }
+
+    /* Desktop Scaling Fix */
+    @media (min-width: 901px) {
+      .scaler-container {
+        zoom: 0.8; /* Scales everything down to 0.8 on PC */
+        -moz-transform: scale(0.8);
+        -moz-transform-origin: top center;
+      }
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       background-color: var(--bg);
       color: white;
       font-family: 'Segoe UI', Arial, sans-serif;
-      padding-bottom: 120px; /* Space for sticky mobile footer */
+      padding-bottom: 120px;
     }
+
     .mode-toggle {
       position: fixed;
       top: 15px;
@@ -140,13 +151,10 @@
     }
     .trap-results-list li span { color: white; font-weight: bold; }
 
-    /* MOBILE OPTIMIZATIONS */
     @media (max-width: 900px) {
       .layout { grid-template-columns: 1fr; padding-bottom: 140px; }
       h1 { margin-top: 80px; }
-      
       .upgrades-grid { grid-template-columns: 1fr; }
-      
       #results-container {
         position: fixed;
         bottom: 0; left: 0; right: 0;
@@ -157,9 +165,7 @@
         max-height: 40vh;
         overflow-y: auto;
       }
-
       .price { font-size: 40px; }
-      .box-title { text-align: center; }
     }
   </style>
 </head>
@@ -170,37 +176,39 @@
     <img src="Trap-Card.png" id="toggleIcon">
   </button>
 
-  <h1 id="mainTitle">Nullscape Price Calculator</h1>
+  <div class="scaler-container">
+    <h1 id="mainTitle">Nullscape Price Calculator</h1>
 
-  <div class="layout">
-    <div class="box">
-      <div class="box-title" id="gridTitle">Upgrades</div>
-      <div class="upgrades-grid" id="mainGrid"></div>
-      <button class="clear-btn" onclick="clearAll()">Clear All</button>
-    </div>
-
-    <div class="controls">
-      <div class="box" id="input-box">
-        <div id="player-group">
-          <div class="box-title" style="font-size: 16px; margin-bottom: 10px;">Number of Players</div>
-          <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
-          <div style="margin-top: 20px;"></div>
-        </div>
-        <div class="box-title" style="font-size: 16px; margin-bottom: 10px;">Game Mode</div>
-        <select id="mode" onchange="calculate()">
-          <option value="1">Normal</option>
-          <option value="1.15">Hard Mode</option>
-        </select>
+    <div class="layout">
+      <div class="box">
+        <div class="box-title" id="gridTitle">Upgrades</div>
+        <div class="upgrades-grid" id="mainGrid"></div>
+        <button class="clear-btn" onclick="clearAll()">Clear All</button>
       </div>
-      
-      <div class="box" id="results-container">
-        <div id="upgrade-results">
-            <div class="price" id="result">Total: 0</div>
-            <div class="formula">ceil(base * √players) * Mode</div>
+
+      <div class="controls">
+        <div class="box" id="input-box">
+          <div id="player-group">
+            <div class="box-title" style="font-size: 16px; margin-bottom: 10px;">Number of Players</div>
+            <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
+            <div style="margin-top: 20px;"></div>
+          </div>
+          <div class="box-title" style="font-size: 16px; margin-bottom: 10px;">Game Mode</div>
+          <select id="mode" onchange="calculate()">
+            <option value="1">Normal</option>
+            <option value="1.15">Hard Mode</option>
+          </select>
         </div>
-        <div id="trap-results" style="display:none;">
-            <div class="box-title" style="font-size:18px; margin-bottom:10px; text-align: center;">Enemies After Trap</div>
-            <ul class="trap-results-list" id="trapList"></ul>
+        
+        <div class="box" id="results-container">
+          <div id="upgrade-results">
+              <div class="price" id="result">Total: 0</div>
+              <div class="formula">ceil(base * √players) * Mode</div>
+          </div>
+          <div id="trap-results" style="display:none;">
+              <div class="box-title" style="font-size:18px; margin-bottom:10px; text-align: center;">Enemies After Trap</div>
+              <ul class="trap-results-list" id="trapList"></ul>
+          </div>
         </div>
       </div>
     </div>
@@ -271,7 +279,7 @@
     function toggleTrapMode() {
       isTrapMode = !isTrapMode;
       document.body.classList.toggle('trap-active');
-      document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card Calculator" : "Nullscape Price Calculator";
+      document.getElementById('mainTitle').textContent = isTrapMode ? "Nullscape Trap Card Calculator" : "Nullscape Price Calculator";
       document.getElementById('gridTitle').textContent = isTrapMode ? "Current Run Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
       
