@@ -45,6 +45,7 @@
       font-size: 22px;
       margin-bottom: 20px;
       color: #b266ff;
+      text-align: center; /* Centered the title */
     }
 
     /* Upgrades box */
@@ -71,14 +72,18 @@
       gap: 25px;
     }
 
+    /* Shortened and Centered Input */
     input[type="number"] {
-      width: 100%;
+      display: block;
+      width: 80px;         /* Shorter width */
+      margin: 0 auto;      /* Center the box horizontally */
       padding: 10px;
       background: rgb(20, 20, 20);
       color: white;
       border: 1px solid #7a33ff;
       border-radius: 8px;
       font-size: 16px;
+      text-align: center;  /* Center the number inside */
     }
 
     button {
@@ -112,9 +117,8 @@
 
   <div class="layout">
 
-    <!-- LEFT: UPGRADES -->
     <div class="box upgrades">
-      <div class="box-title">Upgrades</div>
+      <div class="box-title" style="text-align: left;">Upgrades</div>
 
       <label>
         <input type="checkbox" class="option" data-price="10">
@@ -132,7 +136,6 @@
       </label>
     </div>
 
-    <!-- RIGHT SIDE -->
     <div class="right">
 
       <div class="box">
