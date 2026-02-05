@@ -12,6 +12,7 @@
       --glow: rgba(155, 77, 255, 0.4);
       --btn-border: rgb(255, 142, 66);
       --btn-glow: rgba(255, 142, 66, 0.6);
+      --enemy-text: rgb(255, 142, 66);
     }
 
     .trap-active {
@@ -31,12 +32,13 @@
       padding-bottom: 60px;
     }
 
+    /* TOGGLE BUTTON */
     .mode-toggle {
       position: absolute;
-      top: 25px;
-      right: 40px;
-      width: 60px;
-      height: 60px;
+      top: 20px;
+      right: 20px;
+      width: 55px;
+      height: 55px;
       background: rgb(32, 32, 32);
       border: 3px solid var(--btn-border);
       border-radius: 12px;
@@ -45,25 +47,24 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 15px var(--btn-glow);
-      transition: 0.3s;
-      z-index: 100;
+      z-index: 1000;
     }
-    
-    .mode-toggle img { width: 45px; height: 45px; object-fit: contain; }
+    .mode-toggle img { width: 40px; height: 40px; object-fit: contain; }
 
     h1 {
       text-align: center;
-      margin: 40px 10px;
-      font-size: clamp(30px, 5vw, 54px); 
+      margin: 30px 10px;
+      font-size: clamp(28px, 5vw, 50px); 
       color: var(--accent);
       text-shadow: 0 0 10px var(--accent);
     }
 
+    /* LAYOUT: Desktop uses 2 cols, Mobile uses 1 col with Calculator on top */
     .layout {
       display: grid;
       grid-template-columns: 1.6fr 400px; 
       gap: 30px;
-      padding: 0 40px;
+      padding: 0 20px;
       max-width: 1600px; 
       margin: 0 auto;
     }
@@ -71,115 +72,123 @@
     .box {
       background: rgb(32, 32, 32);
       border-radius: 20px;
-      padding: 25px;
+      padding: 20px;
       box-shadow: 0 0 25px var(--glow);
-      transition: 0.3s;
     }
 
     .box-title {
-      font-size: 22px;
-      margin-bottom: 20px;
+      font-size: 20px;
+      margin-bottom: 15px;
       color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 2px;
     }
 
+    /* GRID STYLING */
     .upgrades-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px 25px;
+      gap: 15px;
     }
 
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 16px; 
+      font-size: 15px; 
       cursor: pointer;
       color: #88a3e8;
-      white-space: nowrap;
     }
 
-    .custom-icon {
-      width: 35px; height: 35px;
-      margin-right: 10px; flex-shrink: 0; 
+    /* Enemy Text Color specific override */
+    .trap-active .enemy-label {
+      color: var(--enemy-text) !important;
     }
 
-    /* Inputs within the grid */
+    .custom-icon { width: 32px; height: 32px; margin-right: 8px; flex-shrink: 0; }
+
     .upgrades-grid input[type="checkbox"] {
-      margin-right: 12px;
-      transform: scale(1.4);
+      margin-right: 10px;
+      transform: scale(1.3);
       accent-color: var(--accent);
     }
 
     .upgrades-grid input[type="number"] {
-      width: 50px;
+      width: 45px;
       background: #111;
       border: 2px solid var(--accent);
       color: white;
       border-radius: 6px;
-      margin-right: 10px;
-      padding: 5px;
+      margin-right: 8px;
+      padding: 4px;
       text-align: center;
-      box-shadow: 0 0 5px var(--glow);
     }
 
+    /* SIDEBAR (CALCULATOR) */
     .right {
       display: flex;
       flex-direction: column;
       gap: 20px;
       position: sticky;
-      top: 40px;
+      top: 20px;
       height: fit-content;
     }
 
-    .input-row {
-      display: flex;
-      gap: 15px;
-      align-items: stretch;
-    }
+    .input-row { display: flex; gap: 15px; }
 
-    #player-box { flex: 0 0 120px; } /* Small Player Box */
-    #mode-box { flex: 1; } /* Larger Mode Box */
+    /* Fix Player Box Overflow */
+    #player-box { flex: 0 0 100px; min-width: 0; }
+    #player-box input { width: 100%; box-sizing: border-box; }
+
+    #mode-box { flex: 1; }
 
     .trap-active #player-box { display: none; }
 
     input[type="number"], select {
-      width: 100%;
-      padding: 12px;
+      padding: 10px;
       background: rgb(20, 20, 20);
       color: white;
       border: 2px solid var(--accent-dark);
-      border-radius: 10px;
-      font-size: 18px;
+      border-radius: 8px;
+      font-size: 16px;
       text-align: center;
     }
 
     .calc-btn {
-      width: 100%; padding: 18px;
-      font-size: 20px; background: var(--accent-dark);
-      border: none; border-radius: 12px;
+      width: 100%; padding: 15px;
+      font-size: 18px; background: var(--accent-dark);
+      border: none; border-radius: 10px;
       color: white; cursor: pointer;
       font-weight: bold;
     }
 
-    .price {
-      font-size: 40px; color: var(--accent);
-      text-align: center; font-weight: bold;
-      text-shadow: 0 0 10px var(--glow);
+    .clear-btn {
+      background: transparent;
+      border: 2px solid #ff4d4d;
+      color: #ff4d4d;
+      padding: 10px 20px;
+      font-size: 14px;
+      margin-top: 20px;
+      border-radius: 8px;
+      cursor: pointer;
     }
+
+    .price-container { text-align: center; }
+    .price { font-size: 36px; color: var(--accent); font-weight: bold; }
+    .formula { font-size: 12px; color: #666; font-style: italic; margin-top: 5px; }
 
     .credit {
       position: fixed; bottom: 15px; right: 20px;
-      font-size: 13px; color: var(--accent);
+      font-size: 12px; color: var(--accent);
       text-shadow: 0 0 8px var(--glow);
     }
 
     .disabled-box { opacity: 0.25; filter: grayscale(1); }
 
+    /* MOBILE RE-ORDERING */
     @media (max-width: 1200px) {
       .layout { grid-template-columns: 1fr; }
-      .right { position: static; }
-      .mode-toggle { top: 10px; right: 10px; }
+      .right { order: -1; position: static; } /* Calculator moves to top */
+      .upgrades-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 600px) {
       .upgrades-grid { grid-template-columns: 1fr; }
@@ -196,19 +205,14 @@
   <h1 id="mainTitle">Nullscape Price Calculator</h1>
 
   <div class="layout">
-    <div class="box">
-      <div class="box-title" id="gridTitle">Upgrades</div>
-      <div class="upgrades-grid" id="mainGrid"></div>
-    </div>
-
     <div class="right">
       <div class="input-row">
         <div class="box" id="player-box">
-          <div class="box-title" style="text-align:center; font-size:14px; margin-bottom:10px;">Players</div>
+          <div class="box-title" style="text-align:center; font-size:12px; margin-bottom:8px;">Players</div>
           <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
         </div>
         <div class="box" id="mode-box">
-          <div class="box-title" style="text-align:center; font-size:14px; margin-bottom:10px;">Mode</div>
+          <div class="box-title" style="text-align:center; font-size:12px; margin-bottom:8px;">Mode</div>
           <select id="mode" onchange="calculate()">
             <option value="1">Normal</option>
             <option value="1.15">Hard (+15%)</option>
@@ -219,8 +223,17 @@
         <button class="calc-btn" onclick="calculate()">Calculate Total</button>
       </div>
       <div class="box">
-        <div class="price" id="result">Total: 0</div>
+        <div class="price-container">
+          <div class="price" id="result">Total: 0</div>
+          <div class="formula" id="formula-text">ceil(base * √players) * Mode</div>
+        </div>
       </div>
+    </div>
+
+    <div class="box">
+      <div class="box-title" id="gridTitle">Upgrades</div>
+      <div class="upgrades-grid" id="mainGrid"></div>
+      <button class="clear-btn" id="clearBtn" onclick="clearAll()">Clear Selections</button>
     </div>
   </div>
 
@@ -269,6 +282,7 @@
       list.forEach(item => {
         const label = document.createElement('label');
         if (isTrapMode) {
+          label.className = "enemy-label";
           label.innerHTML = `<input type="number" class="enemy-count" value="0" min="0" data-price="${item.price}" oninput="calculate()">
                              <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"> 
                              ${item.name}`;
@@ -288,50 +302,44 @@
       document.getElementById('mainTitle').textContent = isTrapMode ? "Nullscape Trap Card Calculator" : "Nullscape Price Calculator";
       document.getElementById('gridTitle').textContent = isTrapMode ? "Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
+      document.getElementById('formula-text').style.display = isTrapMode ? "none" : "block";
+      document.getElementById('clearBtn').style.display = isTrapMode ? "none" : "block";
       
       renderGrid();
       calculate();
     }
 
     function handlePlayerRules() {
-      if (isTrapMode) return;
+      if (isTrapMode) {
+        // Mode selector is always open in Trap Mode
+        document.getElementById("mode").disabled = false;
+        document.getElementById("mode-box").classList.remove("disabled-box");
+        return;
+      }
+
       let playerInput = document.getElementById("players");
       let players = parseInt(playerInput.value) || 1;
       if (players > 20) { playerInput.value = 20; players = 20; }
 
       const modeSelect = document.getElementById("mode");
       const isSolo = (players === 1);
+      
       modeSelect.disabled = isSolo;
       document.getElementById("mode-box").classList.toggle("disabled-box", isSolo);
       if(isSolo) modeSelect.value = "1";
 
-      const prices = {
-        grace: isSolo ? 200 : 250,
-        barrier: isSolo ? 200 : 1000,
-        ninja: isSolo ? 300 : 500,
-        shield: isSolo ? 1000 : 3000
-      };
-
-      Object.keys(prices).forEach(key => {
-        const el = document.querySelector(`[id*="${key}"]`);
-        if(el) {
-          el.dataset.price = prices[key];
-          el.parentElement.lastChild.textContent = ` ${upgrades.find(u => u.id && u.id.includes(key)).name} (${prices[key]})`;
-        }
-      });
       calculate();
     }
 
     function calculate() {
       let players = parseInt(document.getElementById("players").value) || 1;
-      const modeMultiplier = (players === 1 && !isTrapMode) ? 1 : parseFloat(document.getElementById("mode").value);
+      const modeMultiplier = parseFloat(document.getElementById("mode").value);
       let total = 0;
 
       if (isTrapMode) {
         document.querySelectorAll(".enemy-count").forEach(input => {
           total += (parseInt(input.value) || 0) * (parseInt(input.dataset.price) || 0);
         });
-        // Multiply by mode in Trap Mode too
         total = Math.ceil(total * modeMultiplier);
       } else {
         const sqrtP = Math.sqrt(players);
@@ -341,6 +349,11 @@
         });
       }
       document.getElementById("result").textContent = "Total: " + total.toLocaleString();
+    }
+
+    function clearAll() {
+      document.querySelectorAll(".option").forEach(opt => opt.checked = false);
+      calculate();
     }
 
     window.onload = renderGrid;
