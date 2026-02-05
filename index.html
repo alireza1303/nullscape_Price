@@ -198,6 +198,7 @@ input[type="number"],select{
   color:var(--enemy-orange);
 }
 
+/* WATERMARK */
 .watermark {
   position: fixed;
   bottom: 15px;
@@ -385,20 +386,19 @@ function calculate(){
      let count=parseInt(input.value)||0;
      let name=input.parentElement.querySelector(".enemy-name-text").textContent;
      
-     let doubledCount = count * 2;
-     let added = 0;
-     let bonusAmt = (name === "???") ? 2 : 1;
-
-     if(used < limit){
-        if(count > 0 || name === "???") {
-            added = Math.min(bonusAmt, limit - used);
-            used += added;
-        }
+     let finalCount = 0;
+     
+     if (count > 0) {
+       finalCount = count * 2;
+     } else if (name === "???" && used < limit) {
+       let added = Math.min(2, limit - used);
+       finalCount = added;
+       used += added;
      }
      
-     if(count > 0 || added > 0){
+     if(finalCount > 0){
         const li=document.createElement("li");
-        li.innerHTML=`${name} <span>${doubledCount + added}</span>`;
+        li.innerHTML=`${name} <span>${finalCount}</span>`;
         list.appendChild(li);
      }
    });
