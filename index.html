@@ -122,7 +122,6 @@ input[type="checkbox"]{
   flex-shrink:0;
 }
 
-/* Enemy inputs stay orange */
 .enemy-count{
   width:80px;
   height:50px;
@@ -135,10 +134,10 @@ input[type="checkbox"]{
   margin-right:15px;
 }
 
-/* Player input now uses purple accent */
+/* Reduced height for Players box */
 #players{
   width:80px;
-  height:50px;
+  height:35px; 
   background:#000;
   border:2px solid var(--accent);
   color:white;
@@ -155,8 +154,9 @@ input[type="checkbox"]{
   gap:20px;
 }
 
+/* Adjusted padding for smaller height inputs */
 input[type="number"],select{
-  padding:10px;
+  padding:5px 10px;
   background:#111;
   color:white;
   border:2px solid var(--accent-dark);
@@ -243,7 +243,7 @@ input[type="number"],select{
     <div class="box-title" style="font-size:16px">Number of Players</div>
     <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
   </div>
-  <div class="box-title" style="font-size:16px">Game Mode</div>
+  <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
   <select id="mode" onchange="calculate()">
     <option value="1">Normal</option>
     <option value="1.15">Hard Mode</option>
