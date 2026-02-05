@@ -6,18 +6,22 @@
   <title>Nullscape Price Calculator</title>
   
   <style>
-    /* CSS Variables for easy color swapping */
+    /* Color Variables */
     :root {
       --accent: #b266ff;
       --accent-dark: #7a33ff;
       --glow: rgba(155, 77, 255, 0.4);
+      --btn-border: rgb(255, 142, 66);
+      --btn-glow: rgba(255, 142, 66, 0.6);
     }
 
     /* Trap Mode Overrides */
     .trap-active {
       --accent: rgb(255, 142, 66);
       --accent-dark: rgb(255, 142, 66);
-      --glow: rgba(255, 142, 66, 0.4);
+      --glow: rgba(255, 142, 66, 0.5);
+      --btn-border: rgb(136, 163, 232);
+      --btn-glow: rgba(136, 163, 232, 0.6);
     }
 
     body {
@@ -30,36 +34,41 @@
       position: relative;
     }
 
-    /* THE TOGGLE BUTTON */
+    /* THE SPECIAL TOGGLE BUTTON */
     .mode-toggle {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
+      top: 25px;
+      right: 40px;
+      width: 70px;
+      height: 70px;
       background: rgb(32, 32, 32);
-      border: 2px solid var(--accent);
-      border-radius: 12px;
+      border: 3px solid var(--btn-border);
+      border-radius: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px var(--glow);
-      transition: 0.3s;
+      box-shadow: 0 0 20px var(--btn-glow);
+      transition: all 0.3s ease;
       z-index: 100;
     }
+    
+    .mode-toggle:hover {
+        transform: scale(1.05);
+    }
+
     .mode-toggle img {
-      width: 45px;
-      height: 45px;
+      width: 50px;
+      height: 50px;
       object-fit: contain;
     }
 
     h1 {
       text-align: center;
       margin: 40px 10px;
-      font-size: clamp(32px, 8vw, 64px); 
+      font-size: clamp(32px, 6vw, 64px); 
       color: var(--accent);
-      text-shadow: 0 0 7px var(--accent), 0 0 20px var(--accent-dark);
+      text-shadow: 0 0 10px var(--accent), 0 0 25px var(--accent-dark);
       transition: 0.3s;
     }
 
@@ -76,8 +85,13 @@
       background: rgb(32, 32, 32);
       border-radius: 24px;
       padding: 35px;
+      border: 1px solid transparent;
       box-shadow: 0 0 30px var(--glow);
       transition: 0.3s;
+    }
+
+    .trap-active .box {
+        border-color: var(--accent);
     }
 
     .box-title {
@@ -101,7 +115,6 @@
       cursor: pointer;
       color: #88a3e8;
       transition: 0.2s;
-      text-shadow: 0 0 11px rgba(136, 163, 232, 0.4);
       white-space: nowrap;
     }
 
@@ -183,13 +196,14 @@
       color: var(--accent);
       text-shadow: 0 0 8px var(--glow);
       font-weight: bold;
+      transition: 0.3s;
     }
 
     /* RESPONSIVE */
     @media (max-width: 1300px) {
       .layout { grid-template-columns: 1fr; padding: 0 20px; }
       .right { position: static; order: -1; }
-      .mode-toggle { top: 10px; right: 10px; width: 50px; height: 50px; }
+      .mode-toggle { top: 15px; right: 15px; width: 60px; height: 60px; }
     }
     @media (max-width: 550px) {
       .upgrades-grid { grid-template-columns: 1fr; }
@@ -201,7 +215,7 @@
 <body id="mainBody">
 
   <button class="mode-toggle" onclick="toggleTrapMode()" id="toggleBtn">
-    <img src="Trap-Card.png" id="toggleIcon" alt="Toggle Mode">
+    <img src="Trap-Card.png" id="toggleIcon" alt="Trap Mode">
   </button>
 
   <h1 id="mainTitle">Nullscape Price Calculator</h1>
