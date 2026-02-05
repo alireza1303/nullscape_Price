@@ -29,157 +29,160 @@
       color: white;
       font-family: Arial, Helvetica, sans-serif;
       padding-bottom: 60px;
-      position: relative;
     }
 
     .mode-toggle {
       position: absolute;
       top: 25px;
       right: 40px;
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       background: rgb(32, 32, 32);
       border: 3px solid var(--btn-border);
-      border-radius: 16px;
+      border-radius: 12px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px var(--btn-glow);
-      transition: all 0.3s ease;
+      box-shadow: 0 0 15px var(--btn-glow);
+      transition: 0.3s;
       z-index: 100;
     }
     
-    .mode-toggle img { width: 50px; height: 50px; object-fit: contain; }
+    .mode-toggle img { width: 45px; height: 45px; object-fit: contain; }
 
     h1 {
       text-align: center;
       margin: 40px 10px;
-      font-size: clamp(32px, 6vw, 64px); 
+      font-size: clamp(30px, 5vw, 54px); 
       color: var(--accent);
-      text-shadow: 0 0 10px var(--accent), 0 0 25px var(--accent-dark);
-      transition: 0.3s;
+      text-shadow: 0 0 10px var(--accent);
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.6fr 450px; 
-      gap: 40px;
+      grid-template-columns: 1.6fr 400px; 
+      gap: 30px;
       padding: 0 40px;
-      max-width: 1700px; 
+      max-width: 1600px; 
       margin: 0 auto;
     }
 
     .box {
       background: rgb(32, 32, 32);
-      border-radius: 24px;
-      padding: 35px;
-      box-shadow: 0 0 30px var(--glow);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 25px var(--glow);
       transition: 0.3s;
     }
 
     .box-title {
-      font-size: 28px;
-      margin-bottom: 30px;
+      font-size: 22px;
+      margin-bottom: 20px;
       color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
     }
 
     .upgrades-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px 35px;
+      gap: 15px 25px;
     }
 
     .upgrades-grid label {
       display: flex;
       align-items: center;
-      font-size: 18px; 
+      font-size: 16px; 
       cursor: pointer;
       color: #88a3e8;
-      transition: 0.2s;
       white-space: nowrap;
     }
 
     .custom-icon {
-      width: 40px; height: 40px;
-      margin-right: 10px; object-fit: contain;
-      flex-shrink: 0; 
+      width: 35px; height: 35px;
+      margin-right: 10px; flex-shrink: 0; 
     }
 
-    .upgrades-grid input {
+    /* Inputs within the grid */
+    .upgrades-grid input[type="checkbox"] {
       margin-right: 12px;
-      transform: scale(1.5);
+      transform: scale(1.4);
       accent-color: var(--accent);
+    }
+
+    .upgrades-grid input[type="number"] {
+      width: 50px;
+      background: #111;
+      border: 2px solid var(--accent);
+      color: white;
+      border-radius: 6px;
+      margin-right: 10px;
+      padding: 5px;
+      text-align: center;
+      box-shadow: 0 0 5px var(--glow);
     }
 
     .right {
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 20px;
       position: sticky;
       top: 40px;
       height: fit-content;
     }
 
-    /* PLAYER/MODE TRANSITION */
     .input-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      transition: 0.3s;
+      display: flex;
+      gap: 15px;
+      align-items: stretch;
     }
 
-    .trap-active .input-row {
-        grid-template-columns: 1fr; /* Mode expands */
-    }
+    #player-box { flex: 0 0 120px; } /* Small Player Box */
+    #mode-box { flex: 1; } /* Larger Mode Box */
 
-    #player-box { transition: 0.3s; }
     .trap-active #player-box { display: none; }
 
     input[type="number"], select {
       width: 100%;
-      padding: 15px;
+      padding: 12px;
       background: rgb(20, 20, 20);
       color: white;
       border: 2px solid var(--accent-dark);
-      border-radius: 12px;
-      font-size: 22px;
+      border-radius: 10px;
+      font-size: 18px;
       text-align: center;
-      transition: 0.3s;
     }
 
     .calc-btn {
-      width: 100%; padding: 20px;
-      font-size: 24px; background: var(--accent-dark);
-      border: none; border-radius: 14px;
+      width: 100%; padding: 18px;
+      font-size: 20px; background: var(--accent-dark);
+      border: none; border-radius: 12px;
       color: white; cursor: pointer;
       font-weight: bold;
     }
 
     .price {
-      font-size: 48px; color: var(--accent);
+      font-size: 40px; color: var(--accent);
       text-align: center; font-weight: bold;
-      text-shadow: 0 0 15px var(--glow);
+      text-shadow: 0 0 10px var(--glow);
     }
 
     .credit {
       position: fixed; bottom: 15px; right: 20px;
-      font-size: 14px; color: var(--accent);
+      font-size: 13px; color: var(--accent);
       text-shadow: 0 0 8px var(--glow);
-      font-weight: bold;
     }
 
-    .disabled-label, .disabled-box { opacity: 0.25; filter: grayscale(1); }
+    .disabled-box { opacity: 0.25; filter: grayscale(1); }
 
-    @media (max-width: 1300px) {
+    @media (max-width: 1200px) {
       .layout { grid-template-columns: 1fr; }
-      .right { position: static; order: -1; }
+      .right { position: static; }
+      .mode-toggle { top: 10px; right: 10px; }
     }
-    @media (max-width: 550px) {
+    @media (max-width: 600px) {
       .upgrades-grid { grid-template-columns: 1fr; }
-      .upgrades-grid label { white-space: normal; }
     }
   </style>
 </head>
@@ -195,18 +198,17 @@
   <div class="layout">
     <div class="box">
       <div class="box-title" id="gridTitle">Upgrades</div>
-      <div class="upgrades-grid" id="mainGrid">
-        </div>
+      <div class="upgrades-grid" id="mainGrid"></div>
     </div>
 
     <div class="right">
       <div class="input-row">
         <div class="box" id="player-box">
-          <div class="box-title" style="text-align:center;">Players</div>
+          <div class="box-title" style="text-align:center; font-size:14px; margin-bottom:10px;">Players</div>
           <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
         </div>
         <div class="box" id="mode-box">
-          <div class="box-title" style="text-align:center;">Mode</div>
+          <div class="box-title" style="text-align:center; font-size:14px; margin-bottom:10px;">Mode</div>
           <select id="mode" onchange="calculate()">
             <option value="1">Normal</option>
             <option value="1.15">Hard (+15%)</option>
@@ -266,10 +268,15 @@
       
       list.forEach(item => {
         const label = document.createElement('label');
-        if(item.id) label.id = "label-" + item.id.split('-')[1];
-        label.innerHTML = `<input type="checkbox" class="option" data-price="${item.price}" ${item.id ? `id="${item.id}"` : ''} onchange="calculate()">
-                           <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"> 
-                           ${item.name} ${!isTrapMode ? `(${item.price})` : ''}`;
+        if (isTrapMode) {
+          label.innerHTML = `<input type="number" class="enemy-count" value="0" min="0" data-price="${item.price}" oninput="calculate()">
+                             <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"> 
+                             ${item.name}`;
+        } else {
+          label.innerHTML = `<input type="checkbox" class="option" data-price="${item.price}" ${item.id ? `id="${item.id}"` : ''} onchange="calculate()">
+                             <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'"> 
+                             ${item.name} (${item.price})`;
+        }
         grid.appendChild(label);
       });
       if(!isTrapMode) handlePlayerRules();
@@ -277,15 +284,10 @@
 
     function toggleTrapMode() {
       isTrapMode = !isTrapMode;
-      const body = document.getElementById('mainBody');
-      const title = document.getElementById('mainTitle');
-      const gridTitle = document.getElementById('gridTitle');
-      const icon = document.getElementById('toggleIcon');
-      
-      body.classList.toggle('trap-active');
-      title.textContent = isTrapMode ? "Nullscape Trap Card Calculator" : "Nullscape Price Calculator";
-      gridTitle.textContent = isTrapMode ? "Enemies" : "Upgrades";
-      icon.src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
+      document.getElementById('mainBody').classList.toggle('trap-active');
+      document.getElementById('mainTitle').textContent = isTrapMode ? "Nullscape Trap Card Calculator" : "Nullscape Price Calculator";
+      document.getElementById('gridTitle').textContent = isTrapMode ? "Enemies" : "Upgrades";
+      document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
       
       renderGrid();
       calculate();
@@ -294,37 +296,29 @@
     function handlePlayerRules() {
       if (isTrapMode) return;
       let playerInput = document.getElementById("players");
-      let players = parseInt(playerInput.value);
-
+      let players = parseInt(playerInput.value) || 1;
       if (players > 20) { playerInput.value = 20; players = 20; }
-      else if (players < 1 || isNaN(players)) { players = 1; }
 
       const modeSelect = document.getElementById("mode");
-      if (players === 1) {
-        modeSelect.value = "1"; modeSelect.disabled = true;
-        document.getElementById("mode-box").classList.add("disabled-box");
-      } else {
-        modeSelect.disabled = false;
-        document.getElementById("mode-box").classList.remove("disabled-box");
-      }
+      const isSolo = (players === 1);
+      modeSelect.disabled = isSolo;
+      document.getElementById("mode-box").classList.toggle("disabled-box", isSolo);
+      if(isSolo) modeSelect.value = "1";
 
-      // Dynamic Solo Pricing
-      const grace = document.querySelector('[data-price][id*="grace"]');
-      const barrier = document.querySelector('[data-price][id*="barrier"]');
-      const ninja = document.querySelector('[data-price][id*="ninja"]');
-      const shield = document.querySelector('[data-price][id*="shield"]');
+      const prices = {
+        grace: isSolo ? 200 : 250,
+        barrier: isSolo ? 200 : 1000,
+        ninja: isSolo ? 300 : 500,
+        shield: isSolo ? 1000 : 3000
+      };
 
-      if (players === 1) {
-        if(grace) grace.dataset.price = 200;
-        if(barrier) barrier.dataset.price = 200;
-        if(ninja) ninja.dataset.price = 300;
-        if(shield) shield.dataset.price = 1000;
-      } else {
-        if(grace) grace.dataset.price = 250;
-        if(barrier) barrier.dataset.price = 1000;
-        if(ninja) ninja.dataset.price = 500;
-        if(shield) shield.dataset.price = 3000;
-      }
+      Object.keys(prices).forEach(key => {
+        const el = document.querySelector(`[id*="${key}"]`);
+        if(el) {
+          el.dataset.price = prices[key];
+          el.parentElement.lastChild.textContent = ` ${upgrades.find(u => u.id && u.id.includes(key)).name} (${prices[key]})`;
+        }
+      });
       calculate();
     }
 
@@ -332,12 +326,20 @@
       let players = parseInt(document.getElementById("players").value) || 1;
       const modeMultiplier = (players === 1 && !isTrapMode) ? 1 : parseFloat(document.getElementById("mode").value);
       let total = 0;
-      const sqrtP = isTrapMode ? 1 : Math.sqrt(players);
-      
-      document.querySelectorAll(".option:checked").forEach(opt => {
-        let scaled = Math.ceil(Number(opt.dataset.price) * sqrtP);
-        total += Math.ceil(scaled * modeMultiplier);
-      });
+
+      if (isTrapMode) {
+        document.querySelectorAll(".enemy-count").forEach(input => {
+          total += (parseInt(input.value) || 0) * (parseInt(input.dataset.price) || 0);
+        });
+        // Multiply by mode in Trap Mode too
+        total = Math.ceil(total * modeMultiplier);
+      } else {
+        const sqrtP = Math.sqrt(players);
+        document.querySelectorAll(".option:checked").forEach(opt => {
+          let scaled = Math.ceil(Number(opt.dataset.price) * sqrtP);
+          total += Math.ceil(scaled * modeMultiplier);
+        });
+      }
       document.getElementById("result").textContent = "Total: " + total.toLocaleString();
     }
 
