@@ -86,7 +86,6 @@
       font-size: 20px; 
       cursor: pointer;
       color: #88a3e8;
-      transition: 0.2s;
       padding: 8px;
     }
     .trap-active .enemy-label { color: var(--enemy-orange) !important; font-weight: bold; }
@@ -99,13 +98,6 @@
     .enemy-count {
       width: 80px; background: #111; border: 2px solid var(--enemy-orange);
       color: white; border-radius: 8px; margin-right: 15px; padding: 10px; text-align: center; font-size: 24px;
-    }
-    .after-trap-info {
-      font-size: 16px;
-      color: #fff;
-      font-weight: bold;
-      font-style: italic;
-      margin-left: 8px;
     }
     .controls { display: flex; flex-direction: column; gap: 20px; }
     .input-row { display: flex; gap: 20px; }
@@ -126,9 +118,26 @@
       background: rgba(255, 77, 77, 0.1); border: 2px solid #ff4d4d; color: #ff4d4d;
       padding: 15px 30px; font-size: 20px; margin-top: 40px; border-radius: 10px; cursor: pointer;
     }
-    .price-display { text-align: center; }
-    .price { font-size: 58px; color: var(--accent); font-weight: bold; }
-    .formula { font-size: 18px; color: #777; margin-top: 10px; font-family: monospace; }
+    
+    /* New Results Box Styles */
+    .results-display { text-align: left; }
+    .trap-results-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.6;
+    }
+    .trap-results-list li {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 142, 66, 0.2);
+      display: flex;
+      justify-content: space-between;
+      color: var(--enemy-orange);
+    }
+    .trap-results-list li span { font-weight: bold; color: white; }
+    .price { font-size: 58px; color: var(--accent); font-weight: bold; text-align: center; }
+    .formula { font-size: 18px; color: #777; margin-top: 10px; font-family: monospace; text-align: center; }
 
     @media (max-width: 1600px) { .upgrades-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 1200px) { .layout { grid-template-columns: 1fr; } }
@@ -164,11 +173,16 @@
           </select>
         </div>
       </div>
-      <div class="box"><button class="calc-btn" onclick="calculate()">Refresh Counts</button></div>
-      <div class="box" id="price-result-box">
-        <div class="price-display">
-          <div class="price" id="result">Total: 0</div>
-          <div class="formula" id="formula-text">ceil(base * √players) * Mode</div>
+      <div class="box"><button class="calc-btn" id="mainCalcBtn" onclick="calculate()">Refresh Counts</button></div>
+      
+      <div class="box" id="results-container">
+        <div id="upgrade-results">
+            <div class="price" id="result">Total: 0</div>
+            <div class="formula" id="formula-text">ceil(base * √players) * Mode</div>
+        </div>
+        <div id="trap-results" style="display:none;">
+            <div class="box-title" style="font-size:20px; margin-bottom:15px;">Enemies After Trap</div>
+            <ul class="trap-results-list" id="trapList"></ul>
         </div>
       </div>
     </div>
@@ -221,7 +235,6 @@
             <input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
             <img src="${item.icon}" class="custom-icon" onerror="this.style.display='none'">
             <span class="enemy-name-text">${item.name}</span>
-            <span class="after-trap-info"></span>
           `;
           grid.appendChild(label);
         });
@@ -247,7 +260,11 @@
       document.getElementById('mainTitle').textContent = isTrapMode ? "Trap Card Calculator" : "Nullscape Price Calculator";
       document.getElementById('gridTitle').textContent = isTrapMode ? "Current Run Enemies" : "Upgrades";
       document.getElementById('toggleIcon').src = isTrapMode ? "Defuse_Kit.png" : "Trap-Card.png";
-      document.getElementById('price-result-box').style.display = isTrapMode ? "none" : "block";
+      document.getElementById('mainCalcBtn').textContent = isTrapMode ? "Refresh Counts" : "Calculate Total";
+      
+      document.getElementById('upgrade-results').style.display = isTrapMode ? "none" : "block";
+      document.getElementById('trap-results').style.display = isTrapMode ? "block" : "none";
+      
       renderGrid();
     }
 
@@ -287,11 +304,12 @@
       if (isTrapMode) {
         let doublingLimit = isHard ? 16 : 8;
         let doubledCount = 0;
+        const trapList = document.getElementById('trapList');
+        trapList.innerHTML = '';
 
         document.querySelectorAll(".enemy-count").forEach(input => {
           let currentAmount = parseInt(input.value) || 0;
-          let infoSpan = input.parentElement.querySelector('.after-trap-info');
-          let nameSpan = input.parentElement.querySelector('.enemy-name-text');
+          let enemyName = input.parentElement.querySelector('.enemy-name-text').textContent;
           let canDouble = 0;
 
           if (doubledCount < doublingLimit && currentAmount > 0) {
@@ -302,9 +320,9 @@
           let finalCount = currentAmount + canDouble;
           
           if (currentAmount > 0) {
-            infoSpan.textContent = ` After Trap: ${finalCount}`;
-          } else {
-            infoSpan.textContent = "";
+            const li = document.createElement('li');
+            li.innerHTML = `${enemyName} <span>${finalCount}</span>`;
+            trapList.appendChild(li);
           }
         });
 
