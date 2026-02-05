@@ -29,7 +29,7 @@
       display: grid;
       grid-template-columns: 1fr 300px;
       gap: 40px;
-      padding: 0 60px 40px 60px;
+      padding: 0 60px 60px 60px;
     }
 
     .box {
@@ -41,39 +41,48 @@
 
     .box-title {
       font-size: 22px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       color: #b266ff;
-      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .upgrades {
-      min-height: 420px;
+    .upgrades-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 10px;
-      align-content: start;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px 25px;
     }
 
-    /* Target the text color for checkboxes */
-    .upgrades label {
+    .upgrades-grid label {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
-      color: #88a3e8; 
+      color: #88a3e8;
+      transition: 0.2s;
+      text-shadow: 0 0 8px rgba(136, 163, 232, 0.4);
     }
 
-    .upgrades input {
+    .upgrades-grid label:hover {
+      color: white;
+      text-shadow: 0 0 12px rgba(136, 163, 232, 0.8);
+    }
+
+    .upgrades-grid input {
       margin-right: 12px;
       transform: scale(1.2);
       cursor: pointer;
+      accent-color: #b266ff;
     }
 
     .right {
       display: flex;
       flex-direction: column;
       gap: 25px;
+    }
+
+    .center-content {
+      text-align: center;
     }
 
     input[type="number"] {
@@ -99,16 +108,26 @@
       color: white;
       cursor: pointer;
       transition: 0.2s;
+      font-weight: bold;
     }
 
     button:hover {
       background: #9b4dff;
-      box-shadow: 0 0 12px #9b4dff;
+      box-shadow: 0 0 15px #9b4dff;
     }
 
     .price {
-      font-size: 28px;
+      font-size: 32px;
       color: #b266ff;
+      text-align: center;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(178, 102, 255, 0.5);
+    }
+
+    .formula-note {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
       text-align: center;
     }
   </style>
@@ -121,48 +140,49 @@
   <div class="layout">
 
     <div class="box">
-      <div class="box-title" style="text-align: left;">Upgrades</div>
-      <div class="upgrades">
-        <label><input type="checkbox" class="option" data-price="50"> Adrenaline (€50)</label>
-        <label><input type="checkbox" class="option" data-price="75"> Business License (€75)</label>
-        <label><input type="checkbox" class="option" data-price="30"> Defuse Kit (€30)</label>
-        <label><input type="checkbox" class="option" data-price="55"> Paycheck (€55)</label>
-        <label><input type="checkbox" class="option" data-price="80"> Swiftness Ring (€80)</label>
-        <label><input type="checkbox" class="option" data-price="100"> Enemy ESP (€100)</label>
-        <label><input type="checkbox" class="option" data-price="80"> Better Gift Arrow (€80)</label>
-        <label><input type="checkbox" class="option" data-price="50"> Better Jump Pads (€50)</label>
-        <label><input type="checkbox" class="option" data-price="100"> Double Jump (€100)</label>
-        <label><input type="checkbox" class="option" data-price="250"> Grace Wings (€250)</label>
-        <label><input type="checkbox" class="option" data-price="100"> Grapple Points (€100)</label>
-        <label><input type="checkbox" class="option" data-price="200"> Last Robloxian Standing (€200)</label>
-        <label><input type="checkbox" class="option" data-price="150"> Pocket Bell (€150)</label>
-        <label><input type="checkbox" class="option" data-price="400"> Tripmine ESP (€400)</label>
-        <label><input type="checkbox" class="option" data-price="600"> Advanced Gravity Coil (€600)</label>
-        <label><input type="checkbox" class="option" data-price="400"> Ice Skates (€400)</label>
-        <label><input type="checkbox" class="option" data-price="600"> Helmet (€600)</label>
-        <label><input type="checkbox" class="option" data-price="600"> More Altars (€600)</label>
-        <label><input type="checkbox" class="option" data-price="1000"> Subspacial Barrier (€1000)</label>
-        <label><input type="checkbox" class="option" data-price="500"> Ninja Belt (€500)</label>
-        <label><input type="checkbox" class="option" data-price="2000"> Gift Magnet (€2000)</label>
-        <label><input type="checkbox" class="option" data-price="2500"> Matrix Tetrahedron (€2500)</label>
-        <label><input type="checkbox" class="option" data-price="3000"> Shield (€3000)</label>
-        <label><input type="checkbox" class="option" data-price="1200"> Sport Shoes (€1200)</label>
-        <label><input type="checkbox" class="option" data-price="25000"> Real Wings (€25000)</label>
+      <div class="box-title">Upgrades</div>
+      <div class="upgrades-grid">
+        <label><input type="checkbox" class="option" data-price="50"> Adrenaline (50)</label>
+        <label><input type="checkbox" class="option" data-price="75"> Business License (75)</label>
+        <label><input type="checkbox" class="option" data-price="30"> Defuse Kit (30)</label>
+        <label><input type="checkbox" class="option" data-price="55"> Paycheck (55)</label>
+        <label><input type="checkbox" class="option" data-price="80"> Swiftness Ring (80)</label>
+        <label><input type="checkbox" class="option" data-price="100"> Enemy ESP (100)</label>
+        <label><input type="checkbox" class="option" data-price="80"> Better Gift Arrow (80)</label>
+        <label><input type="checkbox" class="option" data-price="50"> Better Jump Pads (50)</label>
+        <label><input type="checkbox" class="option" data-price="100"> Double Jump (100)</label>
+        <label><input type="checkbox" class="option" data-price="250"> Grace Wings (250)</label>
+        <label><input type="checkbox" class="option" data-price="100"> Grapple Points (100)</label>
+        <label><input type="checkbox" class="option" data-price="200"> Last Robloxian Standing (200)</label>
+        <label><input type="checkbox" class="option" data-price="150"> Pocket Bell (150)</label>
+        <label><input type="checkbox" class="option" data-price="400"> Tripmine ESP (400)</label>
+        <label><input type="checkbox" class="option" data-price="600"> Advanced Gravity Coil (600)</label>
+        <label><input type="checkbox" class="option" data-price="400"> Ice Skates (400)</label>
+        <label><input type="checkbox" class="option" data-price="600"> Helmet (600)</label>
+        <label><input type="checkbox" class="option" data-price="600"> More Altars (600)</label>
+        <label><input type="checkbox" class="option" data-price="1000"> Subspacial Barrier (1000)</label>
+        <label><input type="checkbox" class="option" data-price="500"> Ninja Belt (500)</label>
+        <label><input type="checkbox" class="option" data-price="2000"> Gift Magnet (2000)</label>
+        <label><input type="checkbox" class="option" data-price="2500"> Matrix Tetrahedron (2500)</label>
+        <label><input type="checkbox" class="option" data-price="3000"> Shield (3000)</label>
+        <label><input type="checkbox" class="option" data-price="1200"> Sport Shoes (1200)</label>
+        <label><input type="checkbox" class="option" data-price="25000"> Real Wings (25000)</label>
       </div>
     </div>
 
     <div class="right">
-      <div class="box">
+      <div class="box center-content">
         <div class="box-title">Players</div>
         <input type="number" id="players" min="1" max="20" value="1">
       </div>
 
       <div class="box">
-        <button onclick="calculate()">Calculate</button>
+        <button onclick="calculate()">Calculate Total</button>
       </div>
 
       <div class="box">
-        <div class="price" id="result">Price = €0</div>
+        <div class="price" id="result">Total: 0</div>
+        <div class="formula-note">Scaling: ceil(base * √players)</div>
       </div>
     </div>
 
@@ -176,13 +196,17 @@
       if (players > 20) players = 20;
       document.getElementById("players").value = players;
 
-      let total = 0;
+      let grandTotal = 0;
+      const sqrtPlayers = Math.sqrt(players);
+
       document.querySelectorAll(".option:checked").forEach(opt => {
-        total += Number(opt.dataset.price);
+        const basePrice = Number(opt.dataset.price);
+        // Apply formula: ceil(base * √players)
+        grandTotal += Math.ceil(basePrice * sqrtPlayers);
       });
 
       document.getElementById("result").textContent =
-        "Price = €" + (total * players).toLocaleString();
+        "Total: " + grandTotal.toLocaleString();
     }
   </script>
 
