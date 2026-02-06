@@ -52,6 +52,30 @@ body{
   padding-bottom:120px;
 }
 
+/* BACK BUTTON STYLE */
+.back-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  padding: 10px 20px;
+  background: var(--box-bg);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  z-index: 1001;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.back-btn:hover {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 0 15px var(--glow);
+}
+
 .mode-toggle{
   position:fixed;
   top:15px;
@@ -93,6 +117,7 @@ h1{
   padding:25px;
   box-shadow:0 0 25px var(--glow);
   border:1px solid rgba(255,255,255,.05);
+  margin-bottom: 20px; /* SPACE BETWEEN BOXES */
 }
 
 .box-title{
@@ -166,7 +191,7 @@ h1{
     flex-direction: column;
   }
   .controls { order: -1; }
-  h1{margin-top:20px}
+  h1{margin-top:60px} /* Give space for buttons */
   .upgrades-grid{grid-template-columns:1fr}
   
   .watermark {
@@ -189,6 +214,7 @@ h1{
     max-height:60vh;
     overflow-y:auto;
     background: var(--box-bg);
+    margin-bottom: 0;
   }
 
   #trapList {
@@ -228,6 +254,9 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 </style>
 </head>
 <body>
+
+<a href="index.html" class="back-btn">← Home</a>
+
 <button class="mode-toggle" onclick="toggleTrapMode()">
   <img src="assets/Trap-Card.png" id="toggleIcon">
 </button>
@@ -273,7 +302,6 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 </div>
 
 <script>
-// UPDATED PATHS TO ASSETS FOLDER
 const upgradesList=[
  {name:"Adrenaline",price:50,icon:"assets/Adrenaline.png",id:"opt-adrenaline"},
  {name:"Business License",price:75,icon:"assets/Business_License.png"},
