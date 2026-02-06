@@ -131,6 +131,7 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 
 input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); }
 input[type="number"],select{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
+select:disabled { opacity: 0.5; cursor: not-allowed; border-color: #444; }
 
 input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
@@ -286,39 +287,47 @@ function toggleTrapMode(){
 
 function handlePlayerRules(){
  const pInput=document.getElementById("players");
+ let pVal = pInput.value;
  
- if (pInput.value === "") {
-    calculate(); 
-    return;
- }
-
- let p = parseInt(pInput.value);
+ // Treat empty as 1 for UI logic, but don't hard-reset the mode value
+ let p = (pVal === "" || isNaN(pVal)) ? 1 : parseInt(pVal);
  
  if (p > 20) { p = 20; pInput.value = 20; }
- if (p < 1) { p = 1; pInput.value = 1; }
+ if (p < 1 && pVal !== "") { p = 1; pInput.value = 1; }
 
  const modeSelect = document.getElementById("mode");
  if(!isTrapMode){
+   // Disable dropdown if solo, but DO NOT change the value (it stays on Hard if you picked it)
    modeSelect.disabled = (p === 1);
-   if(p === 1) modeSelect.value = "1";
 
    document.querySelectorAll(".upgrades-grid label").forEach(label=>{
      const checkbox=label.querySelector("input");
      const priceSpan=label.querySelector(".price-val");
      const base=Number(checkbox.dataset.price);
+     
      let display=(p===1 && soloPrices[label.id])?soloPrices[label.id]:base;
      priceSpan.textContent=`(${display})`;
-     if(label.id==="opt-adrenaline"){checkbox.disabled=p>1;if(p>1)checkbox.checked=false;}
-     if(label.id==="opt-lrs"){checkbox.disabled=p<3;if(p<3)checkbox.checked=false;}
+     
+     if(label.id==="opt-adrenaline"){
+        checkbox.disabled = p > 1;
+        if(p > 1) checkbox.checked = false;
+     }
+     if(label.id==="opt-lrs"){
+        checkbox.disabled = p < 3;
+        if(p < 3) checkbox.checked = false;
+     }
    });
  }
  calculate();
 }
 
 function calculate(){
- const modeVal = parseFloat(document.getElementById("mode").value);
+ const modeSelect = document.getElementById("mode");
+ // If dropdown is disabled (p=1), the multiplier is 1 regardless of selection
+ const modeMultiplier = modeSelect.disabled ? 1 : parseFloat(modeSelect.value);
+
  if(isTrapMode){
-   let limit = (modeVal > 1) ? 16 : 8;
+   let limit = (parseFloat(modeSelect.value) > 1) ? 16 : 8;
    let used = 0;
    const list = document.getElementById("trapList");
    list.innerHTML = "";
@@ -338,9 +347,11 @@ function calculate(){
    let p = (pInput === "" || isNaN(pInput)) ? 1 : parseInt(pInput);
    let total = 0;
    const sqrtP = Math.sqrt(p);
+   
    document.querySelectorAll(".option:checked").forEach(opt => {
-     let price = (p === 1 && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Math.ceil(Number(opt.dataset.price) * sqrtP);
-     total += Math.ceil(price * modeVal);
+     let basePrice = (p === 1 && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Number(opt.dataset.price);
+     let scaledPrice = (p === 1) ? basePrice : Math.ceil(basePrice * sqrtP);
+     total += Math.ceil(scaledPrice * modeMultiplier);
    });
    document.getElementById("result").textContent = "Total: " + total.toLocaleString();
  }
