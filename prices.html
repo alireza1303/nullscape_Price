@@ -1,73 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Nullscape Price Calculator</title>
-<link rel="stylesheet" href="css/style.css" />
+
+<link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
+<h1 class="page-title">Nullscape Price Calculator</h1>
 
-<a href="index.html" class="back-btn">← Home</a>
+<div class="calculator">
 
+  <div class="grid">
 
-<button class="mode-toggle" onclick="toggleTrapMode()">
-<img src="assets/Trap-Card.png" id="toggleIcon" />
-</button>
+    <div class="card">
+      <span>Upgrade Level</span>
+      <input type="number" min="0" value="0">
+    </div>
 
+    <div class="card">
+      <span>Trap Cards</span>
+      <input type="number" min="0" value="0">
+    </div>
+
+    <div class="card">
+      <span>Void Breakers</span>
+      <input type="number" min="0" value="0">
+    </div>
+
+    <div class="card">
+      <span>Total Cost</span>
+      <div class="result" id="total">0</div>
+    </div>
+
+  </div>
+
+  <button id="clearBtn">Clear All</button>
+
+</div>
 
 <div class="watermark">Made by alireza1303</div>
-
-
-<div class="scaler-container">
-<h1 id="mainTitle">Nullscape Price Calculator</h1>
-
-
-<div class="layout">
-<div class="box main-content">
-<div class="box-title" id="gridTitle">Upgrades</div>
-<div class="upgrades-grid" id="mainGrid"></div>
-<button class="clear-btn" onclick="clearAll()">Clear All</button>
-</div>
-
-
-<div class="controls">
-<div class="box">
-<div id="player-group">
-<div class="box-title small">Number of Players</div>
-<input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()" />
-</div>
-
-
-<div class="box-title small">Game Mode</div>
-<select id="mode" onchange="calculate()">
-<option value="1">Normal</option>
-<option value="1.15">Hard Mode</option>
-</select>
-</div>
-
-
-<div class="box" id="results-container">
-<div id="upgrade-results">
-<div class="price" id="result">Total: 0</div>
-<div class="formula">ceil(base × √players) × Mode</div>
-</div>
-
-
-<div id="trap-results" style="display:none">
-<div class="box-title" id="collapsible-title" onclick="toggleMobileList()">Enemies After Trap</div>
-<ul class="trap-results-list" id="trapList"></ul>
-<div class="formula enemy-formula">Formula: (Enemies + Added) + 2 Randoms</div>
-</div>
-
-
-<button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
-</div>
-</div>
-</div>
-</div>
-
 
 <script src="js/prices.js"></script>
 </body>
