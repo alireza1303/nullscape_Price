@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nullscape Statistics</title>
+<style>
+:root{
+  --accent:#b266ff;
+  --bg:rgb(26,26,26);
+  --box-bg:rgb(32,32,32);
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:white;
+  font-family:'Segoe UI',Arial,sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  padding: 10px 20px;
+  background: var(--box-bg);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+h1{ color:var(--accent); text-transform: uppercase; letter-spacing: 4px; }
+.wip-box {
+  background: var(--box-bg);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(155,77,255,.4);
+}
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255,255,255,0.1);
+  border-top: 5px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">← Home</a>
+
+<div class="wip-box">
+    <h1>Statistics</h1>
+    <div class="spinner"></div>
+    <p>This section is currently under construction.</p>
+    <p style="color:#888;">Check back later for enemy data and item stats!</p>
+</div>
+
+</body>
+</html>
