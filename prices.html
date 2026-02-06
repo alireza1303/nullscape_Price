@@ -283,13 +283,13 @@ function toggleTrapMode(){
   document.getElementById("upgrade-results").style.display=isTrapMode?"none":"block";
   document.getElementById("trap-results").style.display=isTrapMode?"block":"none";
   renderGrid();
+  handlePlayerRules(); // Refresh mode-lock status immediately
 }
 
 function handlePlayerRules(){
  const pInput=document.getElementById("players");
  let pVal = pInput.value;
  
- // Treat empty as 1 for UI logic, but don't hard-reset the mode value
  let p = (pVal === "" || isNaN(pVal)) ? 1 : parseInt(pVal);
  
  if (p > 20) { p = 20; pInput.value = 20; }
@@ -297,7 +297,7 @@ function handlePlayerRules(){
 
  const modeSelect = document.getElementById("mode");
  if(!isTrapMode){
-   // Disable dropdown if solo, but DO NOT change the value (it stays on Hard if you picked it)
+   // Only lock dropdown if Solo in Price mode
    modeSelect.disabled = (p === 1);
 
    document.querySelectorAll(".upgrades-grid label").forEach(label=>{
@@ -317,16 +317,19 @@ function handlePlayerRules(){
         if(p < 3) checkbox.checked = false;
      }
    });
+ } else {
+   // Always unlock dropdown in Trap Mode
+   modeSelect.disabled = false;
  }
  calculate();
 }
 
 function calculate(){
  const modeSelect = document.getElementById("mode");
- // If dropdown is disabled (p=1), the multiplier is 1 regardless of selection
  const modeMultiplier = modeSelect.disabled ? 1 : parseFloat(modeSelect.value);
 
  if(isTrapMode){
+   // Mode choice directly changes the trap enemy limit
    let limit = (parseFloat(modeSelect.value) > 1) ? 16 : 8;
    let used = 0;
    const list = document.getElementById("trapList");
