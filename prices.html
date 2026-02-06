@@ -287,7 +287,10 @@ function toggleTrapMode(){
 function handlePlayerRules(){
  const pInput=document.getElementById("players");
  
- if (pInput.value === "") return;
+ if (pInput.value === "") {
+    calculate(); 
+    return;
+ }
 
  let p = parseInt(pInput.value);
  
@@ -298,6 +301,7 @@ function handlePlayerRules(){
  if(!isTrapMode){
    modeSelect.disabled = (p === 1);
    if(p === 1) modeSelect.value = "1";
+
    document.querySelectorAll(".upgrades-grid label").forEach(label=>{
      const checkbox=label.querySelector("input");
      const priceSpan=label.querySelector(".price-val");
@@ -331,7 +335,7 @@ function calculate(){
    });
  } else {
    let pInput = document.getElementById("players").value;
-   let p = pInput === "" ? 1 : parseInt(pInput);
+   let p = (pInput === "" || isNaN(pInput)) ? 1 : parseInt(pInput);
    let total = 0;
    const sqrtP = Math.sqrt(p);
    document.querySelectorAll(".option:checked").forEach(opt => {
