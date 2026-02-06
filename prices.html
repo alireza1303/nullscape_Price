@@ -17,7 +17,6 @@
   --loader-blue: #8ab4f8;
 }
 
-/* LOADING SCREEN */
 #loading-screen {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -85,7 +84,6 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 .box{ background:var(--box-bg); border-radius:20px; padding:25px; box-shadow:0 0 25px var(--glow); border:1px solid rgba(255,255,255,.05); margin-bottom: 20px; }
 .box-title{ font-size:clamp(20px,4vw,26px); margin-bottom:20px; color:var(--accent); text-transform:uppercase; letter-spacing:2px; font-weight:bold; }
 
-/* COLLAPSIBLE ARROW */
 #collapsible-title { cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 #collapsible-title::after {
     content: '▼';
@@ -101,7 +99,6 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 .enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
 .enemy-name-text { white-space: normal; word-break: break-word; line-height: 1.2; flex: 1; }
 
-/* WATERMARK CENTERED */
 .watermark { 
     width: 100%;
     text-align: center;
@@ -134,6 +131,9 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 
 input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); }
 input[type="number"],select{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
 .price{ font-size:clamp(32px, 8vw, 52px); color:var(--accent); font-weight:bold; text-align:center; }
 .formula{ font-size:14px; color:#888; text-align:center; margin-top:5px; }
 .trap-results-list{ list-style:none; padding:0; margin:0; font-size:20px; }
@@ -164,7 +164,7 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 <div class="box">
   <div id="player-group">
     <div class="box-title" style="font-size:16px">Number of Players</div>
-    <input type="number" id="players" min="1" max="20" value="1" oninput="handlePlayerRules()">
+    <input type="number" id="players" min="1" max="20" value="1" inputmode="numeric" pattern="[0-9]*" oninput="handlePlayerRules()">
   </div>
   <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
   <select id="mode" onchange="calculate()">
@@ -286,8 +286,14 @@ function toggleTrapMode(){
 
 function handlePlayerRules(){
  const pInput=document.getElementById("players");
- let p = Math.min(20, Math.max(1, parseInt(pInput.value) || 1));
- pInput.value = p;
+ 
+ if (pInput.value === "") return;
+
+ let p = parseInt(pInput.value);
+ 
+ if (p > 20) { p = 20; pInput.value = 20; }
+ if (p < 1) { p = 1; pInput.value = 1; }
+
  const modeSelect = document.getElementById("mode");
  if(!isTrapMode){
    modeSelect.disabled = (p === 1);
@@ -324,7 +330,8 @@ function calculate(){
      }
    });
  } else {
-   let p = parseInt(document.getElementById("players").value) || 1;
+   let pInput = document.getElementById("players").value;
+   let p = pInput === "" ? 1 : parseInt(pInput);
    let total = 0;
    const sqrtP = Math.sqrt(p);
    document.querySelectorAll(".option:checked").forEach(opt => {
