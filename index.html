@@ -1,35 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Nullscape Portal</title>
-<link rel="stylesheet" href="css/style.css" />
+<style>
+:root{
+  --accent:#b266ff;
+  --accent-dark:#7a33ff;
+  --glow:rgba(155,77,255,.4);
+  --btn-border:rgb(255,142,66);
+  --btn-glow:rgba(255,142,66,.6);
+  --bg:rgb(26,26,26);
+  --box-bg:rgb(32,32,32);
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:white;
+  font-family:'Segoe UI',Arial,sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1{
+  text-align:center;
+  margin:0 0 40px 0;
+  font-size:clamp(32px, 8vw, 64px);
+  color:var(--accent);
+  text-shadow:0 0 15px var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.portal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.portal-box {
+  background: var(--box-bg);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 0 25px var(--glow);
+  border: 1px solid rgba(255,255,255,.05);
+  text-decoration: none;
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.portal-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 40px var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.portal-box.secondary {
+  border: 2px solid var(--btn-border);
+  box-shadow: 0 0 15px var(--btn-glow);
+}
+
+.portal-box.secondary:hover {
+  box-shadow: 0 0 30px var(--btn-border);
+}
+
+.icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.secondary .title {
+  color: var(--btn-border);
+}
+
+.description {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.watermark {
+    position: fixed;
+    bottom: 20px;
+    color: rgba(255,255,255,0.4);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--accent);
+    font-style: italic;
+    font-size: 14px;
+}
+</style>
 </head>
-<body class="portal-page">
+<body>
 
-
-<h1>Home Page</h1>
-
+<h1>NullScape Hub</h1>
 
 <div class="portal-container">
-<a href="prices.html" class="portal-box secondary">
-<img src="assets/Trap-Card.png" class="icon" alt="Calculator" />
-<div class="title">Price Calculator</div>
-<div class="description">Calculate upgrade costs and trap card enemy spawns.</div>
-</a>
-
-
-<a href="#" class="portal-box">
-<img src="assets/Adrenaline.png" class="icon" alt="Stats" />
-<div class="title">WIP</div>
-<div class="description">Under Construction</div>
-</a>
+    <a href="prices.html" class="portal-box secondary">
+        <img src="assets/Trap-Card.png" class="icon" alt="Calculator">
+        <div class="title">Price Calculator</div>
+        <div class="description">Calculate upgrade costs and trap card enemy spawns.</div>
+    </a>
+  
+    <a href="stats.html" class="portal-box">
+        <img src="assets/Adrenaline.png" class="icon" alt="Stats">
+        <div class="title">Statistics</div>
+        <div class="description">View game data and enemy stats (WIP).</div>
+    </a>
 </div>
 
-
 <div class="watermark">Made by alireza1303</div>
-
 
 </body>
 </html>
