@@ -17,6 +17,7 @@
   --loader-blue: #8ab4f8;
 }
 
+/* LOADING SCREEN */
 #loading-screen {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -62,7 +63,7 @@
   .watermark { position: fixed; bottom: 30px; right: 40px; font-size: 24px; opacity: 0.6; text-align: right; }
 }
 
-body{ margin:0; min-height:100vh; background:var(--bg); color:white; font-family:'Segoe UI',Arial,sans-serif; padding-bottom:120px; }
+body{ margin:0; min-height:100vh; background:var(--bg); color:white; font-family:'Segoe UI',Arial,sans-serif; padding-bottom:120px; overflow-x: hidden; }
 
 .back-btn {
   position: fixed; top: 15px; left: 15px; padding: 10px 20px;
@@ -83,31 +84,62 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 .layout{ display:grid; grid-template-columns:2fr 1fr; gap:20px; padding:0 20px; max-width:1600px; margin:0 auto; }
 .box{ background:var(--box-bg); border-radius:20px; padding:25px; box-shadow:0 0 25px var(--glow); border:1px solid rgba(255,255,255,.05); margin-bottom: 20px; }
 .box-title{ font-size:clamp(20px,4vw,26px); margin-bottom:20px; color:var(--accent); text-transform:uppercase; letter-spacing:2px; font-weight:bold; }
+
+/* COLLAPSIBLE ARROW */
+#collapsible-title { cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+#collapsible-title::after {
+    content: '▼';
+    font-size: 14px;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+#collapsible-title.active::after { transform: rotate(180deg); }
+
 .upgrades-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
 .upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:18px; background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; overflow:hidden; }
 .custom-icon{ width:45px; height:45px; flex-shrink:0; object-fit: contain; }
 .enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
 .enemy-name-text { white-space: normal; word-break: break-word; line-height: 1.2; flex: 1; }
-.watermark { color: rgba(255,255,255,0.4); font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent); font-style: italic; }
+
+/* WATERMARK CENTERED */
+.watermark { 
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    color: rgba(255,255,255,0.4); 
+    font-weight: bold; 
+    letter-spacing: 2px; 
+    text-shadow: 0 0 10px var(--accent); 
+    font-style: italic; 
+}
 
 @media(max-width:900px){
-  body { padding-bottom: 220px; } 
+  body { padding-bottom: 240px; } 
   .layout{ display: flex !important; flex-direction: column; }
   .controls { order: -1; }
-  h1{margin-top:60px}
+  h1{margin-top:80px}
   .upgrades-grid{grid-template-columns:1fr}
-  #results-container{ position:fixed; bottom:0; left:0; right:0; z-index:1000; border-radius:20px 20px 0 0; padding:15px 25px; background: var(--box-bg); max-height:60vh; overflow-y:auto; }
-  #trapList { display: none; }
+  
+  #results-container{ 
+    position:fixed; bottom:0; left:0; right:0; z-index:1000; 
+    border-radius:20px 20px 0 0; padding:15px 25px; 
+    background: var(--box-bg); max-height:60vh; overflow-y:auto;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+    margin-bottom: 0;
+  }
+  #trapList { display: none; margin-top: 15px; }
   #trapList.visible { display: block; }
+  #mobile-clear { display: block !important; margin-top: 10px; }
 }
 
 input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); }
 input[type="number"],select{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
-.price{ font-size:52px; color:var(--accent); font-weight:bold; text-align:center; }
-.formula{ font-size:16px; color:#888; text-align:center; margin-top:5px; }
-.trap-results-list{ list-style:none; padding:0; margin:0; font-size:24px; }
-.trap-results-list li{ padding:12px 0; border-bottom:1px solid rgba(255,255,255,.1); display:flex; justify-content:space-between; color:var(--enemy-orange); }
-.clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:22px; margin-top:25px; border-radius:12px; cursor:pointer; }
+.price{ font-size:clamp(32px, 8vw, 52px); color:var(--accent); font-weight:bold; text-align:center; }
+.formula{ font-size:14px; color:#888; text-align:center; margin-top:5px; }
+.trap-results-list{ list-style:none; padding:0; margin:0; font-size:20px; }
+.trap-results-list li{ padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; color:var(--enemy-orange); }
+.clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:20px; margin-top:25px; border-radius:12px; cursor:pointer; }
+#mobile-clear { display: none; }
 </style>
 </head>
 <body>
@@ -119,7 +151,6 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 
 <a href="index.html" class="back-btn">← Home</a>
 <button class="mode-toggle" onclick="toggleTrapMode()"><img src="assets/Trap-Card.png" id="toggleIcon"></button>
-<div class="watermark">Made by alireza1303</div>
 
 <div class="scaler-container">
 <h1 id="mainTitle">Nullscape Price Calculator</h1>
@@ -127,7 +158,7 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 <div class="box main-content">
   <div class="box-title" id="gridTitle">Upgrades</div>
   <div class="upgrades-grid" id="mainGrid"></div>
-  <button class="clear-btn" onclick="clearAll()">Clear All</button>
+  <button class="clear-btn" id="desktop-clear" onclick="clearAll()">Clear All</button>
 </div>
 <div class="controls">
 <div class="box">
@@ -154,6 +185,7 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 </div>
 </div>
 </div>
+<div class="watermark">Made by alireza1303</div>
 </div>
 
 <script>
@@ -208,7 +240,9 @@ let isTrapMode=false;
 function toggleMobileList() {
     if(window.innerWidth <= 900) {
         const list = document.getElementById("trapList");
+        const title = document.getElementById("collapsible-title");
         list.classList.toggle("visible");
+        title.classList.toggle("active");
     }
 }
 
@@ -309,4 +343,3 @@ window.onload=renderGrid;
 </script>
 </body>
 </html>
-
