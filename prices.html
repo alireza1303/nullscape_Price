@@ -229,7 +229,7 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 </head>
 <body>
 <button class="mode-toggle" onclick="toggleTrapMode()">
-  <img src="Trap-Card.png" id="toggleIcon">
+  <img src="assets/Trap-Card.png" id="toggleIcon">
 </button>
 
 <div class="watermark">Made by alireza1303</div>
@@ -273,44 +273,45 @@ input[type="number"],select{ padding:5px 10px; background:#111; color:white; bor
 </div>
 
 <script>
+// UPDATED PATHS TO ASSETS FOLDER
 const upgradesList=[
- {name:"Adrenaline",price:50,icon:"Adrenaline.png",id:"opt-adrenaline"},
- {name:"Business License",price:75,icon:"Business_License.png"},
- {name:"Defuse Kit",price:30,icon:"Defuse_Kit.png"},
- {name:"Paycheck",price:55,icon:"Paycheck.png"},
- {name:"Swiftness Ring",price:80,icon:"Swiftness_Ring.png"},
- {name:"Enemy ESP",price:100,icon:"Enemy_ESP.png"},
- {name:"Better Gift Arrow",price:80,icon:"Better_Gift_Arrow.png"},
- {name:"Better Jump Pads",price:50,icon:"Better_Jump_Pads.png"},
- {name:"Double Jump",price:100,icon:"Double_Jump.png"},
- {name:"Grace Wings",price:250,icon:"Grace_Wings.png",id:"opt-grace"},
- {name:"Grapple Points",price:100,icon:"Grapple_Points.png"},
- {name:"LRS",price:200,icon:"Last_Robloxian_Standing.png",id:"opt-lrs"},
- {name:"Pocket Bell",price:150,icon:"Pocket_Bell.png"},
- {name:"Tripmine ESP",price:400,icon:"Tripmine_ESP.png"},
- {name:"Advanced Coil",price:600,icon:"Advanced_Gravity_Coil.png"},
- {name:"Ice Skates",price:400,icon:"Ice_Skates.png"},
- {name:"Helmet",price:600,icon:"Helmet.png"},
- {name:"More Altars",price:600,icon:"More_Altars.png"},
- {name:"Barrier",price:1000,icon:"Subspacial_Barrier.png",id:"opt-barrier"},
- {name:"Ninja Belt",price:500,icon:"Ninja_Belt.png",id:"opt-ninja"},
- {name:"Gift Magnet",price:2000,icon:"Gift_Magnet.png"},
- {name:"Matrix",price:2500,icon:"Matrix_Tetrahedron.png"},
- {name:"Shield",price:3000,icon:"Shield.png",id:"opt-shield"},
- {name:"Sport Shoes",price:1200,icon:"Sport_Shoes.png"},
- {name:"Real Wings",price:25000,icon:"Real_Wings.png"}
+ {name:"Adrenaline",price:50,icon:"assets/Adrenaline.png",id:"opt-adrenaline"},
+ {name:"Business License",price:75,icon:"assets/Business_License.png"},
+ {name:"Defuse Kit",price:30,icon:"assets/Defuse_Kit.png"},
+ {name:"Paycheck",price:55,icon:"assets/Paycheck.png"},
+ {name:"Swiftness Ring",price:80,icon:"assets/Swiftness_Ring.png"},
+ {name:"Enemy ESP",price:100,icon:"assets/Enemy_ESP.png"},
+ {name:"Better Gift Arrow",price:80,icon:"assets/Better_Gift_Arrow.png"},
+ {name:"Better Jump Pads",price:50,icon:"assets/Better_Jump_Pads.png"},
+ {name:"Double Jump",price:100,icon:"assets/Double_Jump.png"},
+ {name:"Grace Wings",price:250,icon:"assets/Grace_Wings.png",id:"opt-grace"},
+ {name:"Grapple Points",price:100,icon:"assets/Grapple_Points.png"},
+ {name:"LRS",price:200,icon:"assets/Last_Robloxian_Standing.png",id:"opt-lrs"},
+ {name:"Pocket Bell",price:150,icon:"assets/Pocket_Bell.png"},
+ {name:"Tripmine ESP",price:400,icon:"assets/Tripmine_ESP.png"},
+ {name:"Advanced Coil",price:600,icon:"assets/Advanced_Gravity_Coil.png"},
+ {name:"Ice Skates",price:400,icon:"assets/Ice_Skates.png"},
+ {name:"Helmet",price:600,icon:"assets/Helmet.png"},
+ {name:"More Altars",price:600,icon:"assets/More_Altars.png"},
+ {name:"Barrier",price:1000,icon:"assets/Subspacial_Barrier.png",id:"opt-barrier"},
+ {name:"Ninja Belt",price:500,icon:"assets/Ninja_Belt.png",id:"opt-ninja"},
+ {name:"Gift Magnet",price:2000,icon:"assets/Gift_Magnet.png"},
+ {name:"Matrix",price:2500,icon:"assets/Matrix_Tetrahedron.png"},
+ {name:"Shield",price:3000,icon:"assets/Shield.png",id:"opt-shield"},
+ {name:"Sport Shoes",price:1200,icon:"assets/Sport_Shoes.png"},
+ {name:"Real Wings",price:25000,icon:"assets/Real_Wings.png"}
 ];
 
 const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000 };
 
 const enemiesList=[
-    {name:"Mart", icon:"Mart.png"}, {name:"Baby", icon:"baby.png"}, {name:"NIL", icon:"nil.png"},
-    {name:"Voidbreaker", icon:"voidbreaker.png"}, {name:"Springer", icon:"springer.png"},
-    {name:"Bell", icon:"bell.png"}, {name:"Voidbound Guardian", icon:"vbg.png"},
-    {name:"Skinwalker", icon:"skinwalker.png"}, {name:"Voidbound Baby", icon:"voidBaby.png"},
-    {name:"???", icon:"random.png"}, {name:"Telefragger", icon:"tele.png"},
-    {name:"Flesh", icon:"flesh.png"}, {name:"Guardian", icon:"guardian.png"},
-    {name:"Cadence", icon:"Cadance.png"}, {name:"ICBM", icon:"icbm.png"}
+    {name:"Mart", icon:"assets/Mart.png"}, {name:"Baby", icon:"assets/baby.png"}, {name:"NIL", icon:"assets/nil.png"},
+    {name:"Voidbreaker", icon:"assets/voidbreaker.png"}, {name:"Springer", icon:"assets/springer.png"},
+    {name:"Bell", icon:"assets/bell.png"}, {name:"Voidbound Guardian", icon:"assets/vbg.png"},
+    {name:"Skinwalker", icon:"assets/skinwalker.png"}, {name:"Voidbound Baby", icon:"assets/voidBaby.png"},
+    {name:"???", icon:"assets/random.png"}, {name:"Telefragger", icon:"assets/tele.png"},
+    {name:"Flesh", icon:"assets/flesh.png"}, {name:"Guardian", icon:"assets/guardian.png"},
+    {name:"Cadence", icon:"assets/Cadance.png"}, {name:"ICBM", icon:"assets/icbm.png"}
 ];
 
 let isTrapMode=false;
@@ -355,7 +356,7 @@ function toggleTrapMode(){
   document.body.classList.toggle('trap-active');
   document.getElementById("mainTitle").textContent=isTrapMode?"Nullscape Trap Card Calculator":"Nullscape Price Calculator";
   document.getElementById("gridTitle").textContent=isTrapMode?"Current Run Enemies":"Upgrades";
-  document.getElementById("toggleIcon").src=isTrapMode?"Defuse_Kit.png":"Trap-Card.png";
+  document.getElementById("toggleIcon").src=isTrapMode?"assets/Defuse_Kit.png":"assets/Trap-Card.png";
   document.getElementById("player-group").style.display=isTrapMode?"none":"block";
   document.getElementById("upgrade-results").style.display=isTrapMode?"none":"block";
   document.getElementById("trap-results").style.display=isTrapMode?"block":"none";
@@ -429,5 +430,4 @@ function clearAll(){
 window.onload=renderGrid;
 </script>
 </body>
-</html> 
-
+</html>
