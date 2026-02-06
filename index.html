@@ -285,7 +285,7 @@ const upgradesList=[
  {name:"Double Jump",price:100,icon:"Double_Jump.png"},
  {name:"Grace Wings",price:250,icon:"Grace_Wings.png",id:"opt-grace"},
  {name:"Grapple Points",price:100,icon:"Grapple_Points.png"},
- {name:"Last Robloxian Standing",price:200,icon:"Last_Robloxian_Standing.png",id:"opt-lrs"},
+ {name:"LRS",price:200,icon:"Last_Robloxian_Standing.png",id:"opt-lrs"},
  {name:"Pocket Bell",price:150,icon:"Pocket_Bell.png"},
  {name:"Tripmine ESP",price:400,icon:"Tripmine_ESP.png"},
  {name:"Advanced Coil",price:600,icon:"Advanced_Gravity_Coil.png"},
@@ -369,7 +369,6 @@ function handlePlayerRules(){
  
  const modeSelect = document.getElementById("mode");
  
- // Only disable/auto-switch mode if NOT in Trap Mode
  if(!isTrapMode){
    modeSelect.disabled = (p === 1);
    if(p === 1) modeSelect.value = "1";
@@ -384,7 +383,6 @@ function handlePlayerRules(){
      if(label.id==="opt-lrs"){checkbox.disabled=p<3;if(p<3)checkbox.checked=false;}
    });
  } else {
-   // Always enabled in Trap Mode
    modeSelect.disabled = false;
  }
  calculate();
@@ -432,3 +430,4 @@ window.onload=renderGrid;
 </script>
 </body>
 </html> 
+
