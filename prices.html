@@ -85,7 +85,7 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 }
 #collapsible-title.active::after { transform: rotate(180deg); }
 .upgrades-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
-.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:18px; background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; overflow:hidden; }
+.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; overflow:hidden; white-space:nowrap; }
 .custom-icon{ width:45px; height:45px; flex-shrink:0; object-fit: contain; }
 .enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
 .enemy-name-text { white-space: normal; word-break: break-word; line-height: 1.2; flex: 1; }
@@ -254,8 +254,10 @@ function handleModeChange(mode) {
   const normalLabel = document.getElementById('normal-label');
   const hardLabel = document.getElementById('hard-label');
   
+  // Check if player count is 1 and we're not in trap mode
   const players = parseInt(document.getElementById("players").value) || 1;
   if (!isTrapMode && players === 1) {
+    // In solo mode, force normal and disable both
     normalCheck.checked = true;
     hardCheck.checked = false;
     normalLabel.classList.add('disabled');
@@ -264,6 +266,7 @@ function handleModeChange(mode) {
     return;
   }
   
+  // Normal toggle behavior
   if (mode === 'normal') {
     normalCheck.checked = true;
     hardCheck.checked = false;
@@ -307,7 +310,7 @@ function renderGrid(){
      label.id=item.id||"";
      label.innerHTML=`<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
        <img src="${item.icon}" class="custom-icon">
-       <span>${item.name} <small class="price-val"></small></span>`;
+       <span style="${item.id === 'opt-lrs' ? 'font-size: 15px;' : ''}">${item.name} <small class="price-val"></small></span>`;
      grid.appendChild(label);
    });
  }
@@ -340,6 +343,7 @@ function handlePlayerRules(){
  const hardCheck = document.getElementById('hard-mode');
  
  if(!isTrapMode){
+   // Only lock checkboxes if Solo in Price mode
    if (p === 1) {
      normalLabel.classList.add('disabled');
      hardLabel.classList.add('disabled');
@@ -368,6 +372,7 @@ function handlePlayerRules(){
      }
    });
  } else {
+   // Always unlock checkboxes in Trap Mode
    normalLabel.classList.remove('disabled');
    hardLabel.classList.remove('disabled');
  }
@@ -377,6 +382,7 @@ function calculate(){
  const modeMultiplier = getModeMultiplier();
  
  if(isTrapMode){
+   // Mode choice directly changes the trap enemy limit
    let limit = (modeMultiplier > 1) ? 16 : 8;
    let used = 0;
    const list = document.getElementById("trapList");
@@ -414,4 +420,3 @@ window.onload=renderGrid;
 </script>
 </body>
 </html>
-
