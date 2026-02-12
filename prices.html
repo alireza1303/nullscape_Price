@@ -147,6 +147,7 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 }
 input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); }
 input[type="number"]{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
+input[type="number"]:disabled{ opacity:0.5; cursor:not-allowed; }
 input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .price{ font-size:clamp(32px, 8vw, 52px); color:var(--accent); font-weight:bold; text-align:center; }
 .formula{ font-size:14px; color:#888; text-align:center; margin-top:5px; }
@@ -176,6 +177,10 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-app
   <div id="player-group">
     <div class="box-title" style="font-size:16px">Number of Players</div>
     <input type="number" id="players" min="1" max="20" value="1" inputmode="numeric" pattern="[0-9]*" oninput="handlePlayerRules()">
+    <label class="mode-checkbox-label" style="margin-top: 10px;" id="solo-label">
+      <input type="checkbox" id="solo-mode" onchange="handleSoloChange()">
+      <span>Solo Mode</span>
+    </label>
   </div>
   <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
   <div class="mode-checkboxes">
@@ -249,15 +254,45 @@ const enemiesList=[
 ];
 let isTrapMode=false;
 
+function handleSoloChange() {
+  const soloCheck = document.getElementById('solo-mode');
+  const hardCheck = document.getElementById('hard-mode');
+  const hardLabel = document.getElementById('hard-label');
+  const pInput = document.getElementById("players");
+  
+  if (soloCheck.checked) {
+    // Force player count to 1
+    pInput.value = 1;
+    pInput.disabled = true;
+    
+    hardCheck.checked = false;
+    hardCheck.disabled = true;
+    hardLabel.classList.add('disabled');
+  } else {
+    pInput.disabled = false;
+    hardCheck.disabled = false;
+    hardLabel.classList.remove('disabled');
+  }
+  
+  handlePlayerRules();
+}
 
 function handleModeChange(mode) {
   const normalCheck = document.getElementById('normal-mode');
   const hardCheck = document.getElementById('hard-mode');
   const normalLabel = document.getElementById('normal-label');
   const hardLabel = document.getElementById('hard-label');
+  const soloCheck = document.getElementById('solo-mode');
+  
+  if (soloCheck.checked && mode === 'hard') {
+    normalCheck.checked = true;
+    hardCheck.checked = false;
+    calculate();
+    return;
+  }
   
   const players = parseInt(document.getElementById("players").value) || 1;
-  if (!isTrapMode && players === 1) {
+  if (!isTrapMode && players === 1 && soloCheck.checked) {
     normalCheck.checked = true;
     hardCheck.checked = false;
     normalLabel.classList.add('disabled');
@@ -279,6 +314,12 @@ function handleModeChange(mode) {
 
 function getModeMultiplier() {
   const hardCheck = document.getElementById('hard-mode');
+  const soloCheck = document.getElementById('solo-mode');
+  
+  if (soloCheck.checked) {
+    return 1;
+  }
+  
   return hardCheck.checked ? 1.15 : 1;
 }
 
@@ -351,16 +392,19 @@ function handlePlayerRules(){
  const hardLabel = document.getElementById('hard-label');
  const normalCheck = document.getElementById('normal-mode');
  const hardCheck = document.getElementById('hard-mode');
+ const soloCheck = document.getElementById('solo-mode');
  
  if(!isTrapMode){
-   if (p === 1) {
+   if (p === 1 && soloCheck.checked) {
      normalLabel.classList.add('disabled');
      hardLabel.classList.add('disabled');
      normalCheck.checked = true;
      hardCheck.checked = false;
    } else {
      normalLabel.classList.remove('disabled');
-     hardLabel.classList.remove('disabled');
+     if (!soloCheck.checked) {
+       hardLabel.classList.remove('disabled');
+     }
    }
    
    document.querySelectorAll(".upgrades-grid label").forEach(label=>{
@@ -368,12 +412,15 @@ function handlePlayerRules(){
      const priceSpan=label.querySelector(".price-val");
      const base=Number(checkbox.dataset.price);
      
-     let display=(p===1 && soloPrices[label.id])?soloPrices[label.id]:base;
+     let display = base;
+     if (soloCheck.checked && soloPrices[label.id]) {
+       display = soloPrices[label.id];
+     }
      priceSpan.textContent=`(${display})`;
      
      if(label.id==="opt-adrenaline"){
-        checkbox.disabled = p > 1;
-        if(p > 1) checkbox.checked = false;
+        checkbox.disabled = !soloCheck.checked;
+        if(!soloCheck.checked) checkbox.checked = false;
      }
      if(label.id==="opt-lrs"){
         checkbox.disabled = p < 3;
@@ -410,10 +457,16 @@ function calculate(){
    let p = (pInput === "" || isNaN(pInput)) ? 1 : parseInt(pInput);
    let total = 0;
    const sqrtP = Math.sqrt(p);
+   const soloCheck = document.getElementById('solo-mode');
    
    document.querySelectorAll(".option:checked").forEach(opt => {
-     let basePrice = (p === 1 && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Number(opt.dataset.price);
-     let scaledPrice = (p === 1) ? basePrice : Math.ceil(basePrice * sqrtP);
+     let basePrice = Number(opt.dataset.price);
+     
+     if (soloCheck.checked && soloPrices[opt.parentElement.id]) {
+       basePrice = soloPrices[opt.parentElement.id];
+     }
+     
+     let scaledPrice = (p === 1 || soloCheck.checked) ? basePrice : Math.ceil(basePrice * sqrtP);
      total += Math.ceil(scaledPrice * modeMultiplier);
    });
    document.getElementById("result").textContent = "Total: " + total.toLocaleString();
