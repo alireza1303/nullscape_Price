@@ -85,7 +85,8 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 }
 #collapsible-title.active::after { transform: rotate(180deg); }
 .upgrades-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
-.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; overflow:hidden; white-space:nowrap; }
+.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; overflow:hidden; white-space:nowrap; position:relative; }
+.level-badge{ background:var(--accent); color:white; padding:2px 8px; border-radius:8px; font-size:12px; font-weight:bold; flex-shrink:0; }
 .custom-icon{ width:45px; height:45px; flex-shrink:0; object-fit: contain; }
 .enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
 .enemy-name-text { white-space: normal; word-break: break-word; line-height: 1.2; flex: 1; }
@@ -210,31 +211,31 @@ window.addEventListener('load', () => {
   setTimeout(() => screen.style.display = 'none', 500);
 });
 const upgradesList=[
- {name:"Adrenaline",price:50,icon:"assets/Adrenaline.png",id:"opt-adrenaline"},
- {name:"Business License",price:75,icon:"assets/Business_License.png"},
- {name:"Defuse Kit",price:30,icon:"assets/Defuse_Kit.png"},
- {name:"Paycheck",price:55,icon:"assets/Paycheck.png"},
- {name:"Swiftness Ring",price:80,icon:"assets/Swiftness_Ring.png"},
- {name:"Enemy ESP",price:100,icon:"assets/Enemy_ESP.png"},
- {name:"Better Gift Arrow",price:80,icon:"assets/Better_Gift_Arrow.png"},
- {name:"Better Jump Pads",price:50,icon:"assets/Better_Jump_Pads.png"},
- {name:"Double Jump",price:100,icon:"assets/Double_Jump.png"},
- {name:"Grace Wings",price:250,icon:"assets/Grace_Wings.png",id:"opt-grace"},
- {name:"Grapple Points",price:100,icon:"assets/Grapple_Points.png"},
- {name:"Last Robloxian Standing",price:200,icon:"assets/Last_Robloxian_Standing.png",id:"opt-lrs"},
- {name:"Pocket Bell",price:150,icon:"assets/Pocket_Bell.png"},
- {name:"Tripmine ESP",price:400,icon:"assets/Tripmine_ESP.png"},
- {name:"Advanced Coil",price:600,icon:"assets/Advanced_Gravity_Coil.png"},
- {name:"Ice Skates",price:400,icon:"assets/Ice_Skates.png"},
- {name:"Helmet",price:600,icon:"assets/Helmet.png"},
- {name:"More Altars",price:600,icon:"assets/More_Altars.png"},
- {name:"Barrier",price:1000,icon:"assets/Subspacial_Barrier.png",id:"opt-barrier"},
- {name:"Ninja Belt",price:500,icon:"assets/Ninja_Belt.png",id:"opt-ninja"},
- {name:"Gift Magnet",price:2000,icon:"assets/Gift_Magnet.png"},
- {name:"Matrix",price:2500,icon:"assets/Matrix_Tetrahedron.png"},
- {name:"Shield",price:3000,icon:"assets/Shield.png",id:"opt-shield"},
- {name:"Sport Shoes",price:1200,icon:"assets/Sport_Shoes.png"},
- {name:"Real Wings",price:25000,icon:"assets/Real_Wings.png"}
+ {name:"Adrenaline",price:50,icon:"assets/Adrenaline.png",id:"opt-adrenaline",level:3},
+ {name:"Business License",price:75,icon:"assets/Business_License.png",level:3},
+ {name:"Defuse Kit",price:30,icon:"assets/Defuse_Kit.png",level:3},
+ {name:"Grace Wings",price:250,icon:"assets/Grace_Wings.png",id:"opt-grace",level:3},
+ {name:"Paycheck",price:55,icon:"assets/Paycheck.png",level:3},
+ {name:"Swiftness Ring",price:80,icon:"assets/Swiftness_Ring.png",level:3},
+ {name:"Better Gift Arrow",price:80,icon:"assets/Better_Gift_Arrow.png",level:5},
+ {name:"Better Jump Pads",price:50,icon:"assets/Better_Jump_Pads.png",level:5},
+ {name:"Double Jump",price:100,icon:"assets/Double_Jump.png",level:5},
+ {name:"Enemy ESP",price:100,icon:"assets/Enemy_ESP.png",level:5},
+ {name:"Grapple Points",price:100,icon:"assets/Grapple_Points.png",level:5},
+ {name:"lrs",price:200,icon:"assets/Last_Robloxian_Standing.png",id:"opt-lrs",level:5},
+ {name:"Pocket Bell",price:150,icon:"assets/Pocket_Bell.png",level:5},
+ {name:"Tripmine ESP",price:400,icon:"assets/Tripmine_ESP.png",level:5},
+ {name:"Advanced Coil",price:600,icon:"assets/Advanced_Gravity_Coil.png",level:8},
+ {name:"Ice Skates",price:400,icon:"assets/Ice_Skates.png",level:8},
+ {name:"Barrier",price:1000,icon:"assets/Subspacial_Barrier.png",id:"opt-barrier",level:10},
+ {name:"Helmet",price:600,icon:"assets/Helmet.png",level:10},
+ {name:"More Altars",price:600,icon:"assets/More_Altars.png",level:10},
+ {name:"Ninja Belt",price:500,icon:"assets/Ninja_Belt.png",id:"opt-ninja",level:13},
+ {name:"Gift Magnet",price:2000,icon:"assets/Gift_Magnet.png",level:15},
+ {name:"Matrix",price:2500,icon:"assets/Matrix_Tetrahedron.png",level:15},
+ {name:"Shield",price:3000,icon:"assets/Shield.png",id:"opt-shield",level:15},
+ {name:"Sport Shoes",price:1200,icon:"assets/Sport_Shoes.png",level:15},
+ {name:"Real Wings",price:25000,icon:"assets/Real_Wings.png",level:20}
 ];
 const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000 };
 const enemiesList=[
@@ -248,16 +249,15 @@ const enemiesList=[
 ];
 let isTrapMode=false;
 
+
 function handleModeChange(mode) {
   const normalCheck = document.getElementById('normal-mode');
   const hardCheck = document.getElementById('hard-mode');
   const normalLabel = document.getElementById('normal-label');
   const hardLabel = document.getElementById('hard-label');
   
-  // Check if player count is 1 and we're not in trap mode
   const players = parseInt(document.getElementById("players").value) || 1;
   if (!isTrapMode && players === 1) {
-    // In solo mode, force normal and disable both
     normalCheck.checked = true;
     hardCheck.checked = false;
     normalLabel.classList.add('disabled');
@@ -310,7 +310,8 @@ function renderGrid(){
      label.id=item.id||"";
      label.innerHTML=`<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
        <img src="${item.icon}" class="custom-icon">
-       <span style="${item.id === 'opt-lrs' ? 'font-size: 15px;' : ''}">${item.name} <small class="price-val"></small></span>`;
+       <span style="${item.id === 'opt-lrs' ? 'font-size: 15px;' : ''}flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;">${item.name} <small class="price-val"></small></span>
+       <span class="level-badge">Lv${item.level}</span>`;
      grid.appendChild(label);
    });
  }
@@ -343,7 +344,6 @@ function handlePlayerRules(){
  const hardCheck = document.getElementById('hard-mode');
  
  if(!isTrapMode){
-   // Only lock checkboxes if Solo in Price mode
    if (p === 1) {
      normalLabel.classList.add('disabled');
      hardLabel.classList.add('disabled');
@@ -382,7 +382,6 @@ function calculate(){
  const modeMultiplier = getModeMultiplier();
  
  if(isTrapMode){
-   // Mode choice directly changes the trap enemy limit
    let limit = (modeMultiplier > 1) ? 16 : 8;
    let used = 0;
    const list = document.getElementById("trapList");
