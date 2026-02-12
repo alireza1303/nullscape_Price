@@ -85,7 +85,7 @@ h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); c
 }
 #collapsible-title.active::after { transform: rotate(180deg); }
 .upgrades-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
-.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; overflow:hidden; white-space:nowrap; position:relative; }
+.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; position:relative; }
 .level-badge{ background:var(--accent); color:white; padding:2px 8px; border-radius:8px; font-size:12px; font-weight:bold; flex-shrink:0; }
 .custom-icon{ width:45px; height:45px; flex-shrink:0; object-fit: contain; }
 .enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
@@ -222,10 +222,10 @@ const upgradesList=[
  {name:"Double Jump",price:100,icon:"assets/Double_Jump.png",level:5},
  {name:"Enemy ESP",price:100,icon:"assets/Enemy_ESP.png",level:5},
  {name:"Grapple Points",price:100,icon:"assets/Grapple_Points.png",level:5},
- {name:"lrs",price:200,icon:"assets/Last_Robloxian_Standing.png",id:"opt-lrs",level:5},
+ {name:"Last Robloxian Standing",price:200,icon:"assets/Last_Robloxian_Standing.png",id:"opt-lrs",level:5},
  {name:"Pocket Bell",price:150,icon:"assets/Pocket_Bell.png",level:5},
  {name:"Tripmine ESP",price:400,icon:"assets/Tripmine_ESP.png",level:5},
- {name:"Advanced Coil",price:600,icon:"assets/Advanced_Gravity_Coil.png",level:8},
+ {name:"Advanced Gravity Coil",price:600,icon:"assets/Advanced_Gravity_Coil.png",level:8},
  {name:"Ice Skates",price:400,icon:"assets/Ice_Skates.png",level:8},
  {name:"Barrier",price:1000,icon:"assets/Subspacial_Barrier.png",id:"opt-barrier",level:10},
  {name:"Helmet",price:600,icon:"assets/Helmet.png",level:10},
@@ -266,7 +266,6 @@ function handleModeChange(mode) {
     return;
   }
   
-  // Normal toggle behavior
   if (mode === 'normal') {
     normalCheck.checked = true;
     hardCheck.checked = false;
@@ -308,9 +307,19 @@ function renderGrid(){
    upgradesList.forEach(item=>{
      const label=document.createElement("label");
      label.id=item.id||"";
+     
+     const fullText = `${item.name} (${item.price})`;
+     let fontSize = '18px';
+     if (fullText.length > 32) fontSize = '11px';
+     else if (fullText.length > 28) fontSize = '12px';
+     else if (fullText.length > 24) fontSize = '13px';
+     else if (fullText.length > 20) fontSize = '14px';
+     else if (fullText.length > 16) fontSize = '15px';
+     else if (fullText.length > 12) fontSize = '16px';
+     
      label.innerHTML=`<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
        <img src="${item.icon}" class="custom-icon">
-       <span style="${item.id === 'opt-lrs' ? 'font-size: 15px;' : ''}flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;">${item.name} <small class="price-val"></small></span>
+       <span style="font-size:${fontSize};flex:1;min-width:0;white-space:nowrap;overflow:visible;">${item.name} <small class="price-val"></small></span>
        <span class="level-badge">Lv${item.level}</span>`;
      grid.appendChild(label);
    });
@@ -372,7 +381,6 @@ function handlePlayerRules(){
      }
    });
  } else {
-   // Always unlock checkboxes in Trap Mode
    normalLabel.classList.remove('disabled');
    hardLabel.classList.remove('disabled');
  }
