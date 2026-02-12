@@ -177,13 +177,13 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-app
   <div id="player-group">
     <div class="box-title" style="font-size:16px">Number of Players</div>
     <input type="number" id="players" min="1" max="20" value="1" inputmode="numeric" pattern="[0-9]*" oninput="handlePlayerRules()">
-    <label class="mode-checkbox-label" style="margin-top: 10px;" id="solo-label">
-      <input type="checkbox" id="solo-mode" onchange="handleSoloChange()">
-      <span>Solo Mode</span>
-    </label>
   </div>
   <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
   <div class="mode-checkboxes">
+    <label class="mode-checkbox-label" id="solo-label">
+      <input type="checkbox" id="solo-mode" onchange="handleSoloChange()">
+      <span>Solo Mode</span>
+    </label>
     <label class="mode-checkbox-label" id="normal-label">
       <input type="checkbox" id="normal-mode" checked onchange="handleModeChange('normal')">
       <span>Normal</span>
@@ -261,7 +261,6 @@ function handleSoloChange() {
   const pInput = document.getElementById("players");
   
   if (soloCheck.checked) {
-    // Force player count to 1
     pInput.value = 1;
     pInput.disabled = true;
     
