@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Nullscape Price Calculator</title>
+<title>Nullscape Portal</title>
+<link rel="icon" type="image/png" href="assets/Icon.png">
 <style>
 :root{
   --accent:#b266ff;
@@ -11,436 +12,125 @@
   --glow:rgba(155,77,255,.4);
   --btn-border:rgb(255,142,66);
   --btn-glow:rgba(255,142,66,.6);
-  --enemy-orange:rgb(255,142,66);
   --bg:rgb(26,26,26);
   --box-bg:rgb(32,32,32);
-  --loader-blue: #8ab4f8;
 }
-#loading-screen {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--bg);
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:white;
+  font-family:'Segoe UI',Arial,sans-serif;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease;
 }
-.loader {
-  width: 60px; height: 60px;
-  border: 6px solid rgba(255,255,255,0.1);
-  border-radius: 50%;
-  animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite;
+
+h1{
+  text-align:center;
+  margin:0 0 40px 0;
+  font-size:clamp(32px, 8vw, 64px);
+  color:var(--accent);
+  text-shadow:0 0 15px var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 4px;
 }
-#loading-screen p {
-  margin-top: 20px;
-  color: var(--loader-blue);
-  font-weight: bold;
-  letter-spacing: 2px;
-  animation: pulse 1.5s infinite;
-}
-@keyframes colorShift {
-  0%, 100% { border-top-color: var(--loader-blue); }
-  50% { border-top-color: var(--enemy-orange); }
-}
-@keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
-.trap-active{
-  --accent:rgb(255,142,66);
-  --accent-dark:rgb(255,142,66);
-  --glow:rgba(255,142,66,.5);
-  --btn-border:rgb(136,163,232);
-  --btn-glow:rgba(136,163,232,.6);
-}
-@media (min-width:901px){
-  .scaler-container{ zoom: 0.9; -moz-transform: scale(1.15); -moz-transform-origin: top center; }
-  .layout { grid-template-columns: 3fr 1fr !important; max-width: 1800px !important; }
-  .watermark { position: fixed; bottom: 30px; right: 40px; font-size: 24px; opacity: 0.6; text-align: right; }
-}
-body{ margin:0; min-height:100vh; background:var(--bg); color:white; font-family:'Segoe UI',Arial,sans-serif; padding-bottom:120px; overflow-x: hidden; }
-.back-btn {
-  position: fixed; top: 15px; left: 15px; padding: 10px 20px;
-  background: var(--box-bg); border: 2px solid var(--accent); color: var(--accent);
-  border-radius: 12px; text-decoration: none; font-weight: bold; z-index: 1001; transition: 0.3s;
-}
-.back-btn:hover { background: var(--accent); color: white; box-shadow: 0 0 15px var(--glow); }
-.mode-toggle{
-  position:fixed; top:15px; right:15px; width:60px; height:60px;
-  background:var(--box-bg); border:3px solid var(--btn-border); border-radius:12px;
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 15px var(--btn-glow); z-index:1001;
-}
-.mode-toggle img{width:40px;height:40px}
-h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); color:var(--accent); text-shadow:0 0 15px var(--accent); }
-.layout{ display:grid; grid-template-columns:2fr 1fr; gap:20px; padding:0 20px; max-width:1600px; margin:0 auto; }
-.box{ background:var(--box-bg); border-radius:20px; padding:25px; box-shadow:0 0 25px var(--glow); border:1px solid rgba(255,255,255,.05); margin-bottom: 20px; }
-.box-title{ font-size:clamp(20px,4vw,26px); margin-bottom:20px; color:var(--accent); text-transform:uppercase; letter-spacing:2px; font-weight:bold; }
-#collapsible-title { cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-#collapsible-title::after {
-    content: '▼';
-    font-size: 14px;
-    transition: transform 0.3s ease;
-    display: inline-block;
-}
-#collapsible-title.active::after { transform: rotate(180deg); }
-.upgrades-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
-.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; position:relative; }
-.level-badge{ background:var(--accent); color:white; padding:2px 8px; border-radius:8px; font-size:12px; font-weight:bold; flex-shrink:0; }
-.custom-icon{ width:45px; height:45px; flex-shrink:0; object-fit: contain; }
-.enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
-.enemy-name-text { white-space: normal; word-break: break-word; line-height: 1.2; flex: 1; }
-.watermark { 
-    width: 100%;
-    text-align: center;
-    padding: 20px 0;
-    color: rgba(255,255,255,0.4); 
-    font-weight: bold; 
-    letter-spacing: 2px; 
-    text-shadow: 0 0 10px var(--accent); 
-    font-style: italic; 
-}
-.mode-checkboxes {
+
+.portal-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 25px;
+  width: 90%;
+  max-width: 500px;
 }
-.mode-checkbox-label {
+
+.portal-box {
+  background: var(--box-bg);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 0 25px var(--glow);
+  border: 1px solid rgba(255,255,255,.05);
+  text-decoration: none;
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  background: rgba(255,255,255,.03);
-  padding: 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.2s;
+  text-align: center;
 }
-.mode-checkbox-label:hover {
-  background: rgba(255,255,255,.08);
+
+.portal-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 40px var(--accent);
+  border: 1px solid var(--accent);
 }
-.mode-checkbox-label.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+
+.portal-box.secondary {
+  border: 2px solid var(--btn-border);
+  box-shadow: 0 0 15px var(--btn-glow);
 }
-.mode-checkbox-label.disabled:hover {
-  background: rgba(255,255,255,.03);
+
+.portal-box.secondary:hover {
+  box-shadow: 0 0 30px var(--btn-border);
 }
-@media(max-width:900px){
-  body { padding-bottom: 240px; } 
-  .layout{ display: flex !important; flex-direction: column; }
-  .controls { order: -1; }
-  h1{margin-top:80px}
-  .upgrades-grid{grid-template-columns:1fr}
-  
-  #results-container{ 
-    position:fixed; bottom:0; left:0; right:0; z-index:1000; 
-    border-radius:20px 20px 0 0; padding:15px 25px; 
-    background: var(--box-bg); max-height:60vh; overflow-y:auto;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-    margin-bottom: 0;
-  }
-  #trapList { display: none; margin-top: 15px; }
-  #trapList.visible { display: block; }
-  #mobile-clear { display: block !important; margin-top: 10px; }
+
+.icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+  object-fit: contain;
 }
-input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); }
-input[type="number"]{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
-input[type="number"]:disabled{ opacity:0.5; cursor:not-allowed; }
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.price{ font-size:clamp(32px, 8vw, 52px); color:var(--accent); font-weight:bold; text-align:center; }
-.formula{ font-size:14px; color:#888; text-align:center; margin-top:5px; }
-.trap-results-list{ list-style:none; padding:0; margin:0; font-size:20px; }
-.trap-results-list li{ padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; color:var(--enemy-orange); }
-.clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:20px; margin-top:25px; border-radius:12px; cursor:pointer; }
-#mobile-clear { display: none; }
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.secondary .title {
+  color: var(--btn-border);
+}
+
+.description {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.watermark {
+    position: fixed;
+    bottom: 20px;
+    color: rgba(255,255,255,0.4);
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--accent);
+    font-style: italic;
+    font-size: 14px;
+}
 </style>
 </head>
 <body>
-<div id="loading-screen">
-  <div class="loader"></div>
-  <p>LOADING DATA...</p>
+
+<h1>Gome Page</h1>
+
+<div class="portal-container">
+    <a href="prices.html" class="portal-box secondary">
+        <img src="assets/Trap-Card.png" class="icon" alt="Calculator">
+        <div class="title">Calculator</div>
+        <div class="description">Calculate upgrade costs or trap card enemy spawns.</div>
+    </a>
+  
+    <a href="stats.html" class="portal-box">
+        <img src="assets/Adrenaline.png" class="icon" alt="Stats">
+        <div class="title">Stats</div>
+        <div class="description">(WIP)</div>
+    </a>
 </div>
-<a href="index.html" class="back-btn">← Home</a>
-<button class="mode-toggle" onclick="toggleTrapMode()"><img src="assets/Trap-Card.png" id="toggleIcon"></button>
-<div class="scaler-container">
-<h1 id="mainTitle">Nullscape Price Calculator</h1>
-<div class="layout">
-<div class="box main-content">
-  <div class="box-title" id="gridTitle">Upgrades</div>
-  <div class="upgrades-grid" id="mainGrid"></div>
-  <button class="clear-btn" id="desktop-clear" onclick="clearAll()">Clear All</button>
-</div>
-<div class="controls">
-<div class="box">
-  <div id="player-group">
-    <div class="box-title" style="font-size:16px">Number of Players</div>
-    <input type="number" id="players" min="1" max="20" value="1" inputmode="numeric" pattern="[0-9]*" oninput="handlePlayerRules()">
-  </div>
-  <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
-  <div class="mode-checkboxes">
-    <label class="mode-checkbox-label" id="solo-label">
-      <input type="checkbox" id="solo-mode" onchange="handleSoloChange()">
-      <span>Solo Mode</span>
-    </label>
-    <label class="mode-checkbox-label" id="normal-label">
-      <input type="checkbox" id="normal-mode" checked onchange="handleModeChange('normal')">
-      <span>Normal</span>
-    </label>
-    <label class="mode-checkbox-label" id="hard-label">
-      <input type="checkbox" id="hard-mode" onchange="handleModeChange('hard')">
-      <span>Hard Mode</span>
-    </label>
-  </div>
-</div>
-<div class="box" id="results-container">
-  <div id="upgrade-results">
-    <div class="price" id="result">Total: 0</div>
-    <div class="formula">ceil(base × √players) × Mode</div>
-  </div>
-  <div id="trap-results" style="display:none">
-    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
-    <ul class="trap-results-list" id="trapList"></ul>
-  </div>
-  <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
-</div>
-</div>
-</div>
+
 <div class="watermark">Made by alireza1303</div>
-</div>
-<script>
-window.addEventListener('load', () => {
-  const screen = document.getElementById('loading-screen');
-  screen.style.opacity = '0';
-  setTimeout(() => screen.style.display = 'none', 500);
-});
-const upgradesList=[
- {name:"Adrenaline",price:50,icon:"assets/Adrenaline.png",id:"opt-adrenaline",level:3},
- {name:"Business License",price:75,icon:"assets/Business_License.png",level:3},
- {name:"Defuse Kit",price:30,icon:"assets/Defuse_Kit.png",level:3},
- {name:"Paycheck",price:55,icon:"assets/Paycheck.png",level:3},
- {name:"Swiftness Ring",price:80,icon:"assets/Swiftness_Ring.png",level:3},
- {name:"Better Gift Arrow",price:80,icon:"assets/Better_Gift_Arrow.png",level:5},
- {name:"Better Jump Pads",price:50,icon:"assets/Better_Jump_Pads.png",level:5},
- {name:"Double Jump",price:100,icon:"assets/Double_Jump.png",level:5},
- {name:"Enemy ESP",price:100,icon:"assets/Enemy_ESP.png",level:5},
- {name:"Grace Wings",price:250,icon:"assets/Grace_Wings.png",id:"opt-grace",level:5},
- {name:"Grapple Points",price:100,icon:"assets/Grapple_Points.png",level:5},
- {name:"Last Robloxian Standing",price:200,icon:"assets/Last_Robloxian_Standing.png",id:"opt-lrs",level:5},
- {name:"Pocket Bell",price:150,icon:"assets/Pocket_Bell.png",level:5},
- {name:"Tripmine ESP",price:400,icon:"assets/Tripmine_ESP.png",level:5},
- {name:"Advanced Gravity Coil",price:600,icon:"assets/Advanced_Gravity_Coil.png",level:8},
- {name:"Ice Skates",price:400,icon:"assets/Ice_Skates.png",id:"opt-iceskates",level:8},
- {name:"Barrier",price:1000,icon:"assets/Subspacial_Barrier.png",id:"opt-barrier",level:10},
- {name:"Helmet",price:600,icon:"assets/Helmet.png",level:10},
- {name:"More Altars",price:600,icon:"assets/More_Altars.png",level:10},
- {name:"Ninja Belt",price:500,icon:"assets/Ninja_Belt.png",id:"opt-ninja",level:13},
- {name:"Gift Magnet",price:2000,icon:"assets/Gift_Magnet.png",level:15},
- {name:"Matrix",price:2500,icon:"assets/Matrix_Tetrahedron.png",level:15},
- {name:"Shield",price:3000,icon:"assets/Shield.png",id:"opt-shield",level:15},
- {name:"Sport Shoes",price:1200,icon:"assets/Sport_Shoes.png",level:15},
- {name:"Real Wings",price:25000,icon:"assets/Real_Wings.png",level:20}
-];
-const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000,"opt-iceskates":300 };
-const enemiesList=[
-    {name:"Mart", icon:"assets/Mart.png"}, {name:"Baby", icon:"assets/baby.png"}, {name:"NIL", icon:"assets/nil.png"},
-    {name:"Voidbreaker", icon:"assets/voidbreaker.png"}, {name:"Springer", icon:"assets/springer.png"},
-   {name:"Bell", icon:"assets/bell.png"},{name:"Voidbound Guardian", icon:"assets/vbg.png"},
-    {name:"Voidbound Baby", icon:"assets/voidBaby.png"},{name:"Skinwalker", icon:"assets/skinwalker.png"}, 
-    {name:"???", icon:"assets/random.png"}, {name:"Telefragger", icon:"assets/tele.png"},
-    {name:"Flesh", icon:"assets/flesh.png"}, {name:"Guardian", icon:"assets/guardian.png"},
-    {name:"Cadence", icon:"assets/Cadance.png"}, {name:"ICBM", icon:"assets/icbm.png"}
-];
-let isTrapMode=false;
 
-function handleSoloChange() {
-  const soloCheck = document.getElementById('solo-mode');
-  const normalCheck = document.getElementById('normal-mode');
-  const hardCheck = document.getElementById('hard-mode');
-  const pInput = document.getElementById("players");
-  
-  if (soloCheck.checked) {
-    pInput.value = 1;
-    pInput.disabled = true;
-    
-    normalCheck.checked = false;
-    hardCheck.checked = false;
-  } else {
-    pInput.disabled = false;
-    normalCheck.checked = true;
-  }
-  
-  handlePlayerRules();
-}
-
-function handleModeChange(mode) {
-  const normalCheck = document.getElementById('normal-mode');
-  const hardCheck = document.getElementById('hard-mode');
-  const soloCheck = document.getElementById('solo-mode');
-  const pInput = document.getElementById("players");
-  
-  if (mode === 'normal') {
-    soloCheck.checked = false;
-    normalCheck.checked = true;
-    hardCheck.checked = false;
-    pInput.disabled = false;
-  } else if (mode === 'hard') {
-    soloCheck.checked = false;
-    hardCheck.checked = true;
-    normalCheck.checked = false;
-    pInput.disabled = false;
-  }
-  
-  handlePlayerRules();
-}
-
-function getModeMultiplier() {
-  const hardCheck = document.getElementById('hard-mode');
-  const soloCheck = document.getElementById('solo-mode');
-  
-  if (soloCheck.checked) {
-    return 1;
-  }
-  
-  return hardCheck.checked ? 1.15 : 1;
-}
-
-function toggleMobileList() {
-    if(window.innerWidth <= 900) {
-        const list = document.getElementById("trapList");
-        const title = document.getElementById("collapsible-title");
-        list.classList.toggle("visible");
-        title.classList.toggle("active");
-    }
-}
-function renderGrid(){
- const grid=document.getElementById("mainGrid");
- grid.innerHTML="";
- if(isTrapMode){
-   enemiesList.forEach(item=>{
-     const label=document.createElement("label");
-     label.innerHTML=`<input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
-       <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-         <img src="${item.icon}" class="custom-icon">
-         <span class="enemy-name-text">${item.name}</span>
-       </div>`;
-     grid.appendChild(label);
-   });
- }else{
-   upgradesList.forEach(item=>{
-     const label=document.createElement("label");
-     label.id=item.id||"";
-     
-     const fullText = `${item.name} (${item.price})`;
-     let fontSize = '18px';
-     if (fullText.length > 32) fontSize = '11px';
-     else if (fullText.length > 28) fontSize = '12px';
-     else if (fullText.length > 24) fontSize = '13px';
-     else if (fullText.length > 20) fontSize = '14px';
-     else if (fullText.length > 16) fontSize = '15px';
-     else if (fullText.length > 12) fontSize = '16px';
-     
-     label.innerHTML=`<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
-       <img src="${item.icon}" class="custom-icon">
-       <span style="font-size:${fontSize};flex:1;min-width:0;white-space:nowrap;overflow:visible;">${item.name} <small class="price-val"></small></span>
-       <span class="level-badge">Lv${item.level}</span>`;
-     grid.appendChild(label);
-   });
- }
- handlePlayerRules();
-}
-function toggleTrapMode(){
-  isTrapMode=!isTrapMode;
-  document.body.classList.toggle('trap-active');
-  document.getElementById("mainTitle").textContent=isTrapMode?"Nullscape Trap Card Calculator":"Nullscape Price Calculator";
-  document.getElementById("gridTitle").textContent=isTrapMode?"Current Run Enemies":"Upgrades";
-  document.getElementById("toggleIcon").src=isTrapMode?"assets/Defuse_Kit.png":"assets/Trap-Card.png";
-  document.getElementById("player-group").style.display=isTrapMode?"none":"block";
-  document.getElementById("upgrade-results").style.display=isTrapMode?"none":"block";
-  document.getElementById("trap-results").style.display=isTrapMode?"block":"none";
-  renderGrid();
-  handlePlayerRules();
-}
-function handlePlayerRules(){
- const pInput=document.getElementById("players");
- let pVal = pInput.value;
- 
- let p = (pVal === "" || isNaN(pVal)) ? 1 : parseInt(pVal);
- 
- if (p > 20) { p = 20; pInput.value = 20; }
- if (p < 1 && pVal !== "") { p = 1; pInput.value = 1; }
- 
- const soloCheck = document.getElementById('solo-mode');
- 
- if(!isTrapMode){
-   document.querySelectorAll(".upgrades-grid label").forEach(label=>{
-     const checkbox=label.querySelector("input");
-     const priceSpan=label.querySelector(".price-val");
-     const base=Number(checkbox.dataset.price);
-     
-     let display = base;
-     if (soloCheck.checked && soloPrices[label.id]) {
-       display = soloPrices[label.id];
-     }
-     priceSpan.textContent=`(${display})`;
-     
-     if(label.id==="opt-adrenaline"){
-        checkbox.disabled = !soloCheck.checked;
-        if(!soloCheck.checked) checkbox.checked = false;
-     }
-     if(label.id==="opt-lrs"){
-        checkbox.disabled = p < 3;
-        if(p < 3) checkbox.checked = false;
-     }
-   });
- }
- calculate();
-}
-function calculate(){
- const modeMultiplier = getModeMultiplier();
- 
- if(isTrapMode){
-   let limit = (modeMultiplier > 1) ? 16 : 8;
-   let used = 0;
-   const list = document.getElementById("trapList");
-   list.innerHTML = "";
-   document.querySelectorAll(".enemy-count").forEach(input => {
-     let count = parseInt(input.value) || 0;
-     let name = input.parentElement.querySelector(".enemy-name-text").textContent;
-     let added = 0;
-     if(used < limit && count > 0) { added = Math.min(count, limit - used); used += added; }
-     if(count > 0) {
-       const li = document.createElement("li");
-       li.innerHTML = `${name} <span>${count + added}</span>`;
-       list.appendChild(li);
-     }
-   });
- } else {
-   let pInput = document.getElementById("players").value;
-   let p = (pInput === "" || isNaN(pInput)) ? 1 : parseInt(pInput);
-   let total = 0;
-   const sqrtP = Math.sqrt(p);
-   const soloCheck = document.getElementById('solo-mode');
-   
-   document.querySelectorAll(".option:checked").forEach(opt => {
-     let basePrice = Number(opt.dataset.price);
-     
-     if (soloCheck.checked && soloPrices[opt.parentElement.id]) {
-       basePrice = soloPrices[opt.parentElement.id];
-     }
-     
-     let scaledPrice = (p === 1 || soloCheck.checked) ? basePrice : Math.ceil(basePrice * sqrtP);
-     total += Math.ceil(scaledPrice * modeMultiplier);
-   });
-   document.getElementById("result").textContent = "Total: " + total.toLocaleString();
- }
-}
-function clearAll(){
- document.querySelectorAll(isTrapMode ? ".enemy-count" : ".option").forEach(i => isTrapMode ? i.value = 0 : i.checked = false);
- calculate();
-}
-window.onload=renderGrid;
-</script>
 </body>
 </html>
