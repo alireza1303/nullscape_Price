@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Nullscape Price Calculator</title>
-<link rel="icon" type="image/png" href="assets/Icon.png">
+<link rel="icon" type="image/svg+xml" href="https://www.gstatic.com/lamda/images/favicon_v1_150160d13988650c76.svg">
 <style>
 :root{
   --accent:#b266ff;
@@ -17,6 +17,31 @@
   --box-bg:rgb(32,32,32);
   --loader-blue: #8ab4f8;
 }
+
+/* --- PATCH SCREEN STYLES --- */
+#patch-screen {
+  display: none; 
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  text-align: center;
+}
+
+.patch-spinner {
+  width: 80px; height: 80px;
+  border: 8px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite;
+}
+
+#patch-screen h1 { font-size: 48px; margin-top: 25px; color: var(--accent); text-shadow: 0 0 15px var(--accent); }
+#patch-screen p { margin-top: 10px; color: var(--loader-blue); font-weight: bold; letter-spacing: 2px; animation: pulse 1.5s infinite; }
+
+/* --- CALCULATOR STYLES --- */
 #loading-screen {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -34,19 +59,15 @@
   border-radius: 50%;
   animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite;
 }
-#loading-screen p {
-  margin-top: 20px;
-  color: var(--loader-blue);
-  font-weight: bold;
-  letter-spacing: 2px;
-  animation: pulse 1.5s infinite;
-}
+#loading-screen p { margin-top: 20px; color: var(--loader-blue); font-weight: bold; letter-spacing: 2px; animation: pulse 1.5s infinite; }
+
 @keyframes colorShift {
   0%, 100% { border-top-color: var(--loader-blue); }
   50% { border-top-color: var(--enemy-orange); }
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 @keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
 .trap-active{
   --accent:rgb(255,142,66);
   --accent-dark:rgb(255,142,66);
@@ -54,104 +75,95 @@
   --btn-border:rgb(136,163,232);
   --btn-glow:rgba(136,163,232,.6);
 }
+
 @media (min-width:901px){
   .scaler-container{ zoom: 0.9; -moz-transform: scale(1.15); -moz-transform-origin: top center; }
   .layout { grid-template-columns: 3fr 1fr !important; max-width: 1800px !important; }
   .watermark { position: fixed; bottom: 30px; right: 40px; font-size: 24px; opacity: 0.6; text-align: right; }
 }
+
 body{ margin:0; min-height:100vh; background:var(--bg); color:white; font-family:'Segoe UI',Arial,sans-serif; padding-bottom:120px; overflow-x: hidden; }
+
 .back-btn {
   position: fixed; top: 15px; left: 15px; padding: 10px 20px;
   background: var(--box-bg); border: 2px solid var(--accent); color: var(--accent);
   border-radius: 12px; text-decoration: none; font-weight: bold; z-index: 1001; transition: 0.3s;
 }
+
 .back-btn:hover { background: var(--accent); color: white; box-shadow: 0 0 15px var(--glow); }
+
 .mode-toggle{
   position:fixed; top:15px; right:15px; width:60px; height:60px;
   background:var(--box-bg); border:3px solid var(--btn-border); border-radius:12px;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 15px var(--btn-glow); z-index:1001;
+  box-shadow:0 0 15px var(--btn-glow); z-index: 1001;
 }
 .mode-toggle img{width:40px;height:40px}
+
 h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); color:var(--accent); text-shadow:0 0 15px var(--accent); }
+
 .layout{ display:grid; grid-template-columns:2fr 1fr; gap:20px; padding:0 20px; max-width:1600px; margin:0 auto; }
+
 .box{ background:var(--box-bg); border-radius:20px; padding:25px; box-shadow:0 0 25px var(--glow); border:1px solid rgba(255,255,255,.05); margin-bottom: 20px; }
+
 .box-title{ font-size:clamp(20px,4vw,26px); margin-bottom:20px; color:var(--accent); text-transform:uppercase; letter-spacing:2px; font-weight:bold; }
+
 #collapsible-title { cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-#collapsible-title::after {
-    content: '▼';
-    font-size: 14px;
-    transition: transform 0.3s ease;
-    display: inline-block;
-}
+#collapsible-title::after { content: '▼'; font-size: 14px; transition: transform 0.3s ease; display: inline-block; }
 #collapsible-title.active::after { transform: rotate(180deg); }
+
 .upgrades-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
 .upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; position:relative; }
 .level-badge{ background:var(--accent); color:white; padding:2px 8px; border-radius:8px; font-size:12px; font-weight:bold; flex-shrink:0; }
 .custom-icon{ width:45px; height:45px; flex-shrink:0; object-fit: contain; }
 .enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
 .enemy-name-text { white-space: normal; word-break: break-word; line-height: 1.2; flex: 1; }
+
 .watermark { 
-    width: 100%;
-    text-align: center;
-    padding: 20px 0;
-    color: rgba(255,255,255,0.4); 
-    font-weight: bold; 
-    letter-spacing: 2px; 
-    text-shadow: 0 0 10px var(--accent); 
-    font-style: italic; 
+    width: 100%; text-align: center; padding: 20px 0; color: rgba(255,255,255,0.4); 
+    font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent); font-style: italic; 
 }
-.mode-checkboxes {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 10px;
-}
+
+.mode-checkboxes { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 .mode-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  background: rgba(255,255,255,.03);
-  padding: 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.2s;
+  display: flex; align-items: center; gap: 10px; font-size: 18px; background: rgba(255,255,255,.03);
+  padding: 12px; border-radius: 12px; cursor: pointer; transition: 0.2s;
 }
-.mode-checkbox-label:hover {
-  background: rgba(255,255,255,.08);
-}
-.mode-checkbox-label.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-.mode-checkbox-label.disabled:hover {
-  background: rgba(255,255,255,.03);
-}
+.mode-checkbox-label:hover { background: rgba(255,255,255,.08); }
+
 @media(max-width:900px){
   body { padding-bottom: 240px; } 
   .layout{ display: flex !important; flex-direction: column; }
   .controls { order: -1; }
   h1{margin-top:80px}
   .upgrades-grid{grid-template-columns:1fr}
-  
   #results-container{ 
     position:fixed; bottom:0; left:0; right:0; z-index:1000; 
     border-radius:20px 20px 0 0; padding:15px 25px; 
     background: var(--box-bg); max-height:60vh; overflow-y:auto;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
-    margin-bottom: 0;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.5); margin-bottom: 0;
   }
   #trapList { display: none; margin-top: 15px; }
   #trapList.visible { display: block; }
   #mobile-clear { display: block !important; margin-top: 10px; }
 }
+
 input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); }
 input[type="number"]{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
-input[type="number"]:disabled{ opacity:0.5; cursor:not-allowed; }
 input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .price{ font-size:clamp(32px, 8vw, 52px); color:var(--accent); font-weight:bold; text-align:center; }
 .formula{ font-size:14px; color:#888; text-align:center; margin-top:5px; }
+
+/* Countdown UI */
+#countdown-box {
+  margin-top: 15px;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 10px;
+}
+#countdown-label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+#countdown-timer { font-family: monospace; font-size: 16px; color: var(--accent); font-weight: bold; text-shadow: 0 0 5px var(--glow); }
+
 .trap-results-list{ list-style:none; padding:0; margin:0; font-size:20px; }
 .trap-results-list li{ padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; color:var(--enemy-orange); }
 .clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:20px; margin-top:25px; border-radius:12px; cursor:pointer; }
@@ -159,63 +171,100 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-app
 </style>
 </head>
 <body>
+
+<div id="patch-screen">
+  <div class="patch-spinner"></div>
+  <h1>PATCHING...</h1>
+  <p>WAITING FOR PATCH 5 UPDATE</p>
+  <p style="color:#666; font-size: 14px; animation: none;">The calculator will return once the patch is live.</p>
+</div>
+
 <div id="loading-screen">
   <div class="loader"></div>
   <p>LOADING DATA...</p>
 </div>
+
 <a href="index.html" class="back-btn">← Home</a>
 <button class="mode-toggle" onclick="toggleTrapMode()"><img src="assets/Trap-Card.png" id="toggleIcon"></button>
-<div class="scaler-container">
-<h1 id="mainTitle">Nullscape Price Calculator</h1>
-<div class="layout">
-<div class="box main-content">
-  <div class="box-title" id="gridTitle">Upgrades</div>
-  <div class="upgrades-grid" id="mainGrid"></div>
-  <button class="clear-btn" id="desktop-clear" onclick="clearAll()">Clear All</button>
-</div>
-<div class="controls">
-<div class="box">
-  <div id="player-group">
-    <div class="box-title" style="font-size:16px">Number of Players</div>
-    <input type="number" id="players" min="1" max="20" value="1" inputmode="numeric" pattern="[0-9]*" oninput="handlePlayerRules()">
+
+<div class="scaler-container" id="main-ui">
+  <h1 id="mainTitle">Nullscape Price Calculator</h1>
+  <div class="layout">
+    <div class="box main-content">
+      <div class="box-title" id="gridTitle">Upgrades</div>
+      <div class="upgrades-grid" id="mainGrid"></div>
+      <button class="clear-btn" id="desktop-clear" onclick="clearAll()">Clear All</button>
+    </div>
+    <div class="controls">
+      <div class="box">
+        <div id="player-group">
+          <div class="box-title" style="font-size:16px">Number of Players</div>
+          <input type="number" id="players" min="1" max="20" value="1" inputmode="numeric" oninput="handlePlayerRules()">
+        </div>
+        <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
+        <div class="mode-checkboxes">
+          <label class="mode-checkbox-label"><input type="checkbox" id="solo-mode" onchange="handleSoloChange()"> Solo Mode</label>
+          <label class="mode-checkbox-label"><input type="checkbox" id="normal-mode" checked onchange="handleModeChange('normal')"> Normal</label>
+          <label class="mode-checkbox-label"><input type="checkbox" id="hard-mode" onchange="handleModeChange('hard')"> Hard Mode</label>
+        </div>
+      </div>
+      <div class="box" id="results-container">
+        <div id="upgrade-results">
+          <div class="price" id="result">Total: 0</div>
+          <div class="formula">ceil(base × √players) × Mode</div>
+        </div>
+        <div id="trap-results" style="display:none">
+          <div class="box-title" id="collapsible-title" onclick="toggleMobileList()">Enemies After Trap</div>
+          <ul class="trap-results-list" id="trapList"></ul>
+        </div>
+        
+        <div id="countdown-box">
+          <div id="countdown-label">Patch 5 Countdown</div>
+          <div id="countdown-timer">00d 00h 00m 00s</div>
+        </div>
+
+        <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
+      </div>
+    </div>
   </div>
-  <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
-  <div class="mode-checkboxes">
-    <label class="mode-checkbox-label" id="solo-label">
-      <input type="checkbox" id="solo-mode" onchange="handleSoloChange()">
-      <span>Solo Mode</span>
-    </label>
-    <label class="mode-checkbox-label" id="normal-label">
-      <input type="checkbox" id="normal-mode" checked onchange="handleModeChange('normal')">
-      <span>Normal</span>
-    </label>
-    <label class="mode-checkbox-label" id="hard-label">
-      <input type="checkbox" id="hard-mode" onchange="handleModeChange('hard')">
-      <span>Hard Mode</span>
-    </label>
-  </div>
+  <div class="watermark">Made by alireza1303</div>
 </div>
-<div class="box" id="results-container">
-  <div id="upgrade-results">
-    <div class="price" id="result">Total: 0</div>
-    <div class="formula">ceil(base × √players) × Mode</div>
-  </div>
-  <div id="trap-results" style="display:none">
-    <div class="box-title" id="collapsible-title" style="font-size:18px;text-align:center" onclick="toggleMobileList()">Enemies After Trap</div>
-    <ul class="trap-results-list" id="trapList"></ul>
-  </div>
-  <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
-</div>
-</div>
-</div>
-<div class="watermark">Made by alireza1303</div>
-</div>
+
 <script>
+/* --- PATCH TIMER & COUNTDOWN LOGIC --- */
+const DEBUG_MODE = false; // Set to true to bypass countdown and see screen now
+const PATCH_DATE = new Date("2026-04-03T03:40:00+03:30"); // TEST DATE: April 3rd
+
+function updateCountdown() {
+    const now = new Date();
+    const diff = PATCH_DATE - now;
+
+    if (diff <= 0 || DEBUG_MODE === true) {
+        document.getElementById('patch-screen').style.display = 'flex';
+        document.getElementById('main-ui').style.display = 'none';
+        document.querySelector('.mode-toggle').style.display = 'none';
+        return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown-timer").textContent = 
+        `${days}d ${hours.toString().padStart(2,'0')}h ${mins.toString().padStart(2,'0')}m ${secs.toString().padStart(2,'0')}s`;
+}
+
+setInterval(updateCountdown, 1000);
+
+/* --- CALCULATOR LOGIC --- */
 window.addEventListener('load', () => {
+  updateCountdown();
   const screen = document.getElementById('loading-screen');
   screen.style.opacity = '0';
   setTimeout(() => screen.style.display = 'none', 500);
 });
+
 const upgradesList=[
  {name:"Adrenaline",price:50,icon:"assets/Adrenaline.png",id:"opt-adrenaline",level:3},
  {name:"Business License",price:75,icon:"assets/Business_License.png",level:3},
@@ -243,6 +292,7 @@ const upgradesList=[
  {name:"Sport Shoes",price:1200,icon:"assets/Sport_Shoes.png",level:15},
  {name:"Real Wings",price:25000,icon:"assets/Real_Wings.png",level:20}
 ];
+
 const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000,"opt-iceskates":300 };
 const enemiesList=[
     {name:"Mart", icon:"assets/Mart.png"}, {name:"Baby", icon:"assets/baby.png"}, {name:"NIL", icon:"assets/nil.png"},
@@ -253,70 +303,50 @@ const enemiesList=[
     {name:"Flesh", icon:"assets/flesh.png"}, {name:"Guardian", icon:"assets/guardian.png"},
     {name:"Cadence", icon:"assets/Cadance.png"}, {name:"ICBM", icon:"assets/icbm.png"}
 ];
+
 let isTrapMode=false;
 
 function handleSoloChange() {
   const soloCheck = document.getElementById('solo-mode');
-  const normalCheck = document.getElementById('normal-mode');
-  const hardCheck = document.getElementById('hard-mode');
   const pInput = document.getElementById("players");
-  
-  if (soloCheck.checked) {
-    pInput.value = 1;
-    pInput.disabled = true;
-    
-    normalCheck.checked = false;
-    hardCheck.checked = false;
-  } else {
-    pInput.disabled = false;
-    normalCheck.checked = true;
+  if (soloCheck.checked) { 
+    pInput.value = 1; pInput.disabled = true; 
+    document.getElementById('normal-mode').checked = false; 
+    document.getElementById('hard-mode').checked = false; 
+  } else { 
+    pInput.disabled = false; 
+    document.getElementById('normal-mode').checked = true; 
   }
-  
   handlePlayerRules();
 }
 
 function handleModeChange(mode) {
-  const normalCheck = document.getElementById('normal-mode');
-  const hardCheck = document.getElementById('hard-mode');
-  const soloCheck = document.getElementById('solo-mode');
   const pInput = document.getElementById("players");
-  
-  if (mode === 'normal') {
-    soloCheck.checked = false;
-    normalCheck.checked = true;
-    hardCheck.checked = false;
-    pInput.disabled = false;
-  } else if (mode === 'hard') {
-    soloCheck.checked = false;
-    hardCheck.checked = true;
-    normalCheck.checked = false;
-    pInput.disabled = false;
+  document.getElementById('solo-mode').checked = false;
+  if (mode === 'normal') { 
+    document.getElementById('hard-mode').checked = false; 
+  } else { 
+    document.getElementById('normal-mode').checked = false; 
   }
-  
+  pInput.disabled = false;
   handlePlayerRules();
 }
 
 function getModeMultiplier() {
-  const hardCheck = document.getElementById('hard-mode');
-  const soloCheck = document.getElementById('solo-mode');
-  
-  if (soloCheck.checked) {
-    return 1;
-  }
-  
-  return hardCheck.checked ? 1.15 : 1;
+  if (document.getElementById('solo-mode').checked) return 1;
+  return document.getElementById('hard-mode').checked ? 1.15 : 1;
 }
 
 function toggleMobileList() {
     if(window.innerWidth <= 900) {
-        const list = document.getElementById("trapList");
-        const title = document.getElementById("collapsible-title");
-        list.classList.toggle("visible");
-        title.classList.toggle("active");
+        document.getElementById("trapList").classList.toggle("visible"); 
+        document.getElementById("collapsible-title").classList.toggle("active");
     }
 }
+
 function renderGrid(){
  const grid=document.getElementById("mainGrid");
+ if(!grid) return;
  grid.innerHTML="";
  if(isTrapMode){
    enemiesList.forEach(item=>{
@@ -332,25 +362,18 @@ function renderGrid(){
    upgradesList.forEach(item=>{
      const label=document.createElement("label");
      label.id=item.id||"";
-     
      const fullText = `${item.name} (${item.price})`;
-     let fontSize = '18px';
-     if (fullText.length > 32) fontSize = '11px';
-     else if (fullText.length > 28) fontSize = '12px';
-     else if (fullText.length > 24) fontSize = '13px';
-     else if (fullText.length > 20) fontSize = '14px';
-     else if (fullText.length > 16) fontSize = '15px';
-     else if (fullText.length > 12) fontSize = '16px';
-     
+     let fontSize = (fullText.length > 20) ? '14px' : '18px';
      label.innerHTML=`<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
        <img src="${item.icon}" class="custom-icon">
-       <span style="font-size:${fontSize};flex:1;min-width:0;white-space:nowrap;overflow:visible;">${item.name} <small class="price-val"></small></span>
+       <span style="font-size:${fontSize};flex:1;min-width:0;">${item.name} <small class="price-val"></small></span>
        <span class="level-badge">Lv${item.level}</span>`;
      grid.appendChild(label);
    });
  }
  handlePlayerRules();
 }
+
 function toggleTrapMode(){
   isTrapMode=!isTrapMode;
   document.body.classList.toggle('trap-active');
@@ -361,46 +384,30 @@ function toggleTrapMode(){
   document.getElementById("upgrade-results").style.display=isTrapMode?"none":"block";
   document.getElementById("trap-results").style.display=isTrapMode?"block":"none";
   renderGrid();
-  handlePlayerRules();
 }
+
 function handlePlayerRules(){
  const pInput=document.getElementById("players");
- let pVal = pInput.value;
- 
- let p = (pVal === "" || isNaN(pVal)) ? 1 : parseInt(pVal);
- 
+ if(!pInput) return;
+ let p = parseInt(pInput.value) || 1;
  if (p > 20) { p = 20; pInput.value = 20; }
- if (p < 1 && pVal !== "") { p = 1; pInput.value = 1; }
- 
  const soloCheck = document.getElementById('solo-mode');
- 
  if(!isTrapMode){
    document.querySelectorAll(".upgrades-grid label").forEach(label=>{
      const checkbox=label.querySelector("input");
      const priceSpan=label.querySelector(".price-val");
      const base=Number(checkbox.dataset.price);
-     
-     let display = base;
-     if (soloCheck.checked && soloPrices[label.id]) {
-       display = soloPrices[label.id];
-     }
+     let display = (soloCheck.checked && soloPrices[label.id]) ? soloPrices[label.id] : base;
      priceSpan.textContent=`(${display})`;
-     
-     if(label.id==="opt-adrenaline"){
-        checkbox.disabled = !soloCheck.checked;
-        if(!soloCheck.checked) checkbox.checked = false;
-     }
-     if(label.id==="opt-lrs"){
-        checkbox.disabled = p < 3;
-        if(p < 3) checkbox.checked = false;
-     }
+     if(label.id==="opt-adrenaline") { checkbox.disabled = !soloCheck.checked; if(!soloCheck.checked) checkbox.checked = false; }
+     if(label.id==="opt-lrs") { checkbox.disabled = p < 3; if(p < 3) checkbox.checked = false; }
    });
  }
  calculate();
 }
+
 function calculate(){
  const modeMultiplier = getModeMultiplier();
- 
  if(isTrapMode){
    let limit = (modeMultiplier > 1) ? 16 : 8;
    let used = 0;
@@ -418,25 +425,18 @@ function calculate(){
      }
    });
  } else {
-   let pInput = document.getElementById("players").value;
-   let p = (pInput === "" || isNaN(pInput)) ? 1 : parseInt(pInput);
+   let p = parseInt(document.getElementById("players").value) || 1;
    let total = 0;
-   const sqrtP = Math.sqrt(p);
    const soloCheck = document.getElementById('solo-mode');
-   
    document.querySelectorAll(".option:checked").forEach(opt => {
-     let basePrice = Number(opt.dataset.price);
-     
-     if (soloCheck.checked && soloPrices[opt.parentElement.id]) {
-       basePrice = soloPrices[opt.parentElement.id];
-     }
-     
-     let scaledPrice = (p === 1 || soloCheck.checked) ? basePrice : Math.ceil(basePrice * sqrtP);
+     let basePrice = (soloCheck.checked && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Number(opt.dataset.price);
+     let scaledPrice = (p === 1 || soloCheck.checked) ? basePrice : Math.ceil(basePrice * Math.sqrt(p));
      total += Math.ceil(scaledPrice * modeMultiplier);
    });
    document.getElementById("result").textContent = "Total: " + total.toLocaleString();
  }
 }
+
 function clearAll(){
  document.querySelectorAll(isTrapMode ? ".enemy-count" : ".option").forEach(i => isTrapMode ? i.value = 0 : i.checked = false);
  calculate();
