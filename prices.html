@@ -18,7 +18,6 @@
   --loader-blue: #8ab4f8;
 }
 
-/* --- PATCH SCREEN STYLES --- */
 #patch-screen {
   display: none; 
   position: fixed;
@@ -41,7 +40,6 @@
 #patch-screen h1 { font-size: 48px; margin-top: 25px; color: var(--accent); text-shadow: 0 0 15px var(--accent); }
 #patch-screen p { margin-top: 10px; color: var(--loader-blue); font-weight: bold; letter-spacing: 2px; animation: pulse 1.5s infinite; }
 
-/* --- CALCULATOR STYLES --- */
 #loading-screen {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -154,7 +152,6 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-app
 .price{ font-size:clamp(32px, 8vw, 52px); color:var(--accent); font-weight:bold; text-align:center; }
 .formula{ font-size:14px; color:#888; text-align:center; margin-top:5px; }
 
-/* Countdown UI */
 #countdown-box {
   margin-top: 15px;
   text-align: center;
@@ -174,9 +171,9 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-app
 
 <div id="patch-screen">
   <div class="patch-spinner"></div>
-  <h1>PATCHING...</h1>
-  <p>WAITING FOR PATCH 5 UPDATE</p>
-  <p style="color:#666; font-size: 14px; animation: none;">The calculator will return once the patch is live.</p>
+  <h1>Updating...</h1>
+  <p>WAITING FOR PATCH 5</p>
+  <p style="color:#666; font-size: 14px; animation: none;">The calculator will return once the patch is live and the site is updated</p>
 </div>
 
 <div id="loading-screen">
@@ -231,9 +228,8 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-app
 </div>
 
 <script>
-/* --- PATCH TIMER & COUNTDOWN LOGIC --- */
-const DEBUG_MODE = false; // Set to true to bypass countdown and see screen now
-const PATCH_DATE = new Date("2026-04-03T03:40:00+03:30"); // TEST DATE: April 3rd
+const DEBUG_MODE = false;
+const PATCH_DATE = new Date("2026-04-11T015:30:00+03:30");
 
 function updateCountdown() {
     const now = new Date();
@@ -257,7 +253,6 @@ function updateCountdown() {
 
 setInterval(updateCountdown, 1000);
 
-/* --- CALCULATOR LOGIC --- */
 window.addEventListener('load', () => {
   updateCountdown();
   const screen = document.getElementById('loading-screen');
