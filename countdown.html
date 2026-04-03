@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Patch 5 Countdown</title>
+    <style>
+        :root {
+            --accent: #b266ff;
+            --bg: rgb(26, 26, 26);
+            --box-bg: rgb(32, 32, 32);
+            --glow: rgba(155, 77, 255, .4);
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header-text {
+            color: gray;
+            font-weight: bold;
+            font-size: clamp(24px, 5vw, 40px);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        #timer {
+            font-size: clamp(48px, 15vw, 120px);
+            color: var(--accent);
+            text-shadow: 0 0 30px var(--accent);
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+            margin: 20px 0;
+        }
+
+        .back-btn {
+            margin-top: 60px;
+            color: white;
+            text-decoration: none;
+            border: 1px solid var(--accent);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent);
+            transform: scale(1.05);
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            color: rgba(255,255,255,0.4);
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--accent);
+            font-style: italic;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-text">Patch 5 coming in :</div>
+    <div id="timer">00:00:00:00</div>
+    
+    <a href="index.html" class="back-btn">Back to Home</a>
+
+    <div class="watermark">Made by alireza1303</div>
+
+    <script>
+        function updateTimer() {
+            const targetDate = new Date("April 11, 2026 16:30:00 GMT+03:30").getTime();
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                document.getElementById("timer").innerHTML = "PATCH 5 LIVE";
+                document.querySelector(".header-text").innerHTML = "THE WAIT IS OVER";
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Padding with leading zeros for clean look
+            const d = days.toString().padStart(2, '0');
+            const h = hours.toString().padStart(2, '0');
+            const m = minutes.toString().padStart(2, '0');
+            const s = seconds.toString().padStart(2, '0');
+
+            document.getElementById("timer").innerHTML = `${d}:${h}:${m}:${s}`;
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
