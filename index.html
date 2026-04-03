@@ -6,11 +6,13 @@
 <title>Nullscape Portal</title>
 <style>
 :root{
-  --accent:#66b2ff;
-  --accent-dark:#337aff;
-  --glow:rgba(77, 155, 255, 0.4);
-  --bg:rgb(15, 20, 26);
-  --box-bg:rgb(22, 28, 35);
+  --accent:#b266ff;
+  --accent-dark:#7a33ff;
+  --glow:rgba(155,77,255,.4);
+  --btn-border:rgb(255,142,66);
+  --btn-glow:rgba(255,142,66,.6);
+  --bg:rgb(26,26,26);
+  --box-bg:rgb(32,32,32);
 }
 
 body{
@@ -48,7 +50,7 @@ h1{
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 0 25px var(--glow);
-  border: 1px solid var(--accent);
+  border: 1px solid rgba(255,255,255,.05);
   text-decoration: none;
   color: white;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -61,6 +63,16 @@ h1{
 .portal-box:hover {
   transform: translateY(-5px);
   box-shadow: 0 0 40px var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.portal-box.secondary {
+  border: 2px solid var(--btn-border);
+  box-shadow: 0 0 15px var(--btn-glow);
+}
+
+.portal-box.secondary:hover {
+  box-shadow: 0 0 30px var(--btn-border);
 }
 
 .icon {
@@ -73,13 +85,17 @@ h1{
 .title {
   font-size: 24px;
   font-weight: bold;
-  color: var(--accent); 
+  color: var(--accent);
   margin-bottom: 8px;
+}
+
+.secondary .title {
+  color: var(--btn-border);
 }
 
 .description {
   font-size: 14px;
-  color: #aaa;
+  color: #888;
   line-height: 1.4;
 }
 
@@ -100,21 +116,23 @@ h1{
 <h1>Gome Page</h1>
 
 <div class="portal-container">
-    <a href="prices.html" class="portal-box">
+    <a href="prices.html" class="portal-box secondary">
         <img src="assets/Trap-Card.png" class="icon" alt="Calculator">
         <div class="title">Calculator</div>
         <div class="description">Calculate upgrade costs or trap card enemy spawns.</div>
     </a>
-
+  
     <a href="stats.html" class="portal-box">
         <img src="assets/Adrenaline.png" class="icon" alt="Stats">
         <div class="title">Stats</div>
         <div class="description">(WIP)</div>
     </a>
 
+  
     <a href="countdown.html" class="portal-box">
         <div class="title" style="margin: 0;">Patch 5 Countdown</div>
     </a>
+  
 </div>
 
 <div class="watermark">Made by alireza1303</div>
