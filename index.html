@@ -1,141 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Nullscape Portal</title>
-<style>
-:root{
-  --accent:#b266ff;
-  --accent-dark:#7a33ff;
-  --glow:rgba(155,77,255,.4);
-  --btn-border:rgb(255,142,66);
-  --btn-glow:rgba(255,142,66,.6);
-  --bg:rgb(26,26,26);
-  --box-bg:rgb(32,32,32);
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nullscape Portal</title>
 
-body{
-  margin:0;
-  min-height:100vh;
-  background:var(--bg);
-  color:white;
-  font-family:'Segoe UI',Arial,sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+    <link rel="icon" type="image/svg+xml" href="https://www.gstatic.com/lamda/images/favicon_v1_150160d13988650c76.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-h1{
-  text-align:center;
-  margin:0 0 40px 0;
-  font-size:clamp(32px, 8vw, 64px);
-  color:var(--accent);
-  text-shadow:0 0 15px var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 4px;
-}
+    <style>
+        :root {
+            --primary: #c285ff;
+            --extreme: #ffab66;
+            --bg-dark: #0f0f12;
+            --card-bg: rgba(26, 26, 31, 0.9); 
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-dim: #b8b8b8;
+            --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-.portal-container {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  width: 90%;
-  max-width: 500px;
-}
+        * { 
+            box-sizing: border-box; 
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
 
-.portal-box {
-  background: var(--box-bg);
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 0 25px var(--glow);
-  border: 1px solid rgba(255,255,255,.05);
-  text-decoration: none;
-  color: white;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
+        body {
+            min-height: 100vh;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-.portal-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 40px var(--accent);
-  border: 1px solid var(--accent);
-}
+        #particles-js {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1e1e35 0%, #0f0f12 100%);
+        }
 
-.portal-box.secondary {
-  border: 2px solid var(--btn-border);
-  box-shadow: 0 0 15px var(--btn-glow);
-}
+        @keyframes premiumFlow {
+            0%, 100% { 
+                filter: hue-rotate(0deg) drop-shadow(0 0 15px var(--primary)); 
+                transform: scale(1);
+            }
+            50% { 
+                filter: hue-rotate(40deg) drop-shadow(0 0 25px var(--extreme)); 
+                transform: scale(1.02);
+            }
+        }
 
-.portal-box.secondary:hover {
-  box-shadow: 0 0 30px var(--btn-border);
-}
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--extreme));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            animation: premiumFlow 4s ease-in-out infinite;
+            will-change: transform, filter;
+        }
 
-.icon {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 15px;
-  object-fit: contain;
-}
+        .portal-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            z-index: 1;
+        }
 
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--accent);
-  margin-bottom: 8px;
-}
+        .portal-link {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 25px;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: var(--transition-smooth);
+        }
 
-.secondary .title {
-  color: var(--btn-border);
-}
+        .portal-link:hover {
+            transform: scale(1.03) translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(194, 133, 255, 0.2);
+        }
 
-.description {
-  font-size: 14px;
-  color: #888;
-  line-height: 1.4;
-}
+        .portal-link.featured:hover {
+            border-color: var(--extreme);
+            box-shadow: 0 15px 40px rgba(255, 171, 102, 0.2);
+        }
 
-.watermark {
-    position: fixed;
-    bottom: 20px;
-    color: rgba(255,255,255,0.4);
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px var(--accent);
-    font-style: italic;
-    font-size: 14px;
-}
-</style>
+        .icon-container {
+            width: 60px;
+            height: 60px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .icon-container img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .content-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .portal-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .featured .portal-title {
+            color: var(--extreme);
+        }
+
+        .portal-desc {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .footer-credit {
+            position: fixed;
+            bottom: 25px;
+            color: rgba(255,255,255,0.25);
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 11px;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Gome Page</h1>
+    <div id="particles-js"></div>
 
-<div class="portal-container">
-    <a href="prices.html" class="portal-box secondary">
-        <img src="assets/Trap-Card.png" class="icon" alt="Calculator">
-        <div class="title">Calculator</div>
-        <div class="description">Calculate upgrade costs or trap card enemy spawns.</div>
-    </a>
-  
-    <a href="stats.html" class="portal-box">
-        <img src="assets/Adrenaline.png" class="icon" alt="Stats">
-        <div class="title">Stats</div>
-        <div class="description">(WIP)</div>
-    </a>
+    <header>
+        <h1>Gome Page</h1>
+    </header>
 
-  
-    <a href="countdown.html" class="portal-box">
-        <div class="title" style="margin: 0;">Patch 5 Countdown</div>
-    </a>
-  
-</div>
+    <main class="portal-container">
+        <a href="prices.html" class="portal-link featured">
+            <div class="icon-container">
+                <img src="assets/Trap-Card.png" alt="Calculator Icon">
+            </div>
+            <div class="content-stack">
+                <div class="portal-title">Calculator</div>
+                <div class="portal-desc">Calculate item costs with player scaling.</div>
+            </div>
+        </a>
+      
+        <a href="stats.html" class="portal-link">
+            <div class="icon-container">
+                <img src="assets/Adrenaline.png" alt="Stats Icon">
+            </div>
+            <div class="content-stack">
+                <div class="portal-title">Stats</div>
+                <div class="portal-desc">View gameplay statistics. (Work in Progress)</div>
+            </div>
+        </a>
+    </main>
 
-<div class="watermark">Made by alireza1303</div>
+    <footer class="footer-credit">
+        Made by alireza1303
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#c285ff" },
+                "shape": { "type": "circle" },
+                "opacity": { 
+                    "value": 0.5, 
+                    "random": true,
+                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
+                },
+                "size": { "value": 3, "random": true },
+                "line_linked": { 
+                    "enable": true, 
+                    "distance": 150, 
+                    "color": "#c285ff", 
+                    "opacity": 0.15, 
+                    "width": 1 
+                },
+                "move": { 
+                    "enable": true, 
+                    "speed": 1.2, 
+                    "direction": "none", 
+                    "out_mode": "out" 
+                }
+            },
+            "interactivity": {
+                "detect_on": "window",
+                "events": { 
+                    "onhover": { "enable": true, "mode": "repulse" }
+                },
+                "modes": {
+                    "repulse": { "distance": 100, "duration": 0.4 }
+                }
+            },
+            "retina_detect": true
+        });
+    </script>
 </body>
 </html>
