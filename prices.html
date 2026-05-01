@@ -1,442 +1,541 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Nullscape Price Calculator</title>
-<link rel="icon" type="image/svg+xml" href="https://www.gstatic.com/lamda/images/favicon_v1_150160d13988650c76.svg">
-<style>
-:root{
-  --accent:#b266ff;
-  --accent-dark:#7a33ff;
-  --glow:rgba(155,77,255,.4);
-  --btn-border:rgb(255,142,66);
-  --btn-glow:rgba(255,142,66,.6);
-  --enemy-orange:rgb(255,142,66);
-  --bg:rgb(26,26,26);
-  --box-bg:rgb(32,32,32);
-  --loader-blue: #8ab4f8;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nullscape Calculator</title>
+    <link rel="icon" type="image/svg+xml" href="https://www.gstatic.com/lamda/images/favicon_v1_150160d13988650c76.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        html { zoom: 0.9; }
+        :root {
+            --primary: #c285ff;
+            --primary-glow: rgba(194, 133, 255, 0.5);
+            --extreme: #ffab66;
+            --extreme-glow: rgba(255, 171, 102, 0.5);
+            --curse: #66d9ff;
+            --curse-glow: rgba(102, 217, 255, 0.6);
+            --bg-dark: #0f0f12;
+            --card-bg: #1a1a1f;
+            --card-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-dim: #b8b8b8;
+            --text-v-dim: #757575;
+            --accent-red: #ff7070;
+        }
 
-#patch-screen {
-  display: none; 
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--bg);
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  text-align: center;
-}
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
 
-.patch-spinner {
-  width: 80px; height: 80px;
-  border: 8px solid rgba(255,255,255,0.1);
-  border-radius: 50%;
-  animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite;
-}
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #1e1e35 0%, #0f0f12 100%); }
 
-#patch-screen h1 { font-size: 48px; margin-top: 25px; color: var(--accent); text-shadow: 0 0 15px var(--accent); }
-#patch-screen p { margin-top: 10px; color: var(--loader-blue); font-weight: bold; letter-spacing: 2px; animation: pulse 1.5s infinite; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-#loading-screen {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease;
-}
-.loader {
-  width: 60px; height: 60px;
-  border: 6px solid rgba(255,255,255,0.1);
-  border-radius: 50%;
-  animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite;
-}
-#loading-screen p { margin-top: 20px; color: var(--loader-blue); font-weight: bold; letter-spacing: 2px; animation: pulse 1.5s infinite; }
+        #loading-screen { position: fixed; inset: 0; background: var(--bg-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.8s; }
+        .loader-ring { width: 60px; height: 60px; border: 3px solid var(--card-border); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
 
-@keyframes colorShift {
-  0%, 100% { border-top-color: var(--loader-blue); }
-  50% { border-top-color: var(--enemy-orange); }
-}
-@keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .container { max-width: 2200px; margin: 0 auto; padding: 20px; opacity: 0; transform-origin: top center; transition: 1s cubic-bezier(0.2, 1, 0.2, 1); }
+        .container.loaded { opacity: 1; transform: scale(0.95); animation: fadeInUp 0.8s ease-out forwards; }
 
-.trap-active{
-  --accent:rgb(255,142,66);
-  --accent-dark:rgb(255,142,66);
-  --glow:rgba(255,142,66,.5);
-  --btn-border:rgb(136,163,232);
-  --btn-glow:rgba(136,163,232,.6);
-}
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin: 0; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; filter: drop-shadow(0 0 10px var(--primary-glow)); }
 
-@media (min-width:901px){
-  .scaler-container{ zoom: 0.9; -moz-transform: scale(1.15); -moz-transform-origin: top center; }
-  .layout { grid-template-columns: 3fr 1fr !important; max-width: 1800px !important; }
-  .watermark { position: fixed; bottom: 30px; right: 40px; font-size: 24px; opacity: 0.6; text-align: right; }
-}
+        .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 25px; }
+        .glass-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 28px; padding: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.02); }
 
-body{ margin:0; min-height:100vh; background:var(--bg); color:white; font-family:'Segoe UI',Arial,sans-serif; padding-bottom:120px; overflow-x: hidden; }
+        .section-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 4px; color: var(--primary); margin-bottom: 20px; font-weight: 800; display: flex; align-items: center; gap: 12px; text-shadow: 0 0 15px var(--primary-glow); }
+        body.mode-extreme .section-title { color: var(--extreme); text-shadow: 0 0 15px var(--extreme-glow); }
 
-.back-btn {
-  position: fixed; top: 15px; left: 15px; padding: 10px 20px;
-  background: var(--box-bg); border: 2px solid var(--accent); color: var(--accent);
-  border-radius: 12px; text-decoration: none; font-weight: bold; z-index: 1001; transition: 0.3s;
-}
+        .settings-grid { display: flex; flex-direction: column; gap: 20px; }
+        .input-group label { display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); font-weight: 600; }
 
-.back-btn:hover { background: var(--accent); color: white; box-shadow: 0 0 15px var(--glow); }
+        input[type="number"] { width: 100%; background: rgba(0,0,0,0.4); border: 2px solid var(--card-border); border-radius: 16px; padding: 12px; color: white; font-size: 1.4rem; font-weight: 800; text-align: center; transition: 0.3s; }
+        input[type="number"]:focus { border-color: var(--primary); outline: none; background: rgba(0,0,0,0.6); box-shadow: 0 0 15px var(--primary-glow); }
 
-.mode-toggle{
-  position:fixed; top:15px; right:15px; width:60px; height:60px;
-  background:var(--box-bg); border:3px solid var(--btn-border); border-radius:12px;
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 15px var(--btn-glow); z-index: 1001;
-}
-.mode-toggle img{width:40px;height:40px}
+        .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .mode-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 12px; border-radius: 14px; color: var(--text-dim); cursor: pointer; font-weight: 600; transition: 0.3s; text-align: center; font-size: 0.9rem; }
+        .mode-btn.active { background: var(--primary); color: white; box-shadow: 0 0 25px var(--primary-glow); border-color: var(--primary); }
+        body.mode-extreme .mode-btn.active { background: var(--extreme); border-color: var(--extreme); box-shadow: 0 0 25px var(--extreme-glow); }
 
-h1{ text-align:center; margin:10px 0 30px 0; font-size:clamp(32px, 5vw, 64px); color:var(--accent); text-shadow:0 0 15px var(--accent); }
+        .curse-toggle-btn {
+            width: 100%;
+            background: rgba(102, 217, 255, 0.07);
+            border: 1px solid rgba(102, 217, 255, 0.25);
+            border-radius: 14px;
+            padding: 12px 16px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .curse-toggle-btn.active {
+            background: rgba(102, 217, 255, 0.2);
+            border-color: var(--curse);
+            color: var(--curse);
+            box-shadow: 0 0 20px var(--curse-glow), inset 0 0 10px rgba(102, 217, 255, 0.2);
+            text-shadow: 0 0 8px var(--curse-glow);
+            transform: scale(1.02);
+        }
+        .curse-pill { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(102, 217, 255, 0.12); border: 1px solid rgba(102, 217, 255, 0.2); transition: 0.3s; }
+        .curse-toggle-btn.active .curse-pill { background: var(--curse); color: #000; border-color: var(--curse); }
 
-.layout{ display:grid; grid-template-columns:2fr 1fr; gap:20px; padding:0 20px; max-width:1600px; margin:0 auto; }
+        .partyplus-btn {
+            width: 100%;
+            background: rgba(194, 133, 255, 0.07);
+            border: 1px solid rgba(194, 133, 255, 0.25);
+            border-radius: 14px;
+            padding: 12px 16px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .partyplus-btn.active {
+            background: rgba(194, 133, 255, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow), inset 0 0 10px rgba(194, 133, 255, 0.15);
+            text-shadow: 0 0 8px var(--primary-glow);
+            transform: scale(1.02);
+        }
+        .pp-pill { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(194,133,255,0.12); border: 1px solid rgba(194,133,255,0.3); transition: 0.3s; }
+        .partyplus-btn.active .pp-pill { background: var(--primary); color: #000; border-color: var(--primary); }
 
-.box{ background:var(--box-bg); border-radius:20px; padding:25px; box-shadow:0 0 25px var(--glow); border:1px solid rgba(255,255,255,.05); margin-bottom: 20px; }
+        .upgrades-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr)); gap: 12px; align-items: stretch; }
 
-.box-title{ font-size:clamp(20px,4vw,26px); margin-bottom:20px; color:var(--accent); text-transform:uppercase; letter-spacing:2px; font-weight:bold; }
+        .upgrade-item {
+            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+            border-radius: 20px; background: rgba(255,255,255,0.04); border: 1px solid transparent;
+            cursor: pointer; transition: 0.3s; height: 85px; box-sizing: border-box; position: relative;
+        }
+        .upgrade-item.active { background: rgba(194, 133, 255, 0.15); border-color: var(--primary); }
+        body.mode-extreme .upgrade-item.active { background: rgba(255, 171, 102, 0.15); border-color: var(--extreme); }
+        .upgrade-item.disabled { opacity: 0.3; pointer-events: none; }
 
-#collapsible-title { cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-#collapsible-title::after { content: '▼'; font-size: 14px; transition: transform 0.3s ease; display: inline-block; }
-#collapsible-title.active::after { transform: rotate(180deg); }
+        /* Stack dots */
+        .stack-indicator { display: flex; gap: 4px; margin-top: 6px; }
+        .stack-dot { width: 14px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; transition: 0.3s; }
+        .stack-dot.filled { background: var(--primary); box-shadow: 0 0 8px var(--primary-glow); }
+        body.mode-extreme .stack-dot.filled { background: var(--extreme); box-shadow: 0 0 8px var(--extreme-glow); }
 
-.upgrades-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
-.upgrades-grid label{ display:flex; align-items:center; gap:10px; font-size:clamp(14px, 1.5vw, 18px); background:rgba(255,255,255,.03); padding:10px; border-radius:12px; cursor:pointer; min-height:65px; position:relative; }
-.level-badge{ background:var(--accent); color:white; padding:2px 8px; border-radius:8px; font-size:12px; font-weight:bold; flex-shrink:0; }
-.custom-icon{ width:45px; height:45px; flex-shrink:0; object-fit: contain; }
-.enemy-count{ width:60px; height:45px; background:#000; border:2px solid var(--enemy-orange); color:white; border-radius:10px; font-size:20px; text-align:center; }
-.enemy-name-text { white-space: normal; word-break: break-word; line-height: 1.2; flex: 1; }
+        .icon-wrapper { width: 40px; height: 40px; background: rgba(0,0,0,0.5); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+        .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
 
-.watermark { 
-    width: 100%; text-align: center; padding: 20px 0; color: rgba(255,255,255,0.4); 
-    font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent); font-style: italic; 
-}
+        .info { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; justify-content: center; }
+        .name { font-weight: 700; font-size: 0.95rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .price-tag { font-size: 0.8rem; color: var(--text-dim); }
+        .lv-badge { font-size: 0.65rem; color: var(--text-v-dim); border: 1px solid var(--card-border); padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.2); flex-shrink: 0; margin-left: auto; }
 
-.mode-checkboxes { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-.mode-checkbox-label {
-  display: flex; align-items: center; gap: 10px; font-size: 18px; background: rgba(255,255,255,.03);
-  padding: 12px; border-radius: 12px; cursor: pointer; transition: 0.2s;
-}
-.mode-checkbox-label:hover { background: rgba(255,255,255,.08); }
+        .total-val { font-size: 4rem; font-weight: 800; color: var(--primary); text-shadow: 0 0 30px var(--primary-glow); }
+        body.mode-extreme .total-val { color: var(--extreme); text-shadow: 0 0 30px var(--extreme-glow); }
 
-@media(max-width:900px){
-  body { padding-bottom: 240px; } 
-  .layout{ display: flex !important; flex-direction: column; }
-  .controls { order: -1; }
-  h1{margin-top:80px}
-  .upgrades-grid{grid-template-columns:1fr}
-  #results-container{ 
-    position:fixed; bottom:0; left:0; right:0; z-index:1000; 
-    border-radius:20px 20px 0 0; padding:15px 25px; 
-    background: var(--box-bg); max-height:60vh; overflow-y:auto;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.5); margin-bottom: 0;
-  }
-  #trapList { display: none; margin-top: 15px; }
-  #trapList.visible { display: block; }
-  #mobile-clear { display: block !important; margin-top: 10px; }
-}
+        .formula-text { font-size: 0.7rem; color: var(--text-v-dim); margin-bottom: 15px; line-height: 1.6; display: block; }
 
-input[type="checkbox"]{ width:25px; height:25px; accent-color:var(--accent); }
-input[type="number"]{ padding:5px 10px; background:#111; color:white; border:2px solid var(--accent-dark); border-radius:12px; font-size:20px; text-align:center; }
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.price{ font-size:clamp(32px, 8vw, 52px); color:var(--accent); font-weight:bold; text-align:center; }
-.formula{ font-size:14px; color:#888; text-align:center; margin-top:5px; }
+        .mobile-settings-overlay {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: #1a1a1f; z-index: 2000; padding: 20px;
+            transform: translateY(-100%); transition: 0.5s;
+            max-height: 100vh; overflow-y: auto;
+        }
+        .mobile-settings-overlay.open { transform: translateY(0); }
 
-#countdown-box {
-  margin-top: 15px;
-  text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 10px;
-}
-#countdown-label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-#countdown-timer { font-family: monospace; font-size: 16px; color: var(--accent); font-weight: bold; text-shadow: 0 0 5px var(--glow); }
+        .mobile-bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 95px;
+            background: #1a1a1f; border-top: 1px solid var(--card-border);
+            display: none; align-items: center; justify-content: space-between;
+            padding: 0 20px; z-index: 1001;
+        }
+        .mobile-total-wrap .price { font-size: 2rem; font-weight: 800; color: var(--primary); transition: color 0.3s; }
+        body.mode-extreme .mobile-total-wrap .price { color: var(--extreme); }
 
-.trap-results-list{ list-style:none; padding:0; margin:0; font-size:20px; }
-.trap-results-list li{ padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; color:var(--enemy-orange); }
-.clear-btn{ width:100%; background:rgba(255,77,77,.15); border:2px solid #ff4d4d; color:#ff4d4d; padding:15px; font-size:20px; margin-top:25px; border-radius:12px; cursor:pointer; }
-#mobile-clear { display: none; }
-</style>
+        @media (max-width: 1000px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sticky-sidebar { display: none; }
+            .mobile-bottom-nav { display: flex; }
+            .container { padding-bottom: 110px; }
+        }
+
+        .hidden-check { display: none; }
+    </style>
 </head>
-<body>
+<body class="mode-standard">
 
-<div id="patch-screen">
-  <div class="patch-spinner"></div>
-  <h1>Updating...</h1>
-  <p>WAITING FOR PATCH 5</p>
-  <p style="color:#666; font-size: 14px; animation: none;">The calculator will return once the patch is live and the site is updated</p>
+<div id="particles-js"></div>
+
+<div class="mobile-settings-overlay" id="mobileDrawer">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <span style="font-weight: 800; color: var(--primary); letter-spacing: 2px;" id="drawerTitle">SETTINGS</span>
+        <button onclick="toggleMobileSettings()" style="background: none; border: none; color: white; font-size: 1.5rem;">✕</button>
+    </div>
+    <div id="mobile-settings-content"></div>
 </div>
 
 <div id="loading-screen">
-  <div class="loader"></div>
-  <p>LOADING DATA...</p>
+    <div class="loader-ring"></div>
+    <p style="margin-top: 20px; letter-spacing: 3px;">Loading</p>
 </div>
 
-<a href="index.html" class="back-btn">← Home</a>
-<button class="mode-toggle" onclick="toggleTrapMode()"><img src="assets/Trap-Card.png" id="toggleIcon"></button>
+<div class="container" id="main-ui">
+    <header><h1>Nullscape Calculator</h1></header>
 
-<div class="scaler-container" id="main-ui">
-  <h1 id="mainTitle">Nullscape Price Calculator</h1>
-  <div class="layout">
-    <div class="box main-content">
-      <div class="box-title" id="gridTitle">Upgrades</div>
-      <div class="upgrades-grid" id="mainGrid"></div>
-      <button class="clear-btn" id="desktop-clear" onclick="clearAll()">Clear All</button>
-    </div>
-    <div class="controls">
-      <div class="box">
-        <div id="player-group">
-          <div class="box-title" style="font-size:16px">Number of Players</div>
-          <input type="number" id="players" min="1" max="20" value="1" inputmode="numeric" oninput="handlePlayerRules()">
-        </div>
-        <div class="box-title" style="font-size:16px; margin-top: 15px;">Game Mode</div>
-        <div class="mode-checkboxes">
-          <label class="mode-checkbox-label"><input type="checkbox" id="solo-mode" onchange="handleSoloChange()"> Solo Mode</label>
-          <label class="mode-checkbox-label"><input type="checkbox" id="normal-mode" checked onchange="handleModeChange('normal')"> Normal</label>
-          <label class="mode-checkbox-label"><input type="checkbox" id="hard-mode" onchange="handleModeChange('hard')"> Hard Mode</label>
-        </div>
-      </div>
-      <div class="box" id="results-container">
-        <div id="upgrade-results">
-          <div class="price" id="result">Total: 0</div>
-          <div class="formula">ceil(base × √players) × Mode</div>
-        </div>
-        <div id="trap-results" style="display:none">
-          <div class="box-title" id="collapsible-title" onclick="toggleMobileList()">Enemies After Trap</div>
-          <ul class="trap-results-list" id="trapList"></ul>
-        </div>
-        
-        <div id="countdown-box">
-          <div id="countdown-label">Site will be going down in</div>
-          <div id="countdown-timer">00d 00h 00m 00s</div>
+    <div class="main-layout">
+        <div class="glass-card">
+            <div class="section-title"><span>✦</span> Upgrades</div>
+            <div class="upgrades-grid" id="mainGrid"></div>
         </div>
 
-        <button class="clear-btn" id="mobile-clear" onclick="clearAll()">Clear All</button>
-      </div>
+        <div class="sticky-sidebar">
+            <div class="glass-card" id="pc-settings-box">
+                <div class="section-title">Settings</div>
+                <div class="settings-grid">
+
+                    <div class="input-group">
+                        <label>Difficulty</label>
+                        <div class="mode-selector">
+                            <div class="mode-btn active" data-diff="standard" onclick="setDifficulty('standard')">Standard</div>
+                            <div class="mode-btn" data-diff="extreme" onclick="setDifficulty('extreme')">Extreme</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mode</label>
+                        <div class="mode-selector">
+                            <div class="mode-btn active" data-mode="solo-duo" onclick="setMode('solo-duo')">Solo / Duo</div>
+                            <div class="mode-btn" data-mode="party" onclick="setMode('party')">Party / Party+</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="player-label">Player Count</label>
+                        <input type="number" class="player-input" id="pInput" min="1" max="2" value="1" onchange="validatePlayers(this)">
+                    </div>
+
+                    <div class="input-group" id="partyplus-wrap" style="display:none;">
+                        <button class="partyplus-btn" id="partyplusBtnPC" onclick="togglePartyPlus()">
+                            <span>Party+</span>
+                            <span class="pp-pill">÷1.125</span>
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Discounts</label>
+                        <button class="curse-toggle-btn" id="curseBtnPC" onclick="toggleCurse()">
+                            <span>Nothing Curse</span>
+                            <span class="curse-pill">–15% OFF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-top: 20px; text-align: center;">
+                <span style="font-size: 0.8rem; color: var(--text-dim); font-weight: 700;">TOTAL GIFT</span>
+                <div class="total-val" id="result">0</div>
+                <div class="formula-text" id="formulaText">ceil(base × √players)</div>
+                <button onclick="clearAll()" style="width: 100%; background: rgba(255, 94, 94, 0.1); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 12px; border-radius: 14px; cursor: pointer; font-weight: 700;">Reset All</button>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="watermark">Made by alireza1303</div>
 </div>
 
+<div class="mobile-bottom-nav">
+    <div class="mobile-total-wrap">
+        <span style="font-size: 0.7rem; color: var(--text-dim); display: block; font-weight: 700;">TOTAL</span>
+        <span class="price" id="mobile-result">0</span>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button onclick="clearAll()" style="width:48px; height:48px; border-radius:12px; border:1px solid var(--accent-red); background:rgba(255, 94, 94, 0.1); color:var(--accent-red); font-weight: 800;">↺</button>
+        <button id="mobileSettingsBtn" onclick="toggleMobileSettings()" style="background: var(--primary); color: white; padding: 0 20px; border-radius: 12px; height: 48px; border:none; font-weight:800; box-shadow: 0 5px 15px var(--primary-glow);">SETTINGS</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
-const DEBUG_MODE = false;
-const PATCH_DATE = new Date("2026-04-11T15:30:00+03:30");
+const upgradesList = [
+    {name:"Adrenaline",                 price:50,   soloPrice:50,   icon:"assets/Adrenaline.png",                  id:"opt-adrenaline", level:3,  currentStack:0},
+    {name:"Business License",           prices:[75, 188],           icon:"assets/Business_License.png",            level:3,  currentStack:0, maxStack:2},
+    {name:"Defuse Kit",                 price:30,   soloPrice:30,   icon:"assets/Defuse_Kit.png",                  level:3,  currentStack:0},
+    {name:"Paycheck",                   price:55,   soloPrice:55,   icon:"assets/Paycheck.png",                    level:3,  currentStack:0},
+    {name:"Swiftness Ring",             price:80,   soloPrice:80,   icon:"assets/Swiftness_Ring.png",              level:3,  currentStack:0},
+    {name:"Radar",                      price:175,  soloPrice:175,  icon:"assets/Radar.png",                       level:5,  currentStack:0},
+    {name:"Better Jump Pads",           price:50,   soloPrice:50,   icon:"assets/Better_Jump_Pads.png",            level:5,  currentStack:0},
+    {name:"Double Jump",                price:150,  soloPrice:150,  icon:"assets/Double_Jump.png",                 level:5,  currentStack:0},
+    {name:"Grapple Points",             price:100,  soloPrice:100,  icon:"assets/Grapple_Points.png",              level:5,  currentStack:0},
+    {name:"Tria Orb",                   price:100,  soloPrice:100,  icon:"assets/Tria_Orb.png",                    level:5,  currentStack:0},
+    {name:"Medal",                      price:100,  soloPrice:100,  icon:"assets/Medal.png",                       level:5,  currentStack:0},
+    {name:"Advanced Gravity Coil",      price:600,  soloPrice:600,  icon:"assets/Advanced_Gravity_Coil.png",       level:8,  currentStack:0},
+    {name:"Ice Skates",                 price:400,  soloPrice:300,  icon:"assets/Ice_Skates.png",                  level:8,  currentStack:0},
+    {name:"Fanny Pack",                 price:300,  soloPrice:300,  icon:"assets/Fanny_Pack.png",                  level:8,  currentStack:0},
+    {name:"Grace Wings",                price:300,  soloPrice:200,  icon:"assets/Grace_Wings.png",                 level:8,  currentStack:0},
+    {name:"Helmet",                     price:400,  soloPrice:400,  icon:"assets/Helmet.png",                      level:8,  currentStack:0},
+    {name:"Last Robloxian Standing",    price:300,  soloPrice:300,  icon:"assets/Last_Robloxian_Standing.png",     id:"opt-lrs", level:8, currentStack:0},
+    {name:"Radar Module : Altars",      price:300,  soloPrice:300,  icon:"assets/Radar_Module_Altars.png",         level:8,  currentStack:0},
+    {name:"Radar Module : Tripmines",   price:400,  soloPrice:400,  icon:"assets/Radar_Module_Tripmines.png",      level:8,  currentStack:0},
+    {name:"Radar Module : Enemies",     price:200,  soloPrice:200,  icon:"assets/Radar_Module_Enemies.png",        level:8,  currentStack:0},
+    {name:"More Altars",                price:600,  soloPrice:600,  icon:"assets/More_Altars.png",                 level:10, currentStack:0},
+    {name:"Pocket Bell",                price:300,  soloPrice:300,  icon:"assets/Pocket_Bell.png",                 level:10, currentStack:0},
+    {name:"Ninja Belt",                 price:700,  soloPrice:500,  icon:"assets/Ninja_Belt.png",                  level:13, currentStack:0},
+    {name:"Subspacial Barrier",         prices:[1000, 1500],        icon:"assets/Subspacial_Barrier.png",          level:13, currentStack:0, maxStack:2},
+    {name:"Large Grapple Points",       price:500,  soloPrice:500,  icon:"assets/Large_Grapple_Points.png",        level:13, currentStack:0},
+    {name:"Gift Magnet",                prices:[1500, 2100, 2700],  icon:"assets/Gift_Magnet.png",                 level:15, currentStack:0, maxStack:3},
+    {name:"Matrix Tetrahedron",         price:2500, soloPrice:2500, icon:"assets/Matrix_Tetrahedron.png",          level:15, currentStack:0},
+    {name:"Shield",                     price:4000, soloPrice:1000, icon:"assets/Shield.png",                      level:15, currentStack:0},
+    {name:"Sport Shoes",                price:1350, soloPrice:1350, icon:"assets/Sport_Shoes.png",                 level:15, currentStack:0},
+    {name:"Shark Tail",                 price:1200, soloPrice:1200, icon:"assets/Shark_Tail.png",                  level:15, currentStack:0},
+    {name:"Radar Module : Instruments", price:1000, soloPrice:1000, icon:"assets/Radar_Module_Instruments.png",    level:18, currentStack:0},
+    {name:"Panic Necklace",             price:3000, soloPrice:3000, icon:"assets/Panic_Necklace.png",              level:18, currentStack:0},
+    {name:"Drowned Ægis",               price:6000, soloPrice:6000, icon:"assets/DrownedAegis.png",               level:20, currentStack:0},
+    {name:"Miniature Hourglass",        price:3000, soloPrice:3000, icon:"assets/Miniature_Hourglass.png",         level:20, currentStack:0},
+    {name:"Gift Idol",                  price:4000, soloPrice:4000, icon:"assets/Gift_Idol.png",                   level:20, currentStack:0},
+];
 
-function updateCountdown() {
-    const now = new Date();
-    const diff = PATCH_DATE - now;
+let currentDifficulty = 'standard';
+let currentMode = 'solo-duo';
+let playerCount = 1;
+let partyPlusActive = false;
+let nothingCurseActive = false;
 
-    if (diff <= 0 || DEBUG_MODE === true) {
-        document.getElementById('patch-screen').style.display = 'flex';
-        document.getElementById('main-ui').style.display = 'none';
-        document.querySelector('.mode-toggle').style.display = 'none';
-        return;
-    }
+function renderGrid() {
+    const grid = document.getElementById("mainGrid");
+    grid.innerHTML = upgradesList.map((item, index) => {
+        let dots = '';
+        if (item.maxStack > 1) {
+            for (let i = 0; i < item.maxStack; i++) {
+                dots += `<div class="stack-dot" id="dot-${index}-${i}"></div>`;
+            }
+        }
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-    document.getElementById("countdown-timer").textContent = 
-        `${days}d ${hours.toString().padStart(2,'0')}h ${mins.toString().padStart(2,'0')}m ${secs.toString().padStart(2,'0')}s`;
+        return `
+            <div class="upgrade-item" id="item-${index}" onclick="cycleUpgrade(${index}, this)">
+                <div class="icon-wrapper"><img src="${item.icon}" onerror="this.src='https://via.placeholder.com/50?text=?'"></div>
+                <div class="info">
+                    <span class="name">${item.name}</span>
+                    <span class="price-tag" id="price-text-${index}">Cost: 0</span>
+                    <div class="stack-indicator">${dots}</div>
+                </div>
+                <span class="lv-badge">Lv${item.level}</span>
+            </div>
+        `;
+    }).join('');
+    applyRules();
+    updateVisualPrices();
 }
 
-setInterval(updateCountdown, 1000);
+function cycleUpgrade(index, el) {
+    if (el.classList.contains('disabled')) return;
+    const item = upgradesList[index];
+    const max = item.maxStack || 1;
+    item.currentStack = item.currentStack >= max ? 0 : item.currentStack + 1;
+    el.classList.toggle('active', item.currentStack > 0);
+    if (item.maxStack > 1) {
+        for (let i = 0; i < item.maxStack; i++) {
+            const dot = document.getElementById(`dot-${index}-${i}`);
+            if (dot) dot.classList.toggle('filled', i < item.currentStack);
+        }
+    }
+    calculate();
+}
 
-window.addEventListener('load', () => {
-  updateCountdown();
-  const screen = document.getElementById('loading-screen');
-  screen.style.opacity = '0';
-  setTimeout(() => screen.style.display = 'none', 500);
+function computePrice(item, stackOverride) {
+    const s = stackOverride !== undefined ? stackOverride : item.currentStack;
+    if (s === 0) return 0;
+    let base = 0;
+    if (item.prices) {
+        base = item.prices[s - 1] || 0;
+    } else {
+        base = (currentMode === 'solo-duo' && item.soloPrice !== undefined) ? item.soloPrice : item.price;
+    }
+    let scaled = playerCount === 1 ? base : Math.ceil(base * Math.sqrt(playerCount));
+    if (currentMode === 'party' && partyPlusActive) scaled = Math.ceil(scaled / 1.125);
+    if (currentDifficulty === 'extreme') scaled = Math.ceil(scaled * 1.15);
+    if (nothingCurseActive) scaled = Math.ceil(scaled * 0.85);
+    return scaled;
+}
+
+function updateVisualPrices() {
+    upgradesList.forEach((item, index) => {
+        const displayStack = item.currentStack > 0 ? item.currentStack : 1;
+        const previewCost = computePrice(item, displayStack);
+        let text;
+        if (item.maxStack > 1) {
+            text = `Stack ${displayStack}: ${previewCost.toLocaleString()}`;
+        } else {
+            text = `Cost: ${previewCost.toLocaleString()}`;
+        }
+        const el = document.getElementById(`price-text-${index}`);
+        if (el) el.textContent = text;
+    });
+}
+
+function calculate() {
+    let total = 0;
+    upgradesList.forEach(item => {
+        if (item.currentStack > 0) total += computePrice(item);
+    });
+    document.getElementById("result").textContent = total.toLocaleString();
+    const mob = document.getElementById("mobile-result");
+    if (mob) mob.textContent = total.toLocaleString();
+    updateVisualPrices();
+}
+
+function applyRules() {
+    upgradesList.forEach((item, index) => {
+        const el = document.getElementById(`item-${index}`);
+        if (!el) return;
+        let disabled = false;
+        if (item.id === "opt-adrenaline" && currentMode !== 'solo-duo') disabled = true;
+        if (item.id === "opt-lrs" && (currentMode === 'solo-duo' || playerCount < 3)) disabled = true;
+        el.classList.toggle('disabled', disabled);
+        if (disabled) {
+            item.currentStack = 0;
+            el.classList.remove('active');
+            if (item.maxStack > 1) {
+                for (let i = 0; i < item.maxStack; i++) {
+                    const dot = document.getElementById(`dot-${index}-${i}`);
+                    if (dot) dot.classList.remove('filled');
+                }
+            }
+        }
+    });
+    calculate();
+}
+
+function setDifficulty(diff) {
+    currentDifficulty = diff;
+    document.body.className = `mode-${diff}`;
+    document.querySelectorAll('[data-diff]').forEach(b => b.classList.toggle('active', b.dataset.diff === diff));
+    updateFormulaText();
+    syncMobileSettings();
+    calculate();
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    const pInput = document.getElementById('pInput');
+    const ppWrap = document.getElementById('partyplus-wrap');
+    if (mode === 'solo-duo') {
+        pInput.max = 2;
+        if (playerCount > 2) { playerCount = 2; pInput.value = 2; }
+        partyPlusActive = false;
+        if (ppWrap) ppWrap.style.display = 'none';
+    } else {
+        pInput.max = 20;
+        if (ppWrap) ppWrap.style.display = 'block';
+    }
+    document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    updateFormulaText();
+    syncMobileSettings();
+    applyRules();
+}
+
+function validatePlayers(input) {
+    const max = currentMode === 'solo-duo' ? 2 : 20;
+    playerCount = Math.max(1, Math.min(max, parseInt(input.value) || 1));
+    input.value = playerCount;
+    syncMobileSettings();
+    applyRules();
+}
+
+function togglePartyPlus() {
+    partyPlusActive = !partyPlusActive;
+    const btn = document.getElementById('partyplusBtnPC');
+    if (btn) btn.classList.toggle('active', partyPlusActive);
+    updateFormulaText();
+    syncMobileSettings();
+    calculate();
+}
+
+function toggleCurse() {
+    nothingCurseActive = !nothingCurseActive;
+    const btn = document.getElementById('curseBtnPC');
+    if (btn) btn.classList.toggle('active', nothingCurseActive);
+    syncMobileSettings();
+    calculate();
+}
+
+function updateFormulaText() {
+    const el = document.getElementById('formulaText');
+    if (!el) return;
+    let formula = 'ceil(base × √players)';
+    if (currentMode === 'party' && partyPlusActive && currentDifficulty === 'extreme') {
+        formula = 'ceil(base × √players ÷ 1.125 × 1.15)';
+    } else if (currentMode === 'party' && partyPlusActive) {
+        formula = 'ceil(base × √players ÷ 1.125)';
+    } else if (currentDifficulty === 'extreme') {
+        formula = 'ceil(base × √players × 1.15)';
+    }
+    el.textContent = formula;
+}
+
+function toggleMobileSettings() {
+    document.getElementById('mobileDrawer').classList.toggle('open');
+}
+
+function syncMobileSettings() {
+    const pcBox = document.getElementById('pc-settings-box');
+    const drawer = document.getElementById('mobile-settings-content');
+    if (!drawer || !pcBox) return;
+    drawer.innerHTML = pcBox.innerHTML;
+    const mobInput = drawer.querySelector('.player-input');
+    if (mobInput) mobInput.value = playerCount;
+    const mobCurse = drawer.querySelector('.curse-toggle-btn');
+    if (mobCurse) mobCurse.classList.toggle('active', nothingCurseActive);
+    const ppWrapMob = drawer.querySelector('#partyplus-wrap');
+    if (ppWrapMob) {
+        ppWrapMob.style.display = currentMode === 'party' ? 'block' : 'none';
+        const ppBtn = ppWrapMob.querySelector('#partyplusBtnPC');
+        if (ppBtn) ppBtn.classList.toggle('active', partyPlusActive);
+    }
+    drawer.querySelectorAll('[data-diff]').forEach(b => b.classList.toggle('active', b.dataset.diff === currentDifficulty));
+    drawer.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === currentMode));
+    const mobBtn = document.getElementById('mobileSettingsBtn');
+    const drawerTitle = document.getElementById('drawerTitle');
+    if (currentDifficulty === 'extreme') {
+        if (mobBtn) { mobBtn.style.background = 'var(--extreme)'; mobBtn.style.boxShadow = '0 5px 15px var(--extreme-glow)'; }
+        if (drawerTitle) drawerTitle.style.color = 'var(--extreme)';
+    } else {
+        if (mobBtn) { mobBtn.style.background = 'var(--primary)'; mobBtn.style.boxShadow = '0 5px 15px var(--primary-glow)'; }
+        if (drawerTitle) drawerTitle.style.color = 'var(--primary)';
+    }
+    updateFormulaText();
+}
+
+function clearAll() {
+    upgradesList.forEach((item, index) => {
+        item.currentStack = 0;
+        const el = document.getElementById(`item-${index}`);
+        if (el) {
+            el.classList.remove('active');
+            if (item.maxStack > 1) {
+                for (let i = 0; i < item.maxStack; i++) {
+                    const dot = document.getElementById(`dot-${index}-${i}`);
+                    if (dot) dot.classList.remove('filled');
+                }
+            }
+        }
+    });
+    calculate();
+}
+
+window.onload = () => {
+    renderGrid();
+    syncMobileSettings();
+    setTimeout(() => {
+        document.getElementById('loading-screen').style.opacity = '0';
+        document.getElementById('main-ui').classList.add('loaded');
+        setTimeout(() => document.getElementById('loading-screen').remove(), 800);
+    }, 1200);
+};
+
+particlesJS("particles-js", {
+    "particles": { "number": { "value": 45 }, "color": { "value": "#c285ff" }, "opacity": { "value": 0.3 }, "size": { "value": 2.5 }, "move": { "enable": true, "speed": 0.6 } }
 });
-
-const upgradesList=[
- {name:"Adrenaline",price:50,icon:"assets/Adrenaline.png",id:"opt-adrenaline",level:3},
- {name:"Business License",price:75,icon:"assets/Business_License.png",level:3},
- {name:"Defuse Kit",price:30,icon:"assets/Defuse_Kit.png",level:3},
- {name:"Paycheck",price:55,icon:"assets/Paycheck.png",level:3},
- {name:"Swiftness Ring",price:80,icon:"assets/Swiftness_Ring.png",level:3},
- {name:"Better Gift Arrow",price:80,icon:"assets/Better_Gift_Arrow.png",level:5},
- {name:"Better Jump Pads",price:50,icon:"assets/Better_Jump_Pads.png",level:5},
- {name:"Double Jump",price:100,icon:"assets/Double_Jump.png",level:5},
- {name:"Enemy ESP",price:100,icon:"assets/Enemy_ESP.png",level:5},
- {name:"Grace Wings",price:250,icon:"assets/Grace_Wings.png",id:"opt-grace",level:5},
- {name:"Grapple Points",price:100,icon:"assets/Grapple_Points.png",level:5},
- {name:"Last Robloxian Standing",price:200,icon:"assets/Last_Robloxian_Standing.png",id:"opt-lrs",level:5},
- {name:"Pocket Bell",price:150,icon:"assets/Pocket_Bell.png",level:5},
- {name:"Tripmine ESP",price:400,icon:"assets/Tripmine_ESP.png",level:5},
- {name:"Advanced Gravity Coil",price:600,icon:"assets/Advanced_Gravity_Coil.png",level:8},
- {name:"Ice Skates",price:400,icon:"assets/Ice_Skates.png",id:"opt-iceskates",level:8},
- {name:"Barrier",price:1000,icon:"assets/Subspacial_Barrier.png",id:"opt-barrier",level:10},
- {name:"Helmet",price:600,icon:"assets/Helmet.png",level:10},
- {name:"More Altars",price:600,icon:"assets/More_Altars.png",level:10},
- {name:"Ninja Belt",price:500,icon:"assets/Ninja_Belt.png",id:"opt-ninja",level:13},
- {name:"Gift Magnet",price:2000,icon:"assets/Gift_Magnet.png",level:15},
- {name:"Matrix",price:2500,icon:"assets/Matrix_Tetrahedron.png",level:15},
- {name:"Shield",price:3000,icon:"assets/Shield.png",id:"opt-shield",level:15},
- {name:"Sport Shoes",price:1200,icon:"assets/Sport_Shoes.png",level:15},
- {name:"Real Wings",price:25000,icon:"assets/Real_Wings.png",level:20}
-];
-
-const soloPrices={ "opt-grace":200,"opt-barrier":200,"opt-ninja":300,"opt-shield":1000,"opt-iceskates":300 };
-const enemiesList=[
-    {name:"Mart", icon:"assets/Mart.png"}, {name:"Baby", icon:"assets/baby.png"}, {name:"NIL", icon:"assets/nil.png"},
-    {name:"Voidbreaker", icon:"assets/voidbreaker.png"}, {name:"Springer", icon:"assets/springer.png"},
-    {name:"Bell", icon:"assets/bell.png"},{name:"Voidbound Guardian", icon:"assets/vbg.png"},
-    {name:"Voidbound Baby", icon:"assets/voidBaby.png"},{name:"Skinwalker", icon:"assets/skinwalker.png"}, 
-    {name:"???", icon:"assets/random.png"}, {name:"Telefragger", icon:"assets/tele.png"},
-    {name:"Flesh", icon:"assets/flesh.png"}, {name:"Guardian", icon:"assets/guardian.png"},
-    {name:"Cadence", icon:"assets/Cadance.png"}, {name:"ICBM", icon:"assets/icbm.png"}
-];
-
-let isTrapMode=false;
-
-function handleSoloChange() {
-  const soloCheck = document.getElementById('solo-mode');
-  const pInput = document.getElementById("players");
-  if (soloCheck.checked) { 
-    pInput.value = 1; pInput.disabled = true; 
-    document.getElementById('normal-mode').checked = false; 
-    document.getElementById('hard-mode').checked = false; 
-  } else { 
-    pInput.disabled = false; 
-    document.getElementById('normal-mode').checked = true; 
-  }
-  handlePlayerRules();
-}
-
-function handleModeChange(mode) {
-  const pInput = document.getElementById("players");
-  document.getElementById('solo-mode').checked = false;
-  if (mode === 'normal') { 
-    document.getElementById('hard-mode').checked = false; 
-  } else { 
-    document.getElementById('normal-mode').checked = false; 
-  }
-  pInput.disabled = false;
-  handlePlayerRules();
-}
-
-function getModeMultiplier() {
-  if (document.getElementById('solo-mode').checked) return 1;
-  return document.getElementById('hard-mode').checked ? 1.15 : 1;
-}
-
-function toggleMobileList() {
-    if(window.innerWidth <= 900) {
-        document.getElementById("trapList").classList.toggle("visible"); 
-        document.getElementById("collapsible-title").classList.toggle("active");
-    }
-}
-
-function renderGrid(){
- const grid=document.getElementById("mainGrid");
- if(!grid) return;
- grid.innerHTML="";
- if(isTrapMode){
-   enemiesList.forEach(item=>{
-     const label=document.createElement("label");
-     label.innerHTML=`<input type="number" class="enemy-count" value="0" min="0" oninput="calculate()">
-       <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-         <img src="${item.icon}" class="custom-icon">
-         <span class="enemy-name-text">${item.name}</span>
-       </div>`;
-     grid.appendChild(label);
-   });
- }else{
-   upgradesList.forEach(item=>{
-     const label=document.createElement("label");
-     label.id=item.id||"";
-     const fullText = `${item.name} (${item.price})`;
-     let fontSize = (fullText.length > 20) ? '14px' : '18px';
-     label.innerHTML=`<input type="checkbox" class="option" data-price="${item.price}" onchange="calculate()">
-       <img src="${item.icon}" class="custom-icon">
-       <span style="font-size:${fontSize};flex:1;min-width:0;">${item.name} <small class="price-val"></small></span>
-       <span class="level-badge">Lv${item.level}</span>`;
-     grid.appendChild(label);
-   });
- }
- handlePlayerRules();
-}
-
-function toggleTrapMode(){
-  isTrapMode=!isTrapMode;
-  document.body.classList.toggle('trap-active');
-  document.getElementById("mainTitle").textContent=isTrapMode?"Nullscape Trap Card Calculator":"Nullscape Price Calculator";
-  document.getElementById("gridTitle").textContent=isTrapMode?"Current Run Enemies":"Upgrades";
-  document.getElementById("toggleIcon").src=isTrapMode?"assets/Defuse_Kit.png":"assets/Trap-Card.png";
-  document.getElementById("player-group").style.display=isTrapMode?"none":"block";
-  document.getElementById("upgrade-results").style.display=isTrapMode?"none":"block";
-  document.getElementById("trap-results").style.display=isTrapMode?"block":"none";
-  renderGrid();
-}
-
-function handlePlayerRules(){
- const pInput=document.getElementById("players");
- if(!pInput) return;
- let p = parseInt(pInput.value) || 1;
- if (p > 20) { p = 20; pInput.value = 20; }
- const soloCheck = document.getElementById('solo-mode');
- if(!isTrapMode){
-   document.querySelectorAll(".upgrades-grid label").forEach(label=>{
-     const checkbox=label.querySelector("input");
-     const priceSpan=label.querySelector(".price-val");
-     const base=Number(checkbox.dataset.price);
-     let display = (soloCheck.checked && soloPrices[label.id]) ? soloPrices[label.id] : base;
-     priceSpan.textContent=`(${display})`;
-     if(label.id==="opt-adrenaline") { checkbox.disabled = !soloCheck.checked; if(!soloCheck.checked) checkbox.checked = false; }
-     if(label.id==="opt-lrs") { checkbox.disabled = p < 3; if(p < 3) checkbox.checked = false; }
-   });
- }
- calculate();
-}
-
-function calculate(){
- const modeMultiplier = getModeMultiplier();
- if(isTrapMode){
-   let limit = (modeMultiplier > 1) ? 16 : 8;
-   let used = 0;
-   const list = document.getElementById("trapList");
-   list.innerHTML = "";
-   document.querySelectorAll(".enemy-count").forEach(input => {
-     let count = parseInt(input.value) || 0;
-     let name = input.parentElement.querySelector(".enemy-name-text").textContent;
-     let added = 0;
-     if(used < limit && count > 0) { added = Math.min(count, limit - used); used += added; }
-     if(count > 0) {
-       const li = document.createElement("li");
-       li.innerHTML = `${name} <span>${count + added}</span>`;
-       list.appendChild(li);
-     }
-   });
- } else {
-   let p = parseInt(document.getElementById("players").value) || 1;
-   let total = 0;
-   const soloCheck = document.getElementById('solo-mode');
-   document.querySelectorAll(".option:checked").forEach(opt => {
-     let basePrice = (soloCheck.checked && soloPrices[opt.parentElement.id]) ? soloPrices[opt.parentElement.id] : Number(opt.dataset.price);
-     let scaledPrice = (p === 1 || soloCheck.checked) ? basePrice : Math.ceil(basePrice * Math.sqrt(p));
-     total += Math.ceil(scaledPrice * modeMultiplier);
-   });
-   document.getElementById("result").textContent = "Total: " + total.toLocaleString();
- }
-}
-
-function clearAll(){
- document.querySelectorAll(isTrapMode ? ".enemy-count" : ".option").forEach(i => isTrapMode ? i.value = 0 : i.checked = false);
- calculate();
-}
-window.onload=renderGrid;
 </script>
 </body>
 </html>
