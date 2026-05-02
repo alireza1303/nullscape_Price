@@ -13,98 +13,106 @@
             --primary-glow: rgba(194, 133, 255, 0.5);
             --extreme: #ffab66;
             --extreme-glow: rgba(255, 171, 102, 0.5);
-            --curse: #66d9ff;
+            --casual: #3ebfff;
+            --casual-glow: rgba(91, 200, 255, 0.5);
+            --curse: #5ad6ff;
             --curse-glow: rgba(102, 217, 255, 0.6);
             --bg-dark: #0f0f12;
             --card-bg: #1a1a1f;
-            --card-border: rgba(255, 255, 255, 0.15);
+            --card-border: rgba(0, 0, 0, 0.212);
             --text-main: #ffffff;
             --text-dim: #b8b8b8;
             --text-v-dim: #757575;
             --accent-red: #ff7070;
+
+            
+            --theme: var(--primary);
+            --theme-glow: var(--primary-glow);
         }
+
+
+        body.mode-extreme {
+            --theme: var(--extreme);
+            --theme-glow: var(--extreme-glow);
+        }
+        body.mode-casual {
+            --theme: var(--casual);
+            --theme-glow: var(--casual-glow);
+            background: radial-gradient(circle at 50% 50%, #0d1a2e 0%, #0a0f18 100%);
+        }
+        body.mode-casual #particles-js {
+            background: radial-gradient(circle at 50% 50%, #0d1f35 0%, #090e18 100%);
+        }
+        body.mode-casual #particles-js canvas { filter: hue-rotate(160deg); }
 
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
 
-        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #1e1e35 0%, #0f0f12 100%); }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #1e1e35 0%, #0f0f12 100%); transition: background 0.6s; }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         #loading-screen { position: fixed; inset: 0; background: var(--bg-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.8s; }
-        .loader-ring { width: 60px; height: 60px; border: 3px solid var(--card-border); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader-ring { width: 60px; height: 60px; border: 3px solid var(--card-border); border-top: 3px solid var(--theme); border-radius: 50%; animation: spin 1s linear infinite; }
 
         .container { max-width: 2200px; margin: 0 auto; padding: 20px; opacity: 0; transform-origin: top center; transition: 1s cubic-bezier(0.2, 1, 0.2, 1); }
         .container.loaded { opacity: 1; transform: scale(0.95); animation: fadeInUp 0.8s ease-out forwards; }
 
         header { text-align: center; margin-bottom: 25px; }
-        h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin: 0; background: linear-gradient(to right, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; filter: drop-shadow(0 0 10px var(--primary-glow)); }
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin: 0;
+            background: linear-gradient(to right, #fff, var(--theme));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -1px; filter: drop-shadow(0 0 10px var(--theme-glow));
+            transition: filter 0.4s;
+        }
 
         .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 25px; }
         .glass-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 28px; padding: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.02); }
 
-        .section-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 4px; color: var(--primary); margin-bottom: 20px; font-weight: 800; display: flex; align-items: center; gap: 12px; text-shadow: 0 0 15px var(--primary-glow); }
-        body.mode-extreme .section-title { color: var(--extreme); text-shadow: 0 0 15px var(--extreme-glow); }
+        .section-title {
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 4px;
+            color: var(--theme); margin-bottom: 20px; font-weight: 800;
+            display: flex; align-items: center; gap: 12px;
+            text-shadow: 0 0 15px var(--theme-glow); transition: color 0.4s, text-shadow 0.4s;
+        }
 
         .settings-grid { display: flex; flex-direction: column; gap: 20px; }
         .input-group label { display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); font-weight: 600; }
 
         input[type="number"] { width: 100%; background: rgba(0,0,0,0.4); border: 2px solid var(--card-border); border-radius: 16px; padding: 12px; color: white; font-size: 1.4rem; font-weight: 800; text-align: center; transition: 0.3s; }
-        input[type="number"]:focus { border-color: var(--primary); outline: none; background: rgba(0,0,0,0.6); box-shadow: 0 0 15px var(--primary-glow); }
+        input[type="number"]:focus { border-color: var(--theme); outline: none; background: rgba(0,0,0,0.6); box-shadow: 0 0 15px var(--theme-glow); }
         input[type="number"]:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .mode-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .mode-selector { display: grid; gap: 8px; }
         .mode-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 12px; border-radius: 14px; color: var(--text-dim); cursor: pointer; font-weight: 600; transition: 0.3s; text-align: center; font-size: 0.8rem; }
-        .mode-btn.active { background: var(--primary); color: white; box-shadow: 0 0 25px var(--primary-glow); border-color: var(--primary); }
-        body.mode-extreme .mode-btn.active { background: var(--extreme); border-color: var(--extreme); box-shadow: 0 0 25px var(--extreme-glow); }
+        .mode-btn.active { background: var(--theme); color: white; box-shadow: 0 0 25px var(--theme-glow); border-color: var(--theme); }
 
         .curse-toggle-btn {
-            width: 100%;
-            background: rgba(102, 217, 255, 0.07);
-            border: 1px solid rgba(102, 217, 255, 0.25);
-            border-radius: 14px;
-            padding: 12px 16px;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            width: 100%; background: rgba(102, 217, 255, 0.07); border: 1px solid rgba(102, 217, 255, 0.25);
+            border-radius: 14px; padding: 12px 16px; color: var(--text-dim); cursor: pointer; font-weight: 700;
+            display: flex; align-items: center; justify-content: space-between;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .curse-toggle-btn.active {
-            background: rgba(102, 217, 255, 0.2);
-            border-color: var(--curse);
-            color: var(--curse);
+            background: rgba(102, 217, 255, 0.2); border-color: var(--curse); color: var(--curse);
             box-shadow: 0 0 20px var(--curse-glow), inset 0 0 10px rgba(102, 217, 255, 0.2);
-            text-shadow: 0 0 8px var(--curse-glow);
-            transform: scale(1.02);
+            text-shadow: 0 0 8px var(--curse-glow); transform: scale(1.02);
         }
         .curse-pill { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(102, 217, 255, 0.12); border: 1px solid rgba(102, 217, 255, 0.2); transition: 0.3s; }
         .curse-toggle-btn.active .curse-pill { background: var(--curse); color: #000; border-color: var(--curse); }
 
         .partyplus-btn {
-            width: 100%;
-            background: rgba(194, 133, 255, 0.07);
-            border: 1px solid rgba(194, 133, 255, 0.25);
-            border-radius: 14px;
-            padding: 12px 16px;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            width: 100%; background: rgba(194, 133, 255, 0.07); border: 1px solid rgba(194, 133, 255, 0.25);
+            border-radius: 14px; padding: 12px 16px; color: var(--text-dim); cursor: pointer; font-weight: 700;
+            display: flex; align-items: center; justify-content: space-between;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .partyplus-btn.active {
-            background: rgba(194, 133, 255, 0.2);
-            border-color: var(--primary);
-            color: var(--primary);
+            background: rgba(194, 133, 255, 0.2); border-color: var(--primary); color: var(--primary);
             box-shadow: 0 0 20px var(--primary-glow), inset 0 0 10px rgba(194, 133, 255, 0.15);
-            text-shadow: 0 0 8px var(--primary-glow);
-            transform: scale(1.02);
+            text-shadow: 0 0 8px var(--primary-glow); transform: scale(1.02);
         }
         .pp-pill { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(194,133,255,0.12); border: 1px solid rgba(194,133,255,0.3); transition: 0.3s; }
         .partyplus-btn.active .pp-pill { background: var(--primary); color: #000; border-color: var(--primary); }
@@ -116,14 +124,32 @@
             border-radius: 20px; background: rgba(255,255,255,0.04); border: 1px solid transparent;
             cursor: pointer; transition: 0.3s; height: 85px; box-sizing: border-box; position: relative;
         }
-        .upgrade-item.active { background: rgba(194, 133, 255, 0.15); border-color: var(--primary); }
-        body.mode-extreme .upgrade-item.active { background: rgba(255, 171, 102, 0.15); border-color: var(--extreme); }
+        .upgrade-item.active { background: rgba(194, 133, 255, 0.15); border-color: var(--theme); }
+        body.mode-casual .upgrade-item.active { background: rgba(91, 200, 255, 0.12); }
         .upgrade-item.disabled { opacity: 0.3; pointer-events: none; }
+
+        .upgrade-item.casual-hidden {
+            opacity: 0.18;
+            pointer-events: none;
+            filter: grayscale(0.8);
+        }
+        .upgrade-item.casual-hidden::after {
+            content: 'Not in Casual';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.6rem;
+            color: var(--casual);
+            border: 1px solid var(--casual);
+            padding: 2px 7px;
+            border-radius: 8px;
+            opacity: 0.7;
+        }
 
         .stack-indicator { display: flex; gap: 4px; margin-top: 6px; }
         .stack-dot { width: 14px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; transition: 0.3s; }
-        .stack-dot.filled { background: var(--primary); box-shadow: 0 0 8px var(--primary-glow); }
-        body.mode-extreme .stack-dot.filled { background: var(--extreme); box-shadow: 0 0 8px var(--extreme-glow); }
+        .stack-dot.filled { background: var(--theme); box-shadow: 0 0 8px var(--theme-glow); }
 
         .icon-wrapper { width: 40px; height: 40px; background: rgba(0,0,0,0.5); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
         .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
@@ -133,11 +159,12 @@
         .price-tag { font-size: 0.8rem; color: var(--text-dim); }
         .lv-badge { font-size: 0.65rem; color: var(--text-v-dim); border: 1px solid var(--card-border); padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.2); flex-shrink: 0; margin-left: auto; }
 
-        .total-val { font-size: 4rem; font-weight: 800; color: var(--primary); text-shadow: 0 0 30px var(--primary-glow); }
-        body.mode-extreme .total-val { color: var(--extreme); text-shadow: 0 0 30px var(--extreme-glow); }
+        .total-val {
+            font-size: 4rem; font-weight: 800; color: var(--theme);
+            text-shadow: 0 0 30px var(--theme-glow); transition: color 0.4s, text-shadow 0.4s;
+        }
 
         .formula-text { font-size: 0.7rem; color: var(--text-v-dim); margin-bottom: 15px; line-height: 1.6; display: block; }
-
         #curse-indicator { font-size: 0.7rem; font-weight: 800; color: var(--curse); margin-bottom: 5px; opacity: 0; transition: 0.3s; text-shadow: 0 0 10px var(--curse-glow); }
 
         .mobile-settings-overlay {
@@ -154,18 +181,14 @@
             display: none; align-items: center; justify-content: space-between;
             padding: 0 20px; z-index: 1001;
         }
-        .mobile-total-wrap .price { font-size: 2rem; font-weight: 800; color: var(--primary); transition: color 0.3s; }
-        body.mode-extreme .mobile-total-wrap .price { color: var(--extreme); }
+        .mobile-total-wrap .price { font-size: 2rem; font-weight: 800; color: var(--theme); transition: color 0.3s; }
 
         @media (max-width: 1000px) {
             .main-layout { grid-template-columns: 1fr; }
             .sticky-sidebar { display: none; }
             .mobile-bottom-nav { display: flex; }
             .container { padding-bottom: 110px; }
-            .mode-selector { grid-template-columns: 1fr 1fr; }
         }
-
-        .hidden-check { display: none; }
     </style>
 </head>
 <body class="mode-standard">
@@ -174,7 +197,7 @@
 
 <div class="mobile-settings-overlay" id="mobileDrawer">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <span style="font-weight: 800; color: var(--primary); letter-spacing: 2px;" id="drawerTitle">SETTINGS</span>
+        <span style="font-weight: 800; color: var(--theme); letter-spacing: 2px;">SETTINGS</span>
         <button onclick="toggleMobileSettings()" style="background: none; border: none; color: white; font-size: 1.5rem;">✕</button>
     </div>
     <div id="mobile-settings-content"></div>
@@ -201,7 +224,9 @@
 
                     <div class="input-group">
                         <label>Difficulty</label>
-                        <div class="mode-selector" style="grid-template-columns: 1fr 1fr;">
+                        <!-- 3-column grid for the 3 difficulty buttons -->
+                        <div class="mode-selector" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="mode-btn" data-diff="casual" onclick="setDifficulty('casual')">Casual</div>
                             <div class="mode-btn active" data-diff="standard" onclick="setDifficulty('standard')">Standard</div>
                             <div class="mode-btn" data-diff="extreme" onclick="setDifficulty('extreme')">Extreme</div>
                         </div>
@@ -209,7 +234,7 @@
 
                     <div class="input-group">
                         <label>Mode</label>
-                        <div class="mode-selector">
+                        <div class="mode-selector" style="grid-template-columns: 1fr 1fr 1fr;">
                             <div class="mode-btn active" data-mode="solo" onclick="setMode('solo')">Solo</div>
                             <div class="mode-btn" data-mode="duo" onclick="setMode('duo')">Duo</div>
                             <div class="mode-btn" data-mode="party" onclick="setMode('party')">Party/Party+</div>
@@ -240,7 +265,7 @@
 
             <div class="glass-card" style="margin-top: 20px; text-align: center;">
                 <span style="font-size: 0.8rem; color: var(--text-dim); font-weight: 700;">TOTAL GIFT</span>
-                <div id="curse-indicator">Nothing Discount i son</div>
+                <div id="curse-indicator">Nothing Discount is on</div>
                 <div class="total-val" id="result">0</div>
                 <div class="formula-text" id="formulaText">ceil(base × √players)</div>
                 <button onclick="clearAll()" style="width: 100%; background: rgba(255, 94, 94, 0.1); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 12px; border-radius: 14px; cursor: pointer; font-weight: 700;">Reset All</button>
@@ -262,6 +287,27 @@
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
+
+const CASUAL_OVERRIDES = {
+    "Grace Wings":                             { hidden: true },
+    "Defuse Kit":                              { hidden: true },
+    "Subspacial Barrier":                      { hidden: true },
+    "Radar Module : Tripmines":                { hidden: true },
+
+    "Shield":                    { casualPrice: 2000,  casualSoloPrice: 1000 },
+    "Ice Skates":                { casualPrice: 400,   casualSoloPrice: 300 },
+    "Ninja Belt":                { casualPrice: 700,   casualSoloPrice: 500 },
+    "Matrix Tetrahedron":        { casualPrice: 1500,  casualSoloPrice: 1500 },
+    "Shark Tail":                { casualPrice: 800,   casualSoloPrice: 800 },
+    "Drowned Ægis":              { casualPrice: 4000,  casualSoloPrice: 4000 },
+    "Panic Necklace":            { casualPrice: 1500,  casualSoloPrice: 1500 },
+    "Sport Shoes":               { casualPrice: 1000,  casualSoloPrice: 1000 },
+    "Gift Magnet":               { casualPrices: [750, 1050, 1350] },
+    "Gift Idol":                 { casualPrices: [3000, 6000, 9000, 12000, 15000] },
+    "Miniature Hourglass":       { casualPrice: 1500,  casualSoloPrice: 1500 },
+};
+
+
 const upgradesList = [
     {name:"Adrenaline",                 price:50,   soloPrice:50,   icon:"assets/Adrenaline.png",                  id:"opt-adrenaline", level:3,  currentStack:0},
     {name:"Business License",           prices:[75, 188],           icon:"assets/Business_License.png",            level:3,  currentStack:0, maxStack:2},
@@ -297,7 +343,7 @@ const upgradesList = [
     {name:"Panic Necklace",             price:3000, soloPrice:3000, icon:"assets/Panic_Necklace.png",              level:18, currentStack:0},
     {name:"Drowned Ægis",               price:6000, soloPrice:6000, icon:"assets/DrownedAegis.png",               level:20, currentStack:0},
     {name:"Miniature Hourglass",        price:3000, soloPrice:3000, icon:"assets/Miniature_Hourglass.png",         level:20, currentStack:0},
-    {name:"Gift Idol",                  prices:[4000, 8000, 12000, 16000, 20000], icon:"assets/Gift_Idol.png",        level:20, currentStack:0,maxStack:5},
+    {name:"Gift Idol",                  prices:[4000, 8000, 12000, 16000, 20000], icon:"assets/Gift_Idol.png",     level:20, currentStack:0, maxStack:5},
 ];
 
 let currentDifficulty = 'standard';
@@ -305,6 +351,25 @@ let currentMode = 'solo';
 let playerCount = 1;
 let partyPlusActive = false;
 let nothingCurseActive = false;
+
+
+function isCasualHidden(item) {
+    if (currentDifficulty !== 'casual') return false;
+    return !!(CASUAL_OVERRIDES[item.name] && CASUAL_OVERRIDES[item.name].hidden);
+}
+
+function getEffectivePrices(item) {
+    if (currentDifficulty === 'casual' && CASUAL_OVERRIDES[item.name]) {
+        const ov = CASUAL_OVERRIDES[item.name];
+        return {
+            price:     ov.casualPrice     !== undefined ? ov.casualPrice     : item.price,
+            soloPrice: ov.casualSoloPrice !== undefined ? ov.casualSoloPrice : item.soloPrice,
+            prices:    ov.casualPrices    !== undefined ? ov.casualPrices    : item.prices,
+        };
+    }
+    return { price: item.price, soloPrice: item.soloPrice, prices: item.prices };
+}
+
 
 function renderGrid() {
     const grid = document.getElementById("mainGrid");
@@ -315,7 +380,6 @@ function renderGrid() {
                 dots += `<div class="stack-dot" id="dot-${index}-${i}"></div>`;
             }
         }
-
         return `
             <div class="upgrade-item" id="item-${index}" onclick="cycleUpgrade(${index}, this)">
                 <div class="icon-wrapper"><img src="${item.icon}" onerror="this.src='https://via.placeholder.com/50?text=?'"></div>
@@ -333,7 +397,7 @@ function renderGrid() {
 }
 
 function cycleUpgrade(index, el) {
-    if (el.classList.contains('disabled')) return;
+    if (el.classList.contains('disabled') || el.classList.contains('casual-hidden')) return;
     const item = upgradesList[index];
     const max = item.maxStack || 1;
     item.currentStack = item.currentStack >= max ? 0 : item.currentStack + 1;
@@ -350,20 +414,20 @@ function cycleUpgrade(index, el) {
 function computePrice(item, stackOverride) {
     const s = stackOverride !== undefined ? stackOverride : item.currentStack;
     if (s === 0) return 0;
+
+    const eff = getEffectivePrices(item);
     let base = 0;
-    if (item.prices) {
-        base = item.prices[s - 1] || 0;
+    if (eff.prices) {
+        base = eff.prices[s - 1] || 0;
     } else {
-        base = (currentMode === 'solo' && item.soloPrice !== undefined) ? item.soloPrice : item.price;
+        base = (currentMode === 'solo' && eff.soloPrice !== undefined) ? eff.soloPrice : eff.price;
     }
+
     let scaled = playerCount === 1 ? base : Math.ceil(base * Math.sqrt(playerCount));
-    
-    // REDUCTION RULES[cite: 1]
-    if (currentMode === 'party' && partyPlusActive) scaled = Math.ceil(scaled / 1.125);
-    if (currentMode === 'party' && playerCount > 8) scaled = Math.ceil(scaled / 1.125); // Player threshold[cite: 1]
+    if (currentMode === 'party' && partyPlusActive)   scaled = Math.ceil(scaled / 1.125);
+    if (currentMode === 'party' && playerCount > 8)   scaled = Math.ceil(scaled / 1.125);
     if (currentDifficulty === 'extreme') scaled = Math.ceil(scaled * 1.15);
-    if (nothingCurseActive) scaled = Math.ceil(scaled * 0.85);
-    
+    if (nothingCurseActive)              scaled = Math.ceil(scaled * 0.85);
     return scaled;
 }
 
@@ -385,14 +449,11 @@ function updateVisualPrices() {
 function calculate() {
     let total = 0;
     upgradesList.forEach(item => {
-        if (item.currentStack > 0) total += computePrice(item);
+        if (item.currentStack > 0 && !isCasualHidden(item)) total += computePrice(item);
     });
     document.getElementById("result").textContent = total.toLocaleString();
-    
-    // DISCOUNT INDICATOR[cite: 1]
     const indicator = document.getElementById("curse-indicator");
     if (indicator) indicator.style.opacity = nothingCurseActive ? "1" : "0";
-
     const mob = document.getElementById("mobile-result");
     if (mob) mob.textContent = total.toLocaleString();
     updateVisualPrices();
@@ -402,13 +463,25 @@ function applyRules() {
     upgradesList.forEach((item, index) => {
         const el = document.getElementById(`item-${index}`);
         if (!el) return;
+
+        // Casual hidden check
+        const casualHide = isCasualHidden(item);
+        el.classList.toggle('casual-hidden', casualHide);
+        if (casualHide) {
+            item.currentStack = 0;
+            el.classList.remove('active');
+            if (item.maxStack > 1) {
+                for (let i = 0; i < item.maxStack; i++) {
+                    const dot = document.getElementById(`dot-${index}-${i}`);
+                    if (dot) dot.classList.remove('filled');
+                }
+            }
+        }
+
         let disabled = false;
         if (item.id === "opt-adrenaline" && currentMode === 'party') disabled = true;
-        
-        // LRS RESTRICTION: Available only if players > 3[cite: 1]
         if (item.id === "opt-lrs" && (currentMode !== 'party' || playerCount <= 3)) disabled = true;
-        
-        el.classList.toggle('disabled', disabled);
+        el.classList.toggle('disabled', disabled && !casualHide);
         if (disabled) {
             item.currentStack = 0;
             el.classList.remove('active');
@@ -429,47 +502,38 @@ function setDifficulty(diff) {
     document.querySelectorAll('[data-diff]').forEach(b => b.classList.toggle('active', b.dataset.diff === diff));
     updateFormulaText();
     syncMobileSettings();
-    calculate();
+    applyRules();
 }
 
 function setMode(mode) {
     currentMode = mode;
     const pInput = document.getElementById('pInput');
     const ppWrap = document.getElementById('partyplus-wrap');
-    
     if (mode === 'solo') {
-        playerCount = 1;
-        pInput.value = 1;
-        pInput.min = 1;
+        playerCount = 1; pInput.value = 1; pInput.min = 1;
         if (ppWrap) ppWrap.style.display = 'none';
-    } else {
-        if (mode === 'duo') {
-            pInput.min = 1;
-            pInput.max = 2;
-            if (playerCount > 2) playerCount = 2;
-            if (ppWrap) ppWrap.style.display = 'none';
-        } else if (mode === 'party') {
-            pInput.min = 1;
-            pInput.max = 20;
-            if (ppWrap) ppWrap.style.display = 'block';
-        }
+    } else if (mode === 'duo') {
+        pInput.min = 1; pInput.max = 2;
+        if (playerCount > 2) playerCount = 2;
+        if (ppWrap) ppWrap.style.display = 'none';
+        pInput.value = playerCount;
+    } else if (mode === 'party') {
+        pInput.min = 1; pInput.max = 20;
+        if (ppWrap) ppWrap.style.display = 'block';
         pInput.value = playerCount;
     }
-    
     document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
     syncMobileSettings();
     applyRules();
 }
 
 function validatePlayers(input) {
-    let min = 1;
-    let max = 1;
+    let min = 1, max = 1;
     if (currentMode === 'duo') max = 2;
     else if (currentMode === 'party') max = 20;
-
     playerCount = Math.max(min, Math.min(max, parseInt(input.value) || min));
     input.value = playerCount;
-    applyRules(); // Refreshes rules for player count change[cite: 1]
+    applyRules();
     updateFormulaText();
     calculate();
 }
@@ -495,9 +559,10 @@ function updateFormulaText() {
     const el = document.getElementById('formulaText');
     if (!el) return;
     let formula = 'ceil(base × √players)';
-    if (currentMode === 'party' && playerCount > 8) formula += ' ÷ 1.125 (8+ Players)'; // Formula indicator[cite: 1]
-    if (currentMode === 'party' && partyPlusActive) formula += ' ÷ 1.125 (Party+)';
+    if (currentMode === 'party' && playerCount > 8) formula += ' ÷ 1.125 (8+ Players)';
+    if (currentMode === 'party' && partyPlusActive)  formula += ' ÷ 1.125 (Party+)';
     if (currentDifficulty === 'extreme') formula += ' × 1.15 (Extreme)';
+    if (currentDifficulty === 'casual')  formula += ' (Casual prices)';
     el.textContent = formula;
 }
 
@@ -510,32 +575,21 @@ function syncMobileSettings() {
     const drawer = document.getElementById('mobile-settings-content');
     if (!drawer || !pcBox) return;
     drawer.innerHTML = pcBox.innerHTML;
-    
     const mobInput = drawer.querySelector('.player-input');
-    if (mobInput) {
-        mobInput.value = playerCount;
-        mobInput.disabled = (currentMode === 'solo');
-    }
-    
+    if (mobInput) { mobInput.value = playerCount; mobInput.disabled = (currentMode === 'solo'); }
     const mobCurse = drawer.querySelector('.curse-toggle-btn');
     if (mobCurse) mobCurse.classList.toggle('active', nothingCurseActive);
-    
     const ppWrapMob = drawer.querySelector('#partyplus-wrap');
     if (ppWrapMob) {
         ppWrapMob.style.display = currentMode === 'party' ? 'block' : 'none';
         const ppBtn = ppWrapMob.querySelector('#partyplusBtnPC');
         if (ppBtn) ppBtn.classList.toggle('active', partyPlusActive);
     }
-    
     drawer.querySelectorAll('[data-diff]').forEach(b => b.classList.toggle('active', b.dataset.diff === currentDifficulty));
     drawer.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === currentMode));
-    
     const mobBtn = document.getElementById('mobileSettingsBtn');
-    if (currentDifficulty === 'extreme') {
-        if (mobBtn) mobBtn.style.background = 'var(--extreme)';
-    } else {
-        if (mobBtn) mobBtn.style.background = 'var(--primary)';
-    }
+    const themeMap = { casual: 'var(--casual)', standard: 'var(--primary)', extreme: 'var(--extreme)' };
+    if (mobBtn) mobBtn.style.background = themeMap[currentDifficulty] || 'var(--primary)';
     updateFormulaText();
 }
 
