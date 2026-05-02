@@ -392,7 +392,10 @@ function applyRules() {
         if (!el) return;
         let disabled = false;
         if (item.id === "opt-adrenaline" && currentMode === 'party') disabled = true;
-        if (item.id === "opt-lrs" && (currentMode !== 'party' || playerCount < 3)) disabled = true;
+        
+
+        if (item.id === "opt-lrs" && (currentMode !== 'party' || playerCount <= 2)) disabled = true;
+        
         el.classList.toggle('disabled', disabled);
         if (disabled) {
             item.currentStack = 0;
@@ -457,6 +460,7 @@ function validatePlayers(input) {
 
     playerCount = Math.max(min, Math.min(max, parseInt(input.value) || min));
     input.value = playerCount;
+    applyRules(); // Ensure rules refresh on player count change
     calculate();
 }
 
