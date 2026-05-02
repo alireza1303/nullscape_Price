@@ -138,6 +138,8 @@
 
         .formula-text { font-size: 0.7rem; color: var(--text-v-dim); margin-bottom: 15px; line-height: 1.6; display: block; }
 
+        #curse-indicator { font-size: 0.7rem; font-weight: 800; color: var(--curse); margin-bottom: 5px; opacity: 0; transition: 0.3s; text-shadow: 0 0 10px var(--curse-glow); }
+
         .mobile-settings-overlay {
             position: fixed; top: 0; left: 0; width: 100%;
             background: #1a1a1f; z-index: 2000; padding: 20px;
@@ -238,6 +240,7 @@
 
             <div class="glass-card" style="margin-top: 20px; text-align: center;">
                 <span style="font-size: 0.8rem; color: var(--text-dim); font-weight: 700;">TOTAL GIFT</span>
+                <div id="curse-indicator">Nothing Discount i son</div>
                 <div class="total-val" id="result">0</div>
                 <div class="formula-text" id="formulaText">ceil(base × √players)</div>
                 <button onclick="clearAll()" style="width: 100%; background: rgba(255, 94, 94, 0.1); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 12px; border-radius: 14px; cursor: pointer; font-weight: 700;">Reset All</button>
@@ -294,7 +297,7 @@ const upgradesList = [
     {name:"Panic Necklace",             price:3000, soloPrice:3000, icon:"assets/Panic_Necklace.png",              level:18, currentStack:0},
     {name:"Drowned Ægis",               price:6000, soloPrice:6000, icon:"assets/DrownedAegis.png",               level:20, currentStack:0},
     {name:"Miniature Hourglass",        price:3000, soloPrice:3000, icon:"assets/Miniature_Hourglass.png",         level:20, currentStack:0},
-    {name:"Gift Idol",                  price:4000, soloPrice:4000, icon:"assets/Gift_Idol.png",                   level:20, currentStack:0},
+    {name:"Gift Idol",                  prices:[4000, 8000, 12000, 16000, 20000], icon:"assets/Gift_Idol.png",        level:20, currentStack:0,maxStack:5},
 ];
 
 let currentDifficulty = 'standard';
@@ -354,9 +357,13 @@ function computePrice(item, stackOverride) {
         base = (currentMode === 'solo' && item.soloPrice !== undefined) ? item.soloPrice : item.price;
     }
     let scaled = playerCount === 1 ? base : Math.ceil(base * Math.sqrt(playerCount));
+    
+    // REDUCTION RULES[cite: 1]
     if (currentMode === 'party' && partyPlusActive) scaled = Math.ceil(scaled / 1.125);
+    if (currentMode === 'party' && playerCount > 8) scaled = Math.ceil(scaled / 1.125); // Player threshold[cite: 1]
     if (currentDifficulty === 'extreme') scaled = Math.ceil(scaled * 1.15);
     if (nothingCurseActive) scaled = Math.ceil(scaled * 0.85);
+    
     return scaled;
 }
 
@@ -381,6 +388,11 @@ function calculate() {
         if (item.currentStack > 0) total += computePrice(item);
     });
     document.getElementById("result").textContent = total.toLocaleString();
+    
+    // DISCOUNT INDICATOR[cite: 1]
+    const indicator = document.getElementById("curse-indicator");
+    if (indicator) indicator.style.opacity = nothingCurseActive ? "1" : "0";
+
     const mob = document.getElementById("mobile-result");
     if (mob) mob.textContent = total.toLocaleString();
     updateVisualPrices();
@@ -393,8 +405,8 @@ function applyRules() {
         let disabled = false;
         if (item.id === "opt-adrenaline" && currentMode === 'party') disabled = true;
         
-
-        if (item.id === "opt-lrs" && (currentMode !== 'party' || playerCount <= 2)) disabled = true;
+        // LRS RESTRICTION: Available only if players > 3[cite: 1]
+        if (item.id === "opt-lrs" && (currentMode !== 'party' || playerCount <= 3)) disabled = true;
         
         el.classList.toggle('disabled', disabled);
         if (disabled) {
@@ -429,7 +441,6 @@ function setMode(mode) {
         playerCount = 1;
         pInput.value = 1;
         pInput.min = 1;
-        if (playerCount > 1) playerCount = 1;
         if (ppWrap) ppWrap.style.display = 'none';
     } else {
         if (mode === 'duo') {
@@ -440,7 +451,6 @@ function setMode(mode) {
         } else if (mode === 'party') {
             pInput.min = 1;
             pInput.max = 20;
-            if (playerCount > 20) playerCount = 20;
             if (ppWrap) ppWrap.style.display = 'block';
         }
         pInput.value = playerCount;
@@ -454,13 +464,13 @@ function setMode(mode) {
 function validatePlayers(input) {
     let min = 1;
     let max = 1;
-    
     if (currentMode === 'duo') max = 2;
     else if (currentMode === 'party') max = 20;
 
     playerCount = Math.max(min, Math.min(max, parseInt(input.value) || min));
     input.value = playerCount;
-    applyRules(); // Ensure rules refresh on player count change
+    applyRules(); // Refreshes rules for player count change[cite: 1]
+    updateFormulaText();
     calculate();
 }
 
@@ -485,13 +495,9 @@ function updateFormulaText() {
     const el = document.getElementById('formulaText');
     if (!el) return;
     let formula = 'ceil(base × √players)';
-    if (currentMode === 'party' && partyPlusActive && currentDifficulty === 'extreme') {
-        formula = 'ceil(base × √players ÷ 1.125 × 1.15)';
-    } else if (currentMode === 'party' && partyPlusActive) {
-        formula = 'ceil(base × √players ÷ 1.125)';
-    } else if (currentDifficulty === 'extreme') {
-        formula = 'ceil(base × √players × 1.15)';
-    }
+    if (currentMode === 'party' && playerCount > 8) formula += ' ÷ 1.125 (8+ Players)'; // Formula indicator[cite: 1]
+    if (currentMode === 'party' && partyPlusActive) formula += ' ÷ 1.125 (Party+)';
+    if (currentDifficulty === 'extreme') formula += ' × 1.15 (Extreme)';
     el.textContent = formula;
 }
 
@@ -509,10 +515,6 @@ function syncMobileSettings() {
     if (mobInput) {
         mobInput.value = playerCount;
         mobInput.disabled = (currentMode === 'solo');
-        mobInput.min = 1;
-        if (currentMode === 'duo') mobInput.max = 2;
-        else if (currentMode === 'party') mobInput.max = 20;
-        else mobInput.max = 1;
     }
     
     const mobCurse = drawer.querySelector('.curse-toggle-btn');
@@ -529,13 +531,10 @@ function syncMobileSettings() {
     drawer.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === currentMode));
     
     const mobBtn = document.getElementById('mobileSettingsBtn');
-    const drawerTitle = document.getElementById('drawerTitle');
     if (currentDifficulty === 'extreme') {
-        if (mobBtn) { mobBtn.style.background = 'var(--extreme)'; mobBtn.style.boxShadow = '0 5px 15px var(--extreme-glow)'; }
-        if (drawerTitle) drawerTitle.style.color = 'var(--extreme)';
+        if (mobBtn) mobBtn.style.background = 'var(--extreme)';
     } else {
-        if (mobBtn) { mobBtn.style.background = 'var(--primary)'; mobBtn.style.boxShadow = '0 5px 15px var(--primary-glow)'; }
-        if (drawerTitle) drawerTitle.style.color = 'var(--primary)';
+        if (mobBtn) mobBtn.style.background = 'var(--primary)';
     }
     updateFormulaText();
 }
@@ -544,13 +543,11 @@ function clearAll() {
     upgradesList.forEach((item, index) => {
         item.currentStack = 0;
         const el = document.getElementById(`item-${index}`);
-        if (el) {
-            el.classList.remove('active');
-            if (item.maxStack > 1) {
-                for (let i = 0; i < item.maxStack; i++) {
-                    const dot = document.getElementById(`dot-${index}-${i}`);
-                    if (dot) dot.classList.remove('filled');
-                }
+        if (el) el.classList.remove('active');
+        if (item.maxStack > 1) {
+            for (let i = 0; i < item.maxStack; i++) {
+                const dot = document.getElementById(`dot-${index}-${i}`);
+                if (dot) dot.classList.remove('filled');
             }
         }
     });
