@@ -331,11 +331,10 @@ const upgradesList = [
 ];
 
 let currentDifficulty = 'standard';
-let currentMode = 'solo'; // 'solo' | 'duo' | 'party' | 'partyplus'
+let currentMode = 'solo'; 
 let playerCount = 1;
 let nothingCurseActive = false;
 
-// Returns whether we're in a party-style mode (party or partyplus)
 function isPartyMode() { return currentMode === 'party' || currentMode === 'partyplus'; }
 
 function isCasualHidden(item) {
@@ -403,7 +402,6 @@ function computePrice(item, stackOverride) {
     const eff = getEffectivePrices(item);
     let base = 0;
 
-    // For solo mode, use soloPrice; for all multi-player modes use the standard price
     const isSolo = currentMode === 'solo';
     if (eff.prices) {
         const priceArr = (isSolo && eff.soloPrices) ? eff.soloPrices : eff.prices;
@@ -412,13 +410,10 @@ function computePrice(item, stackOverride) {
         base = (isSolo && eff.soloPrice !== undefined) ? eff.soloPrice : eff.price;
     }
 
-    // Scale by player count for multi-player modes
     let scaled = playerCount === 1 ? base : Math.ceil(base * Math.sqrt(playerCount));
 
-    // Party+ always gets ÷1.125
     if (currentMode === 'partyplus') scaled = Math.ceil(scaled / 1.125);
 
-    // Party with 8+ players also gets ÷1.125 (the regular party large-lobby discount)
     if (currentMode === 'party' && playerCount > 8) scaled = Math.ceil(scaled / 1.125);
 
     if (currentDifficulty === 'extreme') scaled = Math.ceil(scaled * 1.15);
@@ -459,7 +454,6 @@ function applyRules() {
         const el = document.getElementById(`item-${index}`);
         if (!el) return;
 
-        // Casual hidden check
         const casualHide = isCasualHidden(item);
         el.classList.toggle('casual-hidden', casualHide);
         if (casualHide) {
@@ -474,9 +468,7 @@ function applyRules() {
         }
 
         let disabled = false;
-        // Adrenaline is disabled in any party mode
         if (item.id === "opt-adrenaline" && isPartyMode()) disabled = true;
-        // Last Robloxian Standing needs party/partyplus with 4+ players
         if (item.id === "opt-lrs" && (!isPartyMode() || playerCount <= 3)) disabled = true;
 
         el.classList.toggle('disabled', disabled && !casualHide);
