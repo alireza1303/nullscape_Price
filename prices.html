@@ -25,11 +25,9 @@
             --text-v-dim: #757575;
             --accent-red: #ff7070;
 
-            
             --theme: var(--primary);
             --theme-glow: var(--primary-glow);
         }
-
 
         body.mode-extreme {
             --theme: var(--extreme);
@@ -89,6 +87,13 @@
         .mode-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 12px; border-radius: 14px; color: var(--text-dim); cursor: pointer; font-weight: 600; transition: 0.3s; text-align: center; font-size: 0.8rem; }
         .mode-btn.active { background: var(--theme); color: white; box-shadow: 0 0 25px var(--theme-glow); border-color: var(--theme); }
 
+        /* Party+ mode button has a special accent */
+        .mode-btn[data-mode="partyplus"].active {
+            background: linear-gradient(135deg, var(--primary), #9f5ee0);
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
         .curse-toggle-btn {
             width: 100%; background: rgba(102, 217, 255, 0.07); border: 1px solid rgba(102, 217, 255, 0.25);
             border-radius: 14px; padding: 12px 16px; color: var(--text-dim); cursor: pointer; font-weight: 700;
@@ -102,20 +107,6 @@
         }
         .curse-pill { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(102, 217, 255, 0.12); border: 1px solid rgba(102, 217, 255, 0.2); transition: 0.3s; }
         .curse-toggle-btn.active .curse-pill { background: var(--curse); color: #000; border-color: var(--curse); }
-
-        .partyplus-btn {
-            width: 100%; background: rgba(194, 133, 255, 0.07); border: 1px solid rgba(194, 133, 255, 0.25);
-            border-radius: 14px; padding: 12px 16px; color: var(--text-dim); cursor: pointer; font-weight: 700;
-            display: flex; align-items: center; justify-content: space-between;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .partyplus-btn.active {
-            background: rgba(194, 133, 255, 0.2); border-color: var(--primary); color: var(--primary);
-            box-shadow: 0 0 20px var(--primary-glow), inset 0 0 10px rgba(194, 133, 255, 0.15);
-            text-shadow: 0 0 8px var(--primary-glow); transform: scale(1.02);
-        }
-        .pp-pill { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(194,133,255,0.12); border: 1px solid rgba(194,133,255,0.3); transition: 0.3s; }
-        .partyplus-btn.active .pp-pill { background: var(--primary); color: #000; border-color: var(--primary); }
 
         .upgrades-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr)); gap: 12px; align-items: stretch; }
 
@@ -224,7 +215,6 @@
 
                     <div class="input-group">
                         <label>Difficulty</label>
-                        <!-- 3-column grid for the 3 difficulty buttons -->
                         <div class="mode-selector" style="grid-template-columns: 1fr 1fr 1fr;">
                             <div class="mode-btn" data-diff="casual" onclick="setDifficulty('casual')">Casual</div>
                             <div class="mode-btn active" data-diff="standard" onclick="setDifficulty('standard')">Standard</div>
@@ -234,23 +224,18 @@
 
                     <div class="input-group">
                         <label>Mode</label>
-                        <div class="mode-selector" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <!-- 4 mode buttons: Solo, Duo, Party, Party+ -->
+                        <div class="mode-selector" style="grid-template-columns: 1fr 1fr;">
                             <div class="mode-btn active" data-mode="solo" onclick="setMode('solo')">Solo</div>
                             <div class="mode-btn" data-mode="duo" onclick="setMode('duo')">Duo</div>
-                            <div class="mode-btn" data-mode="party" onclick="setMode('party')">Party/Party+</div>
+                            <div class="mode-btn" data-mode="party" onclick="setMode('party')">Party</div>
+                            <div class="mode-btn" data-mode="partyplus" onclick="setMode('partyplus')">Party+</div>
                         </div>
                     </div>
 
                     <div class="input-group">
                         <label id="player-label">Player Count</label>
                         <input type="number" class="player-input" id="pInput" min="1" max="1" value="1" onchange="validatePlayers(this)">
-                    </div>
-
-                    <div class="input-group" id="partyplus-wrap" style="display:none;">
-                        <button class="partyplus-btn" id="partyplusBtnPC" onclick="togglePartyPlus()">
-                            <span>Party+</span>
-                            <span class="pp-pill">÷1.125</span>
-                        </button>
                     </div>
 
                     <div class="input-group">
@@ -307,7 +292,6 @@ const CASUAL_OVERRIDES = {
     "Miniature Hourglass":       { casualPrice: 1500,  casualSoloPrice: 1500 },
 };
 
-
 const upgradesList = [
     {name:"Adrenaline",                 price:50,   soloPrice:50,   icon:"assets/Adrenaline.png",                  id:"opt-adrenaline", level:3,  currentStack:0},
     {name:"Business License",           prices:[75, 188],           icon:"assets/Business_License.png",            level:3,  currentStack:0, maxStack:2},
@@ -347,11 +331,12 @@ const upgradesList = [
 ];
 
 let currentDifficulty = 'standard';
-let currentMode = 'solo';
+let currentMode = 'solo'; // 'solo' | 'duo' | 'party' | 'partyplus'
 let playerCount = 1;
-let partyPlusActive = false;
 let nothingCurseActive = false;
 
+// Returns whether we're in a party-style mode (party or partyplus)
+function isPartyMode() { return currentMode === 'party' || currentMode === 'partyplus'; }
 
 function isCasualHidden(item) {
     if (currentDifficulty !== 'casual') return false;
@@ -370,7 +355,6 @@ function getEffectivePrices(item) {
     }
     return { price: item.price, soloPrice: item.soloPrice, prices: item.prices, soloPrices: item.soloPrices };
 }
-
 
 function renderGrid() {
     const grid = document.getElementById("mainGrid");
@@ -418,16 +402,25 @@ function computePrice(item, stackOverride) {
 
     const eff = getEffectivePrices(item);
     let base = 0;
+
+    // For solo mode, use soloPrice; for all multi-player modes use the standard price
+    const isSolo = currentMode === 'solo';
     if (eff.prices) {
-        const priceArr = (currentMode === 'solo' && eff.soloPrices) ? eff.soloPrices : eff.prices;
+        const priceArr = (isSolo && eff.soloPrices) ? eff.soloPrices : eff.prices;
         base = priceArr[s - 1] || 0;
     } else {
-        base = (currentMode === 'solo' && eff.soloPrice !== undefined) ? eff.soloPrice : eff.price;
+        base = (isSolo && eff.soloPrice !== undefined) ? eff.soloPrice : eff.price;
     }
 
+    // Scale by player count for multi-player modes
     let scaled = playerCount === 1 ? base : Math.ceil(base * Math.sqrt(playerCount));
-    if (currentMode === 'party' && partyPlusActive)   scaled = Math.ceil(scaled / 1.125);
-    if (currentMode === 'party' && playerCount > 8)   scaled = Math.ceil(scaled / 1.125);
+
+    // Party+ always gets ÷1.125
+    if (currentMode === 'partyplus') scaled = Math.ceil(scaled / 1.125);
+
+    // Party with 8+ players also gets ÷1.125 (the regular party large-lobby discount)
+    if (currentMode === 'party' && playerCount > 8) scaled = Math.ceil(scaled / 1.125);
+
     if (currentDifficulty === 'extreme') scaled = Math.ceil(scaled * 1.15);
     if (nothingCurseActive)              scaled = Math.ceil(scaled * 0.85);
     return scaled;
@@ -466,6 +459,7 @@ function applyRules() {
         const el = document.getElementById(`item-${index}`);
         if (!el) return;
 
+        // Casual hidden check
         const casualHide = isCasualHidden(item);
         el.classList.toggle('casual-hidden', casualHide);
         if (casualHide) {
@@ -480,8 +474,11 @@ function applyRules() {
         }
 
         let disabled = false;
-        if (item.id === "opt-adrenaline" && currentMode === 'party') disabled = true;
-        if (item.id === "opt-lrs" && (currentMode !== 'party' || playerCount <= 3)) disabled = true;
+        // Adrenaline is disabled in any party mode
+        if (item.id === "opt-adrenaline" && isPartyMode()) disabled = true;
+        // Last Robloxian Standing needs party/partyplus with 4+ players
+        if (item.id === "opt-lrs" && (!isPartyMode() || playerCount <= 3)) disabled = true;
+
         el.classList.toggle('disabled', disabled && !casualHide);
         if (disabled) {
             item.currentStack = 0;
@@ -509,21 +506,33 @@ function setDifficulty(diff) {
 function setMode(mode) {
     currentMode = mode;
     const pInput = document.getElementById('pInput');
-    const ppWrap = document.getElementById('partyplus-wrap');
+
     if (mode === 'solo') {
-        playerCount = 1; pInput.value = 1; pInput.min = 1;
-        if (ppWrap) ppWrap.style.display = 'none';
+        playerCount = 1;
+        pInput.value = 1;
+        pInput.min = 1;
+        pInput.max = 1;
     } else if (mode === 'duo') {
-        pInput.min = 1; pInput.max = 2;
+        pInput.min = 1;
+        pInput.max = 2;
         if (playerCount > 2) playerCount = 2;
-        if (ppWrap) ppWrap.style.display = 'none';
+        if (playerCount < 1) playerCount = 1;
         pInput.value = playerCount;
     } else if (mode === 'party') {
-        pInput.min = 1; pInput.max = 20;
-        if (ppWrap) ppWrap.style.display = 'block';
+        pInput.min = 1;
+        pInput.max = 8;
+        if (playerCount > 8) playerCount = 8;
+        if (playerCount < 1) playerCount = 1;
+        pInput.value = playerCount;
+    } else if (mode === 'partyplus') {
+        pInput.min = 1;
+        pInput.max = 20;
+        if (playerCount < 1) playerCount = 1;
         pInput.value = playerCount;
     }
+
     document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    updateFormulaText();
     syncMobileSettings();
     applyRules();
 }
@@ -531,20 +540,12 @@ function setMode(mode) {
 function validatePlayers(input) {
     let min = 1, max = 1;
     if (currentMode === 'duo') max = 2;
-    else if (currentMode === 'party') max = 20;
+    else if (currentMode === 'party') max = 8;
+    else if (currentMode === 'partyplus') max = 20;
     playerCount = Math.max(min, Math.min(max, parseInt(input.value) || min));
     input.value = playerCount;
     applyRules();
     updateFormulaText();
-    calculate();
-}
-
-function togglePartyPlus() {
-    partyPlusActive = !partyPlusActive;
-    const btn = document.getElementById('partyplusBtnPC');
-    if (btn) btn.classList.toggle('active', partyPlusActive);
-    updateFormulaText();
-    syncMobileSettings();
     calculate();
 }
 
@@ -560,8 +561,8 @@ function updateFormulaText() {
     const el = document.getElementById('formulaText');
     if (!el) return;
     let formula = 'ceil(base × √players)';
+    if (currentMode === 'partyplus') formula += ' ÷ 1.125 (Party+)';
     if (currentMode === 'party' && playerCount > 8) formula += ' ÷ 1.125 (8+ Players)';
-    if (currentMode === 'party' && partyPlusActive)  formula += ' ÷ 1.125 (Party+)';
     if (currentDifficulty === 'extreme') formula += ' × 1.15 (Extreme)';
     if (currentDifficulty === 'casual')  formula += ' (Casual prices)';
     el.textContent = formula;
@@ -577,15 +578,12 @@ function syncMobileSettings() {
     if (!drawer || !pcBox) return;
     drawer.innerHTML = pcBox.innerHTML;
     const mobInput = drawer.querySelector('.player-input');
-    if (mobInput) { mobInput.value = playerCount; mobInput.disabled = (currentMode === 'solo'); }
+    if (mobInput) {
+        mobInput.value = playerCount;
+        mobInput.disabled = (currentMode === 'solo');
+    }
     const mobCurse = drawer.querySelector('.curse-toggle-btn');
     if (mobCurse) mobCurse.classList.toggle('active', nothingCurseActive);
-    const ppWrapMob = drawer.querySelector('#partyplus-wrap');
-    if (ppWrapMob) {
-        ppWrapMob.style.display = currentMode === 'party' ? 'block' : 'none';
-        const ppBtn = ppWrapMob.querySelector('#partyplusBtnPC');
-        if (ppBtn) ppBtn.classList.toggle('active', partyPlusActive);
-    }
     drawer.querySelectorAll('[data-diff]').forEach(b => b.classList.toggle('active', b.dataset.diff === currentDifficulty));
     drawer.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === currentMode));
     const mobBtn = document.getElementById('mobileSettingsBtn');
