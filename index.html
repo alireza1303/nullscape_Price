@@ -3,235 +3,616 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nullscape Portal</title>
-
+    <title>Nullscape Calculator</title>
     <link rel="icon" type="image/svg+xml" href="https://www.gstatic.com/lamda/images/favicon_v1_150160d13988650c76.svg">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-
     <style>
+        html { zoom: 0.9; }
         :root {
             --primary: #c285ff;
+            --primary-glow: rgba(194, 133, 255, 0.5);
             --extreme: #ffab66;
+            --extreme-glow: rgba(255, 171, 102, 0.5);
+            --casual: #3ebfff;
+            --casual-glow: rgba(91, 200, 255, 0.5);
+            --curse: #5ad6ff;
+            --curse-glow: rgba(102, 217, 255, 0.6);
             --bg-dark: #0f0f12;
-            --card-bg: rgba(26, 26, 31, 0.9); 
-            --card-border: rgba(255, 255, 255, 0.1);
+            --card-bg: #1a1a1f;
+            --card-border: rgba(0, 0, 0, 0.212);
             --text-main: #ffffff;
             --text-dim: #b8b8b8;
-            --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --text-v-dim: #757575;
+            --accent-red: #ff7070;
+
+            --theme: var(--primary);
+            --theme-glow: var(--primary-glow);
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0;
-            padding: 0;
-            font-family: 'Outfit', sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
+        body.mode-extreme {
+            --theme: var(--extreme);
+            --theme-glow: var(--extreme-glow);
         }
-
-        body {
-            min-height: 100vh;
-            background: var(--bg-dark);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+        body.mode-casual {
+            --theme: var(--casual);
+            --theme-glow: var(--casual-glow);
+            background: radial-gradient(circle at 50% 50%, #0d1a2e 0%, #0a0f18 100%);
         }
-
-        #particles-js {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #1e1e35 0%, #0f0f12 100%);
+        body.mode-casual #particles-js {
+            background: radial-gradient(circle at 50% 50%, #0d1f35 0%, #090e18 100%);
         }
+        body.mode-casual #particles-js canvas { filter: hue-rotate(160deg); }
 
-        @keyframes premiumFlow {
-            0%, 100% { 
-                filter: hue-rotate(0deg) drop-shadow(0 0 15px var(--primary)); 
-                transform: scale(1);
-            }
-            50% { 
-                filter: hue-rotate(40deg) drop-shadow(0 0 25px var(--extreme)); 
-                transform: scale(1.02);
-            }
-        }
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; min-height: 100vh; }
 
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #1e1e35 0%, #0f0f12 100%); transition: background 0.6s; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        #loading-screen { position: fixed; inset: 0; background: var(--bg-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.8s; }
+        .loader-ring { width: 60px; height: 60px; border: 3px solid var(--card-border); border-top: 3px solid var(--theme); border-radius: 50%; animation: spin 1s linear infinite; }
+
+        .container { max-width: 2200px; margin: 0 auto; padding: 20px; opacity: 0; transform-origin: top center; transition: 1s cubic-bezier(0.2, 1, 0.2, 1); }
+        .container.loaded { opacity: 1; transform: scale(0.95); animation: fadeInUp 0.8s ease-out forwards; }
+
+        header { text-align: center; margin-bottom: 25px; }
         h1 {
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--extreme));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-            text-transform: uppercase;
-            animation: premiumFlow 4s ease-in-out infinite;
-            will-change: transform, filter;
+            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin: 0;
+            background: linear-gradient(to right, #fff, var(--theme));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -1px; filter: drop-shadow(0 0 10px var(--theme-glow));
+            transition: filter 0.4s;
         }
 
-        .portal-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 90%;
-            max-width: 500px;
-            z-index: 1;
+        .main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 25px; }
+        .glass-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 28px; padding: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.02); }
+
+        .section-title {
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 4px;
+            color: var(--theme); margin-bottom: 20px; font-weight: 800;
+            display: flex; align-items: center; gap: 12px;
+            text-shadow: 0 0 15px var(--theme-glow); transition: color 0.4s, text-shadow 0.4s;
         }
 
-        .portal-link {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 25px;
-            text-decoration: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: var(--transition-smooth);
-        }
+        .settings-grid { display: flex; flex-direction: column; gap: 20px; }
+        .input-group label { display: block; margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); font-weight: 600; }
 
-        .portal-link:hover {
-            transform: scale(1.03) translateY(-5px);
+        input[type="number"] { width: 100%; background: rgba(0,0,0,0.4); border: 2px solid var(--card-border); border-radius: 16px; padding: 12px; color: white; font-size: 1.4rem; font-weight: 800; text-align: center; transition: 0.3s; }
+        input[type="number"]:focus { border-color: var(--theme); outline: none; background: rgba(0,0,0,0.6); box-shadow: 0 0 15px var(--theme-glow); }
+        input[type="number"]:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .mode-selector { display: grid; gap: 8px; }
+        .mode-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); padding: 12px; border-radius: 14px; color: var(--text-dim); cursor: pointer; font-weight: 600; transition: 0.3s; text-align: center; font-size: 0.8rem; }
+        .mode-btn.active { background: var(--theme); color: white; box-shadow: 0 0 25px var(--theme-glow); border-color: var(--theme); }
+
+        /* Party+ mode button has a special accent */
+        .mode-btn[data-mode="partyplus"].active {
+            background: linear-gradient(135deg, var(--primary), #9f5ee0);
             border-color: var(--primary);
-            box-shadow: 0 15px 40px rgba(194, 133, 255, 0.2);
+            box-shadow: 0 0 25px var(--primary-glow);
         }
 
-        .portal-link.featured:hover {
-            border-color: var(--extreme);
-            box-shadow: 0 15px 40px rgba(255, 171, 102, 0.2);
+        .curse-toggle-btn {
+            width: 100%; background: rgba(102, 217, 255, 0.07); border: 1px solid rgba(102, 217, 255, 0.25);
+            border-radius: 14px; padding: 12px 16px; color: var(--text-dim); cursor: pointer; font-weight: 700;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .icon-container {
-            width: 60px;
-            height: 60px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-            flex-shrink: 0;
+        .curse-toggle-btn.active {
+            background: rgba(102, 217, 255, 0.2); border-color: var(--curse); color: var(--curse);
+            box-shadow: 0 0 20px var(--curse-glow), inset 0 0 10px rgba(102, 217, 255, 0.2);
+            text-shadow: 0 0 8px var(--curse-glow); transform: scale(1.02);
         }
+        .curse-pill { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(102, 217, 255, 0.12); border: 1px solid rgba(102, 217, 255, 0.2); transition: 0.3s; }
+        .curse-toggle-btn.active .curse-pill { background: var(--curse); color: #000; border-color: var(--curse); }
 
-        .icon-container img {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
+        .upgrades-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr)); gap: 12px; align-items: stretch; }
+
+        .upgrade-item {
+            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+            border-radius: 20px; background: rgba(255,255,255,0.04); border: 1px solid transparent;
+            cursor: pointer; transition: 0.3s; height: 85px; box-sizing: border-box; position: relative;
         }
+        .upgrade-item.active { background: rgba(194, 133, 255, 0.15); border-color: var(--theme); }
+        body.mode-casual .upgrade-item.active { background: rgba(91, 200, 255, 0.12); }
+        .upgrade-item.disabled { opacity: 0.3; pointer-events: none; }
 
-        .content-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .portal-title {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .featured .portal-title {
-            color: var(--extreme);
-        }
-
-        .portal-desc {
-            font-size: 14px;
-            color: var(--text-dim);
-            line-height: 1.4;
-        }
-
-        .footer-credit {
-            position: fixed;
-            bottom: 25px;
-            color: rgba(255,255,255,0.25);
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-size: 11px;
+        .upgrade-item.casual-hidden {
+            opacity: 0.18;
             pointer-events: none;
+            filter: grayscale(0.8);
+        }
+        .upgrade-item.casual-hidden::after {
+            content: 'Not in Casual';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.6rem;
+            color: var(--casual);
+            border: 1px solid var(--casual);
+            padding: 2px 7px;
+            border-radius: 8px;
+            opacity: 0.7;
+        }
+
+        .stack-indicator { display: flex; gap: 4px; margin-top: 6px; }
+        .stack-dot { width: 14px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; transition: 0.3s; }
+        .stack-dot.filled { background: var(--theme); box-shadow: 0 0 8px var(--theme-glow); }
+
+        .icon-wrapper { width: 40px; height: 40px; background: rgba(0,0,0,0.5); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+        .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; padding: 2px; }
+
+        .info { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; justify-content: center; }
+        .name { font-weight: 700; font-size: 0.95rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .price-tag { font-size: 0.8rem; color: var(--text-dim); }
+        .lv-badge { font-size: 0.65rem; color: var(--text-v-dim); border: 1px solid var(--card-border); padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.2); flex-shrink: 0; margin-left: auto; }
+
+        .total-val {
+            font-size: 4rem; font-weight: 800; color: var(--theme);
+            text-shadow: 0 0 30px var(--theme-glow); transition: color 0.4s, text-shadow 0.4s;
+        }
+
+        .formula-text { font-size: 0.7rem; color: var(--text-v-dim); margin-bottom: 15px; line-height: 1.6; display: block; }
+        #curse-indicator { font-size: 0.7rem; font-weight: 800; color: var(--curse); margin-bottom: 5px; opacity: 0; transition: 0.3s; text-shadow: 0 0 10px var(--curse-glow); }
+
+        .mobile-settings-overlay {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: #1a1a1f; z-index: 2000; padding: 20px;
+            transform: translateY(-100%); transition: 0.5s;
+            max-height: 100vh; overflow-y: auto;
+        }
+        .mobile-settings-overlay.open { transform: translateY(0); }
+
+        .mobile-bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 95px;
+            background: #1a1a1f; border-top: 1px solid var(--card-border);
+            display: none; align-items: center; justify-content: space-between;
+            padding: 0 20px; z-index: 1001;
+        }
+        .mobile-total-wrap .price { font-size: 2rem; font-weight: 800; color: var(--theme); transition: color 0.3s; }
+
+        @media (max-width: 1000px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sticky-sidebar { display: none; }
+            .mobile-bottom-nav { display: flex; }
+            .container { padding-bottom: 110px; }
         }
     </style>
 </head>
-<body>
+<body class="mode-standard">
 
-    <div id="particles-js"></div>
+<div id="particles-js"></div>
 
-    <header>
-        <h1>Gome Page</h1>
-    </header>
+<div class="mobile-settings-overlay" id="mobileDrawer">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <span style="font-weight: 800; color: var(--theme); letter-spacing: 2px;">SETTINGS</span>
+        <button onclick="toggleMobileSettings()" style="background: none; border: none; color: white; font-size: 1.5rem;">✕</button>
+    </div>
+    <div id="mobile-settings-content"></div>
+</div>
 
-    <main class="portal-container">
-        <a href="prices.html" class="portal-link featured">
-            <div class="icon-container">
-                <img src="assets/Paycheck.png" alt="Calculator Icon">
+<div id="loading-screen">
+    <div class="loader-ring"></div>
+    <p style="margin-top: 20px; letter-spacing: 3px;">Loading</p>
+</div>
+
+<div class="container" id="main-ui">
+    <header><h1>Nullscape Calculator</h1></header>
+
+    <div class="main-layout">
+        <div class="glass-card">
+            <div class="section-title"><span>✦</span> Upgrades</div>
+            <div class="upgrades-grid" id="mainGrid"></div>
+        </div>
+
+        <div class="sticky-sidebar">
+            <div class="glass-card" id="pc-settings-box">
+                <div class="section-title">Settings</div>
+                <div class="settings-grid">
+
+                    <div class="input-group">
+                        <label>Difficulty</label>
+                        <div class="mode-selector" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="mode-btn" data-diff="casual" onclick="setDifficulty('casual')">Casual</div>
+                            <div class="mode-btn active" data-diff="standard" onclick="setDifficulty('standard')">Standard</div>
+                            <div class="mode-btn" data-diff="extreme" onclick="setDifficulty('extreme')">Extreme</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mode</label>
+                        <!-- 4 mode buttons: Solo, Duo, Party, Party+ -->
+                        <div class="mode-selector" style="grid-template-columns: 1fr 1fr;">
+                            <div class="mode-btn active" data-mode="solo" onclick="setMode('solo')">Solo</div>
+                            <div class="mode-btn" data-mode="duo" onclick="setMode('duo')">Duo</div>
+                            <div class="mode-btn" data-mode="party" onclick="setMode('party')">Party</div>
+                            <div class="mode-btn" data-mode="partyplus" onclick="setMode('partyplus')">Party+</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label id="player-label">Player Count</label>
+                        <input type="number" class="player-input" id="pInput" min="1" max="1" value="1" onchange="validatePlayers(this)">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Discounts</label>
+                        <button class="curse-toggle-btn" id="curseBtnPC" onclick="toggleCurse()">
+                            <span>Nothing Curse</span>
+                            <span class="curse-pill">–15% OFF</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="content-stack">
-                <div class="portal-title">Calculator</div>
-                <div class="portal-desc">See how much Upgrades will be</div>
-            </div>
-        </a>
-      
-        <a href="stats.html" class="portal-link">
-            <div class="icon-container">
-                <img src="assets/Adrenaline.png" alt="Stats Icon">
-            </div>
-            <div class="content-stack">
-                <div class="portal-title">Stats</div>
-                <div class="portal-desc">(Work in Progress)</div>
-            </div>
-        </a>
 
-    </main>
+            <div class="glass-card" style="margin-top: 20px; text-align: center;">
+                <span style="font-size: 0.8rem; color: var(--text-dim); font-weight: 700;">TOTAL GIFT</span>
+                <div id="curse-indicator">Nothing Discount is on</div>
+                <div class="total-val" id="result">0</div>
+                <div class="formula-text" id="formulaText">ceil(base × √players)</div>
+                <button onclick="clearAll()" style="width: 100%; background: rgba(255, 94, 94, 0.1); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 12px; border-radius: 14px; cursor: pointer; font-weight: 700;">Reset All</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <footer class="footer-credit">
-        Made by alireza1303
-    </footer>
+<div class="mobile-bottom-nav">
+    <div class="mobile-total-wrap">
+        <span style="font-size: 0.7rem; color: var(--text-dim); display: block; font-weight: 700;">TOTAL</span>
+        <span class="price" id="mobile-result">0</span>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button onclick="clearAll()" style="width:48px; height:48px; border-radius:12px; border:1px solid var(--accent-red); background:rgba(255, 94, 94, 0.1); color:var(--accent-red); font-weight: 800;">↺</button>
+        <button id="mobileSettingsBtn" onclick="toggleMobileSettings()" style="background: var(--primary); color: white; padding: 0 20px; border-radius: 12px; height: 48px; border:none; font-weight:800; box-shadow: 0 5px 15px var(--primary-glow);">SETTINGS</button>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#c285ff" },
-                "shape": { "type": "circle" },
-                "opacity": { 
-                    "value": 0.5, 
-                    "random": true,
-                    "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false }
-                },
-                "size": { "value": 3, "random": true },
-                "line_linked": { 
-                    "enable": true, 
-                    "distance": 150, 
-                    "color": "#c285ff", 
-                    "opacity": 0.15, 
-                    "width": 1 
-                },
-                "move": { 
-                    "enable": true, 
-                    "speed": 1.2, 
-                    "direction": "none", 
-                    "out_mode": "out" 
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+
+const CASUAL_OVERRIDES = {
+    "Grace Wings":                             { hidden: true },
+    "Defuse Kit":                              { hidden: true },
+    "Subspacial Barrier":                      { hidden: true },
+    "Radar Module : Tripmines":                { hidden: true },
+
+    "Shield":                    { casualPrice: 2000,  casualSoloPrice: 1000 },
+    "Ice Skates":                { casualPrice: 400,   casualSoloPrice: 300 },
+    "Ninja Belt":                { casualPrice: 700,   casualSoloPrice: 500 },
+    "Matrix Tetrahedron":        { casualPrice: 1500,  casualSoloPrice: 1500 },
+    "Shark Tail":                { casualPrice: 800,   casualSoloPrice: 800 },
+    "Drowned Ægis":              { casualPrice: 4000,  casualSoloPrice: 4000 },
+    "Panic Necklace":            { casualPrice: 1500,  casualSoloPrice: 1500 },
+    "Sport Shoes":               { casualPrice: 1000,  casualSoloPrice: 1000 },
+    "Gift Magnet":               { casualPrices: [750, 1050, 1350] },
+    "Gift Idol":                 { casualPrices: [3000, 6000, 9000, 12000, 15000] },
+    "Miniature Hourglass":       { casualPrice: 1500,  casualSoloPrice: 1500 },
+};
+
+const upgradesList = [
+    {name:"Adrenaline",                 price:50,   soloPrice:50,   icon:"assets/Adrenaline.png",                  id:"opt-adrenaline", level:3,  currentStack:0},
+    {name:"Business License",           prices:[75, 188],           icon:"assets/Business_License.png",            level:3,  currentStack:0, maxStack:2},
+    {name:"Defuse Kit",                 price:30,   soloPrice:30,   icon:"assets/Defuse_Kit.png",                  level:3,  currentStack:0},
+    {name:"Paycheck",                   price:55,   soloPrice:55,   icon:"assets/Paycheck.png",                    level:3,  currentStack:0},
+    {name:"Swiftness Ring",             price:80,   soloPrice:80,   icon:"assets/Swiftness_Ring.png",              level:3,  currentStack:0},
+    {name:"Radar",                      price:175,  soloPrice:175,  icon:"assets/Radar.png",                       level:5,  currentStack:0},
+    {name:"Better Jump Pads",           price:50,   soloPrice:50,   icon:"assets/Better_Jump_Pads.png",            level:5,  currentStack:0},
+    {name:"Double Jump",                price:150,  soloPrice:150,  icon:"assets/Double_Jump.png",                 level:5,  currentStack:0},
+    {name:"Grapple Points",             price:100,  soloPrice:100,  icon:"assets/Grapple_Points.png",              level:5,  currentStack:0},
+    {name:"Tria Orb",                   price:100,  soloPrice:100,  icon:"assets/Tria_Orb.png",                    level:5,  currentStack:0},
+    {name:"Medal",                      price:100,  soloPrice:100,  icon:"assets/Medal.png",                       level:5,  currentStack:0},
+    {name:"Advanced Gravity Coil",      price:600,  soloPrice:600,  icon:"assets/Advanced_Gravity_Coil.png",       level:8,  currentStack:0},
+    {name:"Ice Skates",                 price:400,  soloPrice:300,  icon:"assets/Ice_Skates.png",                  level:8,  currentStack:0},
+    {name:"Fanny Pack",                 price:300,  soloPrice:300,  icon:"assets/Fanny_Pack.png",                  level:8,  currentStack:0},
+    {name:"Grace Wings",                price:300,  soloPrice:200,  icon:"assets/Grace_Wings.png",                 level:8,  currentStack:0},
+    {name:"Helmet",                     price:400,  soloPrice:400,  icon:"assets/Helmet.png",                      level:8,  currentStack:0},
+    {name:"Pocket Bell",                price:300,  soloPrice:300,  icon:"assets/Pocket_Bell.png",                 level:8, currentStack:0},
+    {name:"Last Robloxian Standing",    price:300,  soloPrice:300,  icon:"assets/Last_Robloxian_Standing.png",     id:"opt-lrs", level:8, currentStack:0},
+    {name:"Radar Module : Altars",      price:300,  soloPrice:300,  icon:"assets/Radar_Module_Altars.png",         level:8,  currentStack:0},
+    {name:"Radar Module : Tripmines",   price:400,  soloPrice:400,  icon:"assets/Radar_Module_Tripmines.png",      level:8,  currentStack:0},
+    {name:"Radar Module : Enemies",     price:200,  soloPrice:200,  icon:"assets/Radar_Module_Enemies.png",        level:8,  currentStack:0},
+    {name:"More Altars",                price:600,  soloPrice:600,  icon:"assets/More_Altars.png",                 level:10, currentStack:0},
+    {name:"Ninja Belt",                 price:700,  soloPrice:500,  icon:"assets/Ninja_Belt.png",                  level:13, currentStack:0},
+    {name:"Subspacial Barrier",         prices:[1000, 3000], soloPrices:[500, 1500], icon:"assets/Subspacial_Barrier.png", level:13, currentStack:0, maxStack:2},
+    {name:"Large Grapple Points",       price:500,  soloPrice:500,  icon:"assets/Large_Grapple_Points.png",        level:13, currentStack:0},
+    {name:"Gift Magnet",                prices:[1500, 2100, 2700],  icon:"assets/Gift_Magnet.png",                 level:15, currentStack:0, maxStack:3},
+    {name:"Matrix Tetrahedron",         price:2500, soloPrice:2500, icon:"assets/Matrix_Tetrahedron.png",          level:15, currentStack:0},
+    {name:"Shield",                     price:4000, soloPrice:1000, icon:"assets/Shield.png",                      level:15, currentStack:0},
+    {name:"Sport Shoes",                price:1350, soloPrice:1350, icon:"assets/Sport_Shoes.png",                 level:15, currentStack:0},
+    {name:"Shark Tail",                 price:1200, soloPrice:1200, icon:"assets/Shark_Tail.png",                  level:15, currentStack:0},
+    {name:"Radar Module : Instruments", price:1000, soloPrice:1000, icon:"assets/Radar_Module_Instruments.png",    level:18, currentStack:0},
+    {name:"Panic Necklace",             price:3000, soloPrice:3000, icon:"assets/Panic_Necklace.png",              level:18, currentStack:0},
+    {name:"Drowned Ægis",               price:6000, soloPrice:6000, icon:"assets/DrownedAegis.png",               level:20, currentStack:0},
+    {name:"Miniature Hourglass",        price:3000, soloPrice:3000, icon:"assets/Miniature_Hourglass.png",         level:20, currentStack:0},
+    {name:"Gift Idol",                  prices:[4000, 8000, 12000, 16000, 20000], icon:"assets/Gift_Idol.png",     level:20, currentStack:0, maxStack:5},
+];
+
+let currentDifficulty = 'standard';
+let currentMode = 'solo';
+let playerCount = 1;
+let nothingCurseActive = false;
+
+function isPartyMode() { return currentMode === 'party' || currentMode === 'partyplus'; }
+
+function isCasualHidden(item) {
+    if (currentDifficulty !== 'casual') return false;
+    return !!(CASUAL_OVERRIDES[item.name] && CASUAL_OVERRIDES[item.name].hidden);
+}
+
+function getEffectivePrices(item) {
+    if (currentDifficulty === 'casual' && CASUAL_OVERRIDES[item.name]) {
+        const ov = CASUAL_OVERRIDES[item.name];
+        return {
+            price:      ov.casualPrice     !== undefined ? ov.casualPrice     : item.price,
+            soloPrice:  ov.casualSoloPrice !== undefined ? ov.casualSoloPrice : item.soloPrice,
+            prices:     ov.casualPrices    !== undefined ? ov.casualPrices    : item.prices,
+            soloPrices: item.soloPrices,
+        };
+    }
+    return { price: item.price, soloPrice: item.soloPrice, prices: item.prices, soloPrices: item.soloPrices };
+}
+
+function renderGrid() {
+    const grid = document.getElementById("mainGrid");
+    grid.innerHTML = upgradesList.map((item, index) => {
+        let dots = '';
+        if (item.maxStack > 1) {
+            for (let i = 0; i < item.maxStack; i++) {
+                dots += `<div class="stack-dot" id="dot-${index}-${i}"></div>`;
+            }
+        }
+        return `
+            <div class="upgrade-item" id="item-${index}" onclick="cycleUpgrade(${index}, this)">
+                <div class="icon-wrapper"><img src="${item.icon}" onerror="this.src='https://via.placeholder.com/50?text=?'"></div>
+                <div class="info">
+                    <span class="name">${item.name}</span>
+                    <span class="price-tag" id="price-text-${index}">Cost: 0</span>
+                    <div class="stack-indicator">${dots}</div>
+                </div>
+                <span class="lv-badge">Lv${item.level}</span>
+            </div>
+        `;
+    }).join('');
+    applyRules();
+    updateVisualPrices();
+}
+
+function cycleUpgrade(index, el) {
+    if (el.classList.contains('disabled') || el.classList.contains('casual-hidden')) return;
+    const item = upgradesList[index];
+    const max = item.maxStack || 1;
+    item.currentStack = item.currentStack >= max ? 0 : item.currentStack + 1;
+    el.classList.toggle('active', item.currentStack > 0);
+    if (item.maxStack > 1) {
+        for (let i = 0; i < item.maxStack; i++) {
+            const dot = document.getElementById(`dot-${index}-${i}`);
+            if (dot) dot.classList.toggle('filled', i < item.currentStack);
+        }
+    }
+    calculate();
+}
+
+function computePrice(item, stackOverride) {
+    const s = stackOverride !== undefined ? stackOverride : item.currentStack;
+    if (s === 0) return 0;
+
+    const eff = getEffectivePrices(item);
+    let base = 0;
+
+    const isSolo = currentMode === 'solo';
+    if (eff.prices) {
+        const priceArr = (isSolo && eff.soloPrices) ? eff.soloPrices : eff.prices;
+        base = priceArr[s - 1] || 0;
+    } else {
+        base = (isSolo && eff.soloPrice !== undefined) ? eff.soloPrice : eff.price;
+    }
+
+    let scaled = playerCount === 1 ? base : Math.ceil(base * Math.sqrt(playerCount));
+
+    if (currentMode === 'partyplus') scaled = Math.ceil(scaled / 1.125);
+
+    if (currentMode === 'party' && playerCount > 8) scaled = Math.ceil(scaled / 1.125);
+
+    if (currentDifficulty === 'extreme') scaled = Math.ceil(scaled * 1.15);
+    if (nothingCurseActive)              scaled = Math.ceil(scaled * 0.85);
+    return scaled;
+}
+
+function updateVisualPrices() {
+    upgradesList.forEach((item, index) => {
+        const displayStack = item.currentStack > 0 ? item.currentStack : 1;
+        const previewCost = computePrice(item, displayStack);
+        let text;
+        if (item.maxStack > 1) {
+            text = `Stack ${displayStack}: ${previewCost.toLocaleString()}`;
+        } else {
+            text = `Cost: ${previewCost.toLocaleString()}`;
+        }
+        const el = document.getElementById(`price-text-${index}`);
+        if (el) el.textContent = text;
+    });
+}
+
+function calculate() {
+    let total = 0;
+    upgradesList.forEach(item => {
+        if (item.currentStack > 0 && !isCasualHidden(item)) total += computePrice(item);
+    });
+    document.getElementById("result").textContent = total.toLocaleString();
+    const indicator = document.getElementById("curse-indicator");
+    if (indicator) indicator.style.opacity = nothingCurseActive ? "1" : "0";
+    const mob = document.getElementById("mobile-result");
+    if (mob) mob.textContent = total.toLocaleString();
+    updateVisualPrices();
+}
+
+function applyRules() {
+    upgradesList.forEach((item, index) => {
+        const el = document.getElementById(`item-${index}`);
+        if (!el) return;
+
+        const casualHide = isCasualHidden(item);
+        el.classList.toggle('casual-hidden', casualHide);
+        if (casualHide) {
+            item.currentStack = 0;
+            el.classList.remove('active');
+            if (item.maxStack > 1) {
+                for (let i = 0; i < item.maxStack; i++) {
+                    const dot = document.getElementById(`dot-${index}-${i}`);
+                    if (dot) dot.classList.remove('filled');
                 }
-            },
-            "interactivity": {
-                "detect_on": "window",
-                "events": { 
-                    "onhover": { "enable": true, "mode": "repulse" }
-                },
-                "modes": {
-                    "repulse": { "distance": 100, "duration": 0.4 }
+            }
+        }
+
+        let disabled = false;
+        if (item.id === "opt-adrenaline" && isPartyMode()) disabled = true;
+        if (item.id === "opt-lrs" && (!isPartyMode() || playerCount <= 3)) disabled = true;
+
+        el.classList.toggle('disabled', disabled && !casualHide);
+        if (disabled) {
+            item.currentStack = 0;
+            el.classList.remove('active');
+            if (item.maxStack > 1) {
+                for (let i = 0; i < item.maxStack; i++) {
+                    const dot = document.getElementById(`dot-${index}-${i}`);
+                    if (dot) dot.classList.remove('filled');
                 }
-            },
-            "retina_detect": true
-        });
-    </script>
+            }
+        }
+    });
+    calculate();
+}
+
+function setDifficulty(diff) {
+    currentDifficulty = diff;
+    document.body.className = `mode-${diff}`;
+    document.querySelectorAll('[data-diff]').forEach(b => b.classList.toggle('active', b.dataset.diff === diff));
+    updateFormulaText();
+    syncMobileSettings();
+    applyRules();
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    const pInput = document.getElementById('pInput');
+
+    if (mode === 'solo') {
+        playerCount = 1;
+        pInput.value = 1;
+        pInput.min = 1;
+        pInput.max = 1;
+    } else if (mode === 'duo') {
+        pInput.min = 1;
+        pInput.max = 2;
+        if (playerCount > 2) playerCount = 2;
+        if (playerCount < 1) playerCount = 1;
+        pInput.value = playerCount;
+    } else if (mode === 'party') {
+        pInput.min = 1;
+        pInput.max = 8;
+        if (playerCount > 8) playerCount = 8;
+        if (playerCount < 1) playerCount = 1;
+        pInput.value = playerCount;
+    } else if (mode === 'partyplus') {
+        pInput.min = 1;
+        pInput.max = 20;
+        if (playerCount < 1) playerCount = 1;
+        pInput.value = playerCount;
+    }
+
+    document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    updateFormulaText();
+    syncMobileSettings();
+    applyRules();
+}
+
+function validatePlayers(input) {
+    let min = 1, max = 1;
+    if (currentMode === 'duo') max = 2;
+    else if (currentMode === 'party') max = 8;
+    else if (currentMode === 'partyplus') max = 20;
+    playerCount = Math.max(min, Math.min(max, parseInt(input.value) || min));
+    input.value = playerCount;
+    applyRules();
+    updateFormulaText();
+    calculate();
+}
+
+function toggleCurse() {
+    nothingCurseActive = !nothingCurseActive;
+    const btn = document.getElementById('curseBtnPC');
+    if (btn) btn.classList.toggle('active', nothingCurseActive);
+    syncMobileSettings();
+    calculate();
+}
+
+function updateFormulaText() {
+    const el = document.getElementById('formulaText');
+    if (!el) return;
+    let formula = 'ceil(base × √players)';
+    if (currentMode === 'partyplus') formula += ' ÷ 1.125 (Party+)';
+    if (currentMode === 'party' && playerCount > 8) formula += ' ÷ 1.125 (8+ Players)';
+    if (currentDifficulty === 'extreme') formula += ' × 1.15 (Extreme)';
+    if (currentDifficulty === 'casual')  formula += ' (Casual prices)';
+    el.textContent = formula;
+}
+
+function toggleMobileSettings() {
+    document.getElementById('mobileDrawer').classList.toggle('open');
+}
+
+function syncMobileSettings() {
+    const pcBox = document.getElementById('pc-settings-box');
+    const drawer = document.getElementById('mobile-settings-content');
+    if (!drawer || !pcBox) return;
+    drawer.innerHTML = pcBox.innerHTML;
+    const mobInput = drawer.querySelector('.player-input');
+    if (mobInput) {
+        mobInput.value = playerCount;
+        mobInput.disabled = (currentMode === 'solo');
+    }
+    const mobCurse = drawer.querySelector('.curse-toggle-btn');
+    if (mobCurse) mobCurse.classList.toggle('active', nothingCurseActive);
+    drawer.querySelectorAll('[data-diff]').forEach(b => b.classList.toggle('active', b.dataset.diff === currentDifficulty));
+    drawer.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === currentMode));
+    const mobBtn = document.getElementById('mobileSettingsBtn');
+    const themeMap = { casual: 'var(--casual)', standard: 'var(--primary)', extreme: 'var(--extreme)' };
+    if (mobBtn) mobBtn.style.background = themeMap[currentDifficulty] || 'var(--primary)';
+    updateFormulaText();
+}
+
+function clearAll() {
+    upgradesList.forEach((item, index) => {
+        item.currentStack = 0;
+        const el = document.getElementById(`item-${index}`);
+        if (el) el.classList.remove('active');
+        if (item.maxStack > 1) {
+            for (let i = 0; i < item.maxStack; i++) {
+                const dot = document.getElementById(`dot-${index}-${i}`);
+                if (dot) dot.classList.remove('filled');
+            }
+        }
+    });
+    calculate();
+}
+
+window.onload = () => {
+    renderGrid();
+    setMode('solo');
+    syncMobileSettings();
+    setTimeout(() => {
+        document.getElementById('loading-screen').style.opacity = '0';
+        document.getElementById('main-ui').classList.add('loaded');
+        setTimeout(() => document.getElementById('loading-screen').remove(), 800);
+    }, 1200);
+};
+
+particlesJS("particles-js", {
+    "particles": { "number": { "value": 45 }, "color": { "value": "#c285ff" }, "opacity": { "value": 0.3 }, "size": { "value": 2.5 }, "move": { "enable": true, "speed": 0.6 } }
+});
+</script>
 </body>
 </html>
