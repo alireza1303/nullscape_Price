@@ -15,6 +15,7 @@ html { zoom: 0.9; }
   --max-content-width: 1200px;
 }
 
+
 body.mode-extreme {
   --theme: var(--extreme);
   --active-glow: var(--extreme-glow);
