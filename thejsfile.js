@@ -17,7 +17,6 @@ const universalAchievements = [
   { name: "I'm Taking you down with me", color: "#ff00ff" },
   { name: "Chaos", color: "#fcd6d6" },
   { name: "Ich hasse es", color: "#ccc" },
-
   { name: "Crash Out incoming", color: "#424242" },
   { name: "Economic Recession", color: "#c8e6c9" },
   { name: "ForensicDuty", color: "#ffcdd2" },
