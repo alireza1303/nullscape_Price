@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nullscape Achievements</title>
+<link rel="icon" type="image/png" href="assets/Icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<a href="stats.html" class="back-btn">← Home</a>
+
+<h1>Achievements</h1>
+
+<div class="control-panel" id="controlPanel">
+    <div class="mode-container" id="modeContainer">
+        <button class="mode-btn" data-mode="Casual" onclick="handleModeClick('Casual')">Casual</button>
+        <button class="mode-btn" data-mode="Standard" onclick="handleModeClick('Standard')">Standard</button>
+        <button class="mode-btn" data-mode="Extreme" onclick="handleModeClick('Extreme')">Extreme</button>
+    </div>
+    <div class="action-group">
+        <button class="action-btn reset-btn" onclick="resetProgress()">Reset Progress</button>
+    </div>
+</div>
+
+<div class="progress-container" id="progressContainer">
+    <div class="progress-header">
+        <span class="progress-percent-left" id="progressPercentText">0%</span>
+        <span class="progress-counter-right" id="progressFractionText">0 / 45</span>
+    </div>
+    <div class="bar-bg">
+        <div class="bar-fill" id="barFill"></div>
+    </div>
+</div>
+
+<div class="search-container" id="searchContainer">
+    <input type="text" id="achievementSearch" class="search-input" placeholder="Search achievements..." oninput="filterAchievements()">
+</div>
+
+<div class="achievements-grid" id="achievementsGrid"></div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="thejsfile.js"></script>
+</body>
+</html>
