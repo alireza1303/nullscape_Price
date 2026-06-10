@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lobby Name Maker</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Bangers&family=Creepster&family=Fondamento:ital@0;1&family=Fredoka+One&family=Inconsolata:wght@400;700&family=Indie+Flower&family=Josefin+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Jura:wght@400;700&family=Kalam:wght@400;700&family=Luckiest+Guy&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&family=Michroma&family=Nunito:ital,wght@0,400;0,700;1,400;1,700&family=Oswald:wght@400;700&family=Patrick+Hand&family=Permanent+Marker&family=Press+Start+2P&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&family=Ubuntu:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lnm.css">
+</head>
+<body>
+<div id="particles-js"></div>
+<div id="grid-lines"></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="help-sidebar" id="helpSidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">How to Use</div>
+    <button class="close-sidebar-btn" id="closeSidebar">&times;</button>
+  </div>
+  <div class="sidebar-content">
+    <div class="step-item">
+      <div class="step-num">Step 1</div>
+      <div class="step-text">Type your text in <strong>"Input text"</strong> box</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Step 2</div>
+      <div class="step-text">Use your mouse or finger to <strong>select</strong> a specific part of the text you want to change</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Step 3</div>
+      <div class="step-text">Change your layout choices in the <strong>Options panel</strong></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Step 4</div>
+      <div class="step-text">Click <strong>✦ Apply to selection</strong> button</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Tips for using this</div>
+      <div class="step-text">Click <strong>Lock Text</strong> If your Want your text not to move around | If you make a mistake press <strong>↩ Undo</strong></div>
+    </div>
+  </div>
+</div>
+<div class="header-container">
+  <h1>Lobby Name Maker</h1>
+  <button class="btn help-btn" id="openSidebar">How to use</button>
+</div>
+<div class="panel">
+  <div class="panel-label">Options Panel</div>
+  <div class="toolbar">
+    <div class="color-pick-wrap" id="fontColorWrap">
+      <div class="color-swatch" id="fontColorSwatch" style="background:#c285ff"></div>
+      <span>Color</span>
+      <input type="color" id="fontColor" value="#c285ff">
+    </div>
+    <div class="toolbar-sep"></div>
+    <select id="fontFace">
+      <option value="">None</option>
+      <option style="font-family: Arial, sans-serif;">Arial</option>
+      <option style="font-family: 'Bangers', cursive;">Bangers</option>
+      <option style="font-family: 'Creepster', cursive;">Creepster</option>
+      <option style="font-family: 'Fondamento', cursive;">Fondamento</option>
+      <option style="font-family: 'Fredoka One', cursive;">Fredoka One</option>
+      <option style="font-family: 'Grenze Gotisch', cursive;">GrenzeGotisch</option>
+      <option style="font-family: 'Highway Gothic', sans-serif;">Highway Gothic</option>
+      <option style="font-family: 'Inconsolata', monospace;">Inconsolata</option>
+      <option style="font-family: 'Indie Flower', cursive;">Indie Flower</option>
+      <option style="font-family: 'Josefin Sans', sans-serif;">Josefin Sans</option>
+      <option style="font-family: 'Luckiest Guy', cursive;">Luckiest Guy</option>
+      <option style="font-family: 'Merriweather', serif;">Merriweather</option>
+      <option style="font-family: 'Michroma', sans-serif;">Michroma</option>
+      <option style="font-family: 'Nunito', sans-serif;">Nunito</option>
+      <option style="font-family: 'Oswald', sans-serif;">Oswald</option>
+      <option style="font-family: 'Patrick Hand', cursive;">Patrick Hand</option>
+      <option style="font-family: 'Permanent Marker', cursive;">Permanent Marker</option>
+      <option style="font-family: 'Press Start 2P', monospace;">Press Start 2P</option>
+      <option style="font-family: 'Roboto', sans-serif;">Roboto</option>
+      <option style="font-family: 'Roboto Condensed', sans-serif;">Roboto Condensed</option>
+      <option style="font-family: 'Roboto Mono', monospace;">Roboto Mono</option>
+      <option style="font-family: 'Sarpanch', sans-serif;">Sarpanch</option>
+      <option style="font-family: 'Special Elite', cursive;">Special Elite</option>
+      <option style="font-family: 'Titillium Web', sans-serif;">TitilliumWeb</option>
+      <option style="font-family: 'Ubuntu', sans-serif;">Ubuntu</option>
+      <option style="font-family: 'Zekton', sans-serif;">Zekton</option>
+    </select>
+    <div class="toolbar-sep"></div>
+    <button class="btn" id="btnBold"><b>B</b></button>
+    <button class="btn" id="btnItalic"><i>I</i></button>
+    <button class="btn" id="btnUnder"><u>U</u></button>
+    <button class="btn" id="btnStrike"><s>S</s></button>
+    <div class="toolbar-sep"></div>
+    <button class="btn" id="btnStrokeToggle">Stroke ▾</button>
+  </div>
+  <div class="stroke-row hidden" id="strokeRow">
+    <span class="stroke-section-label">Stroke options</span>
+    <div class="color-pick-wrap" id="strokeColorWrap">
+      <div class="color-swatch" id="strokeColorSwatch" style="background:#ffffff"></div>
+      <span>Color</span>
+      <input type="color" id="strokeColor" value="#ffffff">
+    </div>
+  </div>
+  <div class="toolbar-apply-row">
+    <button class="btn undo" id="undoBtn" disabled>↩ Undo</button>
+    <button class="btn apply" id="applyBtn">✦ Apply to selection</button>
+    <button class="btn lock" id="lockBtn">⊘ Lock Text</button>
+  </div>
+</div>
+<div class="panel">
+  <div class="input-panel-header">
+    <span class="panel-label">Input text</span>
+    <span class="lock-indicator" id="lockIndicator">⊘ Text locked</span>
+  </div>
+  <textarea id="inputText" maxlength="35" placeholder="Type here, select a part, set the options above, then hit Apply"></textarea>
+</div>
+<div class="panel">
+  <div class="panel-label">Preview</div>
+  <div class="preview-box" id="preview"></div>
+</div>
+<div class="panel">
+  <div class="panel-label">Output — click to copy</div>
+  <div class="output-wrap">
+    <div class="output-box" id="outputBox" onclick="copyOutput()"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copyOutput()">Copy</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="lnm.js"></script>
+</body>
+</html>
