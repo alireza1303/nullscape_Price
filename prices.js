@@ -17,11 +17,12 @@ const CASUAL_OVERRIDES = {
 };
 
 const EXTREME_OVERRIDES = {
-    "Sport Shoes":       { extremePrice: 1600,  extremeSoloPrice: 1600  },
-    "Shark Tail":       { extremePrice: 1500,  extremeSoloPrice: 1500  },
-    "Matrix Tetrahedron":  { extremePrice: 3000,  extremeSoloPrice: 3000  },
-    "Shield":  { extremePrice: 5000,  extremeSoloPrice: 1000  },
-
+    "Sport Shoes":                  { extremePrice: 1600,  extremeSoloPrice: 1600  },
+    "Shark Tail":                   { extremePrice: 1500,  extremeSoloPrice: 1500  },
+    "Matrix Tetrahedron":           { extremePrice: 3000,  extremeSoloPrice: 3000  },
+    "Shield":                       { extremePrice: 5000,  extremeSoloPrice: 1000  },
+    "Gift Magnet":                  { extremePrices: [1800,2520,3240], extremeSoloPrices: [1800,2520,3240] },
+    "Gift Idol":                    { extremePrices: [5000,10000,15000,20000,25000], extremeSoloPrices: [5000,10000,15000,20000,25000] },
 
     "Test1":       { extremePrice: 1,  extremeSoloPrice: 2  },
     "Test2":       { extremePrices: [1, 2], extremeSoloPrices: [3, 4] },
