@@ -17,7 +17,12 @@ const CASUAL_OVERRIDES = {
 };
 
 const EXTREME_OVERRIDES = {
-    "Swiftness Ring":       { extremePrice: 80,  extremeSoloPrice: 80  },
+    "Sport Shoes":       { extremePrice: 1600,  extremeSoloPrice: 1600  },
+    "Shark Tail":       { extremePrice: 1500,  extremeSoloPrice: 1500  },
+    "Matrix Tetrahedron":  { extremePrice: 3000,  extremeSoloPrice: 3000  },
+    "Shield":  { extremePrice: 5000,  extremeSoloPrice: 1000  },
+
+
     "Test1":       { extremePrice: 1,  extremeSoloPrice: 2  },
     "Test2":       { extremePrices: [1, 2], extremeSoloPrices: [3, 4] },
 };
