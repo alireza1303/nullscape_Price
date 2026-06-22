@@ -1,7 +1,6 @@
 const CASUAL_OVERRIDES = {
     "Grace Wings":               { hidden: true },
     "Defuse Kit":                { hidden: true },
-    "Subspacial Barrier":        { hidden: true },
     "Radar Module : Tripmines":  { hidden: true },
     "Shield":               { casualPrice: 2000,  casualSoloPrice: 1000  },
     "Ice Skates":           { casualPrice: 400,   casualSoloPrice: 300   },
