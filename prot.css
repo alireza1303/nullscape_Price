@@ -1,3 +1,5 @@
+#toProt { display: none !important; }
+
 :root { --pink: #f472b6; }
 
 #prot-view, #toPrice { --theme: var(--casual); }
