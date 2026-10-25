@@ -58,7 +58,6 @@ function computePrice(item, stackOverride) {
         base = (isSolo && eff.soloPrice !== undefined) ? eff.soloPrice : eff.price;
     }
     let scaled = (playerCount === 1) ? base : Math.ceil(base * Math.sqrt(playerCount));
-    if (currentMode === 'partyplus') scaled = Math.ceil(scaled / Price_Values.partyPlusDivisor);
     if (currentMode === 'party' && playerCount > Price_Values.bigPartyAbove) scaled = Math.ceil(scaled / Price_Values.bigPartyDivisor);
     const discount = getDiscountPercent();
     if (discount > 0) scaled = Math.ceil(scaled * (100 - discount) / 100);
@@ -202,9 +201,7 @@ function toggleDiscount(key) {
 function updateFormulaText() {
     const el = document.getElementById('formulaText');
     if (!el) return;
-    let formula = 'ceil(base × √players)';
-    if (currentMode === 'partyplus') formula += ` ÷ ${Price_Values.partyPlusDivisor}`;
-    el.textContent = formula;
+    el.textContent = 'ceil(base × √players)';
 }
 
 function toggleMobileSettings() {
