@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nullscape Tools</title>
+    <link rel="icon" type="image/png" href="assets/Paycheck.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="base.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+        }
+        header { text-align: center; margin-bottom: 36px; }
+        h1 { font-size: clamp(2rem, 6vw, 2.75rem); }
+        .tagline { margin: 8px 0 0; color: var(--text-dim); font-size: 1rem; }
+
+        .portal-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 460px;
+        }
+        .portal-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 18px;
+            color: var(--text);
+            text-decoration: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: border-color var(--ease), background var(--ease), transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .portal-link:hover { background: var(--surface-2); border-color: var(--primary); }
+
+        .icon-container {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .icon-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .portal-title { font-size: 1.1rem; font-weight: 600; }
+        .portal-desc { margin-top: 2px; font-size: 0.88rem; color: var(--text-dim); line-height: 1.4; }
+        .arrow { margin-left: auto; color: var(--text-faint); transition: color var(--ease), transform var(--ease); }
+        .portal-link:hover .arrow { color: var(--primary); transform: translateX(3px); }
+
+        .footer-credit { margin-top: 40px; color: var(--text-faint); font-size: 0.8rem; }
+
+        header, .footer-credit { animation: rise 0.5s ease-out backwards; }
+        .portal-link { animation: rise 0.5s ease-out backwards; }
+        .portal-link:nth-child(1) { animation-delay: 0.10s; }
+        .portal-link:nth-child(2) { animation-delay: 0.18s; }
+        .portal-link:nth-child(3) { animation-delay: 0.26s; }
+        .footer-credit { animation-delay: 0.4s; }
+
+        .portal-link:hover  { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35); }
+        .portal-link:active { transform: scale(0.985); }
+        .icon-container { transition: border-color var(--ease); }
+        .icon-container img { transition: transform 0.2s ease; }
+        .portal-link:hover .icon-container { border-color: color-mix(in srgb, var(--primary) 50%, var(--border)); }
+        .portal-link:hover .icon-container img { transform: scale(1.1) rotate(-4deg); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Random Nullscape Stuff</h1>
+    </header>
+
+    <main class="portal-container">
+        <a href="prices.html" class="portal-link">
+            <div class="icon-container"><img src="assets/Paycheck.png" alt=""></div>
+            <div>
+                <div class="portal-title">Calculator</div>
+                <div class="portal-desc">See how much upgrades will cost</div>
+            </div>
+            <span class="arrow">→</span>
+        </a>
+
+        <a href="Stats.html" class="portal-link">
+            <div class="icon-container"><img src="assets/Adrenaline.png" alt=""></div>
+            <div>
+                <div class="portal-title">Achievement Tracker</div>
+                <div class="portal-desc">Track how close you are to 100% achievements</div>
+            </div>
+            <span class="arrow">→</span>
+        </a>
+
+        <a href="Lobby_Name_Maker.html" class="portal-link">
+            <div class="icon-container"><img src="assets/Radar.png" alt=""></div>
+            <div>
+                <div class="portal-title">Lobby Name Maker</div>
+                <div class="portal-desc">Make custom names for your lobby</div>
+            </div>
+            <span class="arrow">→</span>
+        </a>
+    </main>
+
+    <footer class="footer-credit">Made by alireza1303</footer>
+</body>
+</html>

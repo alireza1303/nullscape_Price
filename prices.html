@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="icon" type="image/png" href="assets/Paycheck.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="prices.css">
+    <link rel="stylesheet" href="prot.css">
+</head>
+<body class="mode-standard">
+
+<div class="mobile-settings-overlay" id="mobileDrawer">
+    <div class="drawer-head">
+        <span class="label">Settings</span>
+        <button class="drawer-close" onclick="toggleMobileSettings()" aria-label="Close settings">✕</button>
+    </div>
+    <div id="mobile-settings-content"></div>
+</div>
+
+<div id="loading-screen">
+    <div class="loader-ring"></div>
+</div>
+
+<button class="view-arrow" id="toProt" onclick="switchView('prot', this)" aria-label="Open Prot Calc" title="Prot Calc">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg>
+</button>
+
+<div class="container" id="main-ui">
+    <header>
+        <a href="index.html" class="back-btn">← Home</a>
+        <h1>Upgrades Calculator</h1>
+    </header>
+
+    <div class="main-layout">
+
+        <div class="card">
+            <div class="section-title">Upgrades</div>
+            <div class="upgrades-grid" id="mainGrid"></div>
+        </div>
+
+        <div class="sticky-sidebar">
+            <div class="card" id="pc-settings-box">
+                <div class="section-title">Settings</div>
+                <div class="settings-grid">
+
+                    <div class="input-group">
+                        <label>Difficulty</label>
+                        <div class="mode-selector cols-3">
+                            <div class="mode-btn" data-diff="casual" onclick="setDifficulty('casual')">Casual</div>
+                            <div class="mode-btn active" data-diff="standard" onclick="setDifficulty('standard')">Standard</div>
+                            <div class="mode-btn" data-diff="extreme" onclick="setDifficulty('extreme')">Extreme</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mode</label>
+                        <div class="mode-selector cols-2">
+                            <div class="mode-btn active" data-mode="solo" onclick="setMode('solo')">Solo</div>
+                            <div class="mode-btn" data-mode="duo" onclick="setMode('duo')">Duo</div>
+                            <div class="mode-btn" data-mode="party" onclick="setMode('party')">Party</div>
+                            <div class="mode-btn" data-mode="partyplus" onclick="setMode('partyplus')">Party+</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Player Count</label>
+                        <input type="number" class="player-input" id="pInput" min="1" max="1" value="1" onchange="validatePlayers(this)">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Discounts</label>
+                        <div class="discount-list">
+                            <button class="curse-toggle-btn" data-discount="nothing" onclick="toggleDiscount('nothing')">
+                                <span>Nothing Curse</span>
+                                <span class="curse-pill">–15% off</span>
+                            </button>
+                            <button class="curse-toggle-btn" data-discount="wish" onclick="toggleDiscount('wish')">
+                                <span>Wish Perfection Discount</span>
+                                <span class="curse-pill">–10% off</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card total-card">
+                <span class="label">Total gift</span>
+                <div id="curse-indicator">Discount is on</div>
+                <div class="total-val" id="result">0</div>
+                <div class="formula-text" id="formulaText">ceil(base × √players)</div>
+                <button class="reset-all-btn" onclick="clearAll()">Reset all</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container prot-container" id="prot-view">
+    <header>
+        <a href="index.html" class="back-btn">← Home</a>
+        <h1>Protection and Purification Calculator</h1>
+    </header>
+    <div class="prot-layout">
+
+        <div class="card prot-card" id="protCard">
+            <div class="card-head">
+                <div class="section-title">Altar Of Protection</div>
+                <button type="button" class="toggle-pill" id="protToggle">Disable Protection</button>
+            </div>
+            <div class="prot-grid">
+                <div class="input-group prot-shared">
+                    <label>Mode</label>
+                    <div class="mode-selector cols-2" id="protModeSel">
+                        <div class="mode-btn active" data-pmode="solo">Solo</div>
+                        <div class="mode-btn" data-pmode="duo">Duo</div>
+                        <div class="mode-btn" data-pmode="party">Party</div>
+                        <div class="mode-btn" data-pmode="party_plus">Party+</div>
+                    </div>
+                </div>
+                <div class="input-group prot-only">
+                    <label for="protStart">Starting Level (level that you start Protection)</label>
+                    <input type="number" class="player-input" id="protStart" value="8" min="8">
+                </div>
+                <div class="input-group prot-only">
+                    <label for="protEnd">Ending Level(last level that you will Protection)</label>
+                    <input type="number" class="player-input" id="protEnd" value="8" min="8">
+                </div>
+                <div class="input-group prot-shared">
+                    <label for="protPlayers">Player Count</label>
+                    <input type="number" class="player-input" id="protPlayers" value="1" min="1" max="1">
+                </div>
+            </div>
+        </div>
+
+        <div class="card puri-card" id="puriCard">
+            <div class="card-head">
+                <div class="section-title">Purification</div>
+                <button type="button" class="toggle-pill" id="puriToggle">Disable Purification</button>
+            </div>
+            <div class="puri-inputs">
+                <div class="input-group">
+                    <label for="puriLevel">Level</label>
+                    <input type="number" class="player-input" id="puriLevel" value="14" min="14">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Curse <span class="puri-hint">(click again to deselect)</span></label>
+                <div class="puri-options" id="puriOptions"></div>
+            </div>
+        </div>
+
+        <div class="card prot-results" id="protResultsCard">
+            <div class="section-title">Results</div>
+            <button class="prot-calc-btn" id="protCalcBtn">Calculate</button>
+            <div class="prot-result" id="protOutput">Results will appear here.</div>
+        </div>
+
+    </div>
+</div>
+
+<button class="view-arrow left" id="toPrice" onclick="switchView('price', this)" aria-label="Back to Price Calc" title="Price Calc">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg>
+</button>
+
+<div class="mobile-bottom-nav">
+    <div class="mobile-total-wrap">
+        <span class="label">Total</span>
+        <span class="price" id="mobile-result">0</span>
+    </div>
+    <div class="mobile-actions">
+        <button class="mobile-reset" onclick="clearAll()" aria-label="Reset all">↺</button>
+        <button class="mobile-settings-btn" id="mobileSettingsBtn" onclick="toggleMobileSettings()">Settings</button>
+    </div>
+</div>
+
+<script src="values.js"></script>
+<script src="prices.js"></script>
+<script src="prot.js"></script>
+</body>
+</html>
