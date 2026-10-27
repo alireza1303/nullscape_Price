@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lobby Name Maker</title>
+<link rel="icon" type="image/png" href="assets/Radar.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Bangers&family=Creepster&family=Fondamento:ital@0;1&family=Fredoka+One&family=Grenze+Gotisch&family=Inconsolata:wght@400;700&family=Indie+Flower&family=Josefin+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Jura:wght@400;700&family=Kalam:wght@400;700&family=Luckiest+Guy&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&family=Michroma&family=Nunito:ital,wght@0,400;0,700;1,400;1,700&family=Oswald:wght@400;700&family=Patrick+Hand&family=Permanent+Marker&family=Press+Start+2P&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Sarpanch&family=Special+Elite&family=Titillium+Web&family=Ubuntu:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/lobby-name-maker.css">
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="help-sidebar" id="helpSidebar" role="dialog" aria-label="How to use" aria-hidden="true">
+  <div class="sidebar-header">
+    <div class="sidebar-title">How to Use</div>
+    <button class="close-sidebar-btn" id="closeSidebar" aria-label="Close help">&times;</button>
+  </div>
+  <div class="sidebar-content">
+    <div class="step-item">
+      <div class="step-num">Step 1</div>
+      <div class="step-text">Type your lobby name in the <strong>"Input text"</strong> box. You can use up to <strong>35 characters</strong>, and the counter shows how many are left</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Step 2</div>
+      <div class="step-text"><strong>Select</strong> the part of the text you want to change with your mouse or finger, or tap <strong>Select all</strong> to style everything at once</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Step 3</div>
+      <div class="step-text">Pick your look in the <strong>Options panel</strong>: <strong>Color</strong>, <strong>Font</strong>, <strong>B / I / U / S</strong> (bold, italic, underline, strikethrough), a <strong>Gradient</strong> or a <strong>Stroke</strong> outline</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Step 4</div>
+      <div class="step-text">Click <strong>✦ Apply to selection</strong>. Check the result in the <strong>Preview</strong>, and use <strong>Dark / Light</strong> to see how it looks on both backgrounds</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Step 5</div>
+      <div class="step-text">Happy with it? Click the <strong>Output</strong> box or the <strong>Copy</strong> button, then paste it where you set your lobby name</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Gradient</div>
+      <div class="step-text">Open <strong>Gradient ▾</strong> and choose a <strong>Start</strong> and <strong>End</strong> color. Tick <strong>Middle color</strong> to add a third, or press <strong>⇄</strong> to swap the ends. The colors fade letter by letter and spaces are skipped. While Gradient is open, it replaces the single <strong>Color</strong></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">Stroke</div>
+      <div class="step-text">Open <strong>Stroke ▾</strong> to add an outline. Pick its color and use the <strong>Thickness</strong> slider (1 to 8). It is applied together with your other options when you click Apply</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">More tips</div>
+      <div class="step-text"><strong>Lock Text</strong> stops your text from changing while you format. <strong>Clear formatting</strong> resets the selected part. Made a mistake? Press <strong>↩ Undo</strong>. Some fonts, like Highway Gothic and Zekton, look different in the preview than in-game. Press <strong>Esc</strong> to close this guide</div>
+    </div>
+  </div>
+</div>
+
+<div class="header-container" style="--i:0">
+  <a href="index.html" class="back-btn">← Home</a>
+  <h1>Lobby Name Maker</h1>
+  <button class="btn help-btn" id="openSidebar" aria-controls="helpSidebar">How to use</button>
+</div>
+
+<div class="panel" style="--i:1">
+  <div class="panel-label">Options Panel</div>
+  <div class="toolbar">
+    <div class="color-pick-wrap" id="fontColorWrap" title="Text color">
+      <div class="color-swatch" id="fontColorSwatch" style="background:#c285ff"></div>
+      <span>Color</span>
+      <input type="color" id="fontColor" value="#c285ff" aria-label="Text color">
+    </div>
+    <div class="toolbar-sep"></div>
+    <select id="fontFace" aria-label="Font">
+      <option value="">None</option>
+      <option style="font-family: Arial, sans-serif;">Arial</option>
+      <option style="font-family: 'Bangers', cursive;">Bangers</option>
+      <option style="font-family: 'Creepster', cursive;">Creepster</option>
+      <option style="font-family: 'Fondamento', cursive;">Fondamento</option>
+      <option style="font-family: 'Fredoka One', cursive;">Fredoka One</option>
+      <option style="font-family: 'Grenze Gotisch', cursive;">GrenzeGotisch</option>
+      <option style="font-family: 'Highway Gothic', sans-serif;">Highway Gothic</option>
+      <option style="font-family: 'Inconsolata', monospace;">Inconsolata</option>
+      <option style="font-family: 'Indie Flower', cursive;">Indie Flower</option>
+      <option style="font-family: 'Josefin Sans', sans-serif;">Josefin Sans</option>
+      <option style="font-family: 'Jura', sans-serif;">Jura</option>
+      <option style="font-family: 'Kalam', cursive;">Kalam</option>
+      <option style="font-family: 'Luckiest Guy', cursive;">Luckiest Guy</option>
+      <option style="font-family: 'Merriweather', serif;">Merriweather</option>
+      <option style="font-family: 'Michroma', sans-serif;">Michroma</option>
+      <option style="font-family: 'Nunito', sans-serif;">Nunito</option>
+      <option style="font-family: 'Oswald', sans-serif;">Oswald</option>
+      <option style="font-family: 'Patrick Hand', cursive;">Patrick Hand</option>
+      <option style="font-family: 'Permanent Marker', cursive;">Permanent Marker</option>
+      <option style="font-family: 'Press Start 2P', monospace;">Press Start 2P</option>
+      <option style="font-family: 'Roboto', sans-serif;">Roboto</option>
+      <option style="font-family: 'Roboto Condensed', sans-serif;">Roboto Condensed</option>
+      <option style="font-family: 'Roboto Mono', monospace;">Roboto Mono</option>
+      <option style="font-family: 'Sarpanch', sans-serif;">Sarpanch</option>
+      <option style="font-family: 'Special Elite', cursive;">Special Elite</option>
+      <option style="font-family: 'Titillium Web', sans-serif;">TitilliumWeb</option>
+      <option style="font-family: 'Ubuntu', sans-serif;">Ubuntu</option>
+      <option style="font-family: 'Zekton', sans-serif;">Zekton</option>
+    </select>
+    <div class="toolbar-sep"></div>
+    <button class="btn" id="btnBold" aria-pressed="false" aria-label="Bold"><b>B</b></button>
+    <button class="btn" id="btnItalic" aria-pressed="false" aria-label="Italic"><i>I</i></button>
+    <button class="btn" id="btnUnder" aria-pressed="false" aria-label="Underline"><u>U</u></button>
+    <button class="btn" id="btnStrike" aria-pressed="false" aria-label="Strikethrough"><s>S</s></button>
+    <div class="toolbar-sep"></div>
+    <button class="btn" id="btnGradientToggle" aria-expanded="false" aria-controls="gradientRow">Gradient ▾</button>
+    <button class="btn" id="btnStrokeToggle" aria-expanded="false" aria-controls="strokeRow">Stroke ▾</button>
+  </div>
+
+  <div class="option-row hidden" id="gradientRow">
+    <span class="option-label">Gradient options</span>
+    <div class="color-pick-wrap" id="gradStartWrap" title="First letter color">
+      <div class="color-swatch" id="gradStartSwatch" style="background:#ff5fa2"></div>
+      <span>Start</span>
+      <input type="color" id="gradStart" value="#ff5fa2" aria-label="Gradient start color">
+    </div>
+    <div class="color-pick-wrap hidden" id="gradMidWrap" title="Middle color">
+      <div class="color-swatch" id="gradMidSwatch" style="background:#ffd166"></div>
+      <span>Middle</span>
+      <input type="color" id="gradMid" value="#ffd166" aria-label="Gradient middle color">
+    </div>
+    <div class="color-pick-wrap" id="gradEndWrap" title="Last letter color">
+      <div class="color-swatch" id="gradEndSwatch" style="background:#4cc9f0"></div>
+      <span>End</span>
+      <input type="color" id="gradEnd" value="#4cc9f0" aria-label="Gradient end color">
+    </div>
+    <button class="btn" id="gradSwap" title="Swap start and end" aria-label="Swap start and end colors">⇄</button>
+    <label class="check"><input type="checkbox" id="gradMidToggle"> Middle color</label>
+    <div class="grad-bar" id="gradBar" aria-hidden="true"></div>
+  </div>
+
+  <div class="option-row hidden" id="strokeRow">
+    <span class="option-label">Stroke options</span>
+    <div class="color-pick-wrap" id="strokeColorWrap">
+      <div class="color-swatch" id="strokeColorSwatch" style="background:#ffffff"></div>
+      <span>Color</span>
+      <input type="color" id="strokeColor" value="#ffffff" aria-label="Stroke color">
+    </div>
+    <label class="range-wrap">
+      <span>Thickness</span>
+      <input type="range" id="strokeThick" min="1" max="8" step="1" value="4">
+      <output id="strokeThickOut">4</output>
+    </label>
+  </div>
+
+  <div class="toolbar-apply-row">
+    <button class="btn undo" id="undoBtn" disabled>↩ Undo</button>
+    <button class="btn" id="clearBtn" title="Remove all formatting from the selection">Clear formatting</button>
+    <button class="btn" id="selectAllBtn">Select all</button>
+    <button class="btn apply" id="applyBtn">✦ Apply to selection</button>
+    <button class="btn lock" id="lockBtn" aria-pressed="false">⊘ Lock Text</button>
+  </div>
+</div>
+
+<div class="panel" style="--i:2">
+  <div class="input-panel-header">
+    <span class="panel-label">Input text</span>
+    <span class="input-meta">
+      <span class="lock-indicator" id="lockIndicator">⊘ Text locked</span>
+      <span class="char-count" id="charCount">0 / 35</span>
+    </span>
+  </div>
+  <textarea id="inputText" maxlength="35" placeholder="Type here, select a part, set the options above, then hit Apply"></textarea>
+</div>
+
+<div class="panel" style="--i:3">
+  <div class="input-panel-header">
+    <span class="panel-label">Preview</span>
+    <span class="bg-switch" role="group" aria-label="Preview background">
+      <button class="bg-btn active" id="bgDark" aria-pressed="true">Dark</button>
+      <button class="bg-btn" id="bgLight" aria-pressed="false">Light</button>
+    </span>
+  </div>
+  <div class="preview-box" id="preview" data-bg="dark"></div>
+</div>
+
+<div class="panel" style="--i:4">
+  <div class="panel-label">Output — click to copy</div>
+  <div class="output-wrap">
+    <div class="output-box" id="outputBox" role="button" tabindex="0" aria-label="Copy output"></div>
+    <button class="copy-btn" id="copyBtn">Copy</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/lobby-name-maker.js"></script>
+</body>
+</html>
