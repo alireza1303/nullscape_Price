@@ -1,0 +1,179 @@
+:root {
+  --bg: #0e0e11;
+  --surface: #16161b;
+  --surface-2: #1d1d24;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text: #f2f2f5;
+  --text-dim: #a2a2ae;
+  --text-faint: #6c6c78;
+
+  --primary: #a78bfa;
+  --casual: #5eb8ff;
+  --extreme: #ff9a5c;
+  --danger: #f07178;
+
+  --theme: var(--primary);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --ease: 0.18s ease;
+}
+
+body.mode-casual  { --theme: var(--casual); }
+body.mode-extreme { --theme: var(--extreme); }
+
+* {
+  box-sizing: border-box;
+  font-family: 'Outfit', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+h1 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.back-btn {
+  display: inline-block;
+  padding: 8px 14px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  transition: color var(--ease), border-color var(--ease);
+}
+.back-btn:hover { color: var(--text); border-color: var(--border-strong); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.btn-base,
+.mode-btn,
+.btn {
+  font: inherit;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--ease), background var(--ease), border-color var(--ease);
+}
+.mode-btn:hover,
+.btn:hover { color: var(--text); border-color: var(--border-strong); }
+
+.mode-btn.active,
+.btn.active {
+  color: var(--text);
+  background: color-mix(in srgb, var(--theme) 18%, var(--surface-2));
+  border-color: var(--theme);
+}
+
+input[type="number"],
+input[type="text"],
+textarea,
+select {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--ease);
+}
+input[type="number"]:focus,
+input[type="text"]:focus,
+textarea:focus,
+select:focus { border-color: var(--theme); }
+
+::placeholder { color: var(--text-faint); }
+
+:focus-visible { outline: 2px solid var(--theme); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible { outline: none; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.btn-base,
+.mode-btn,
+.btn,
+.back-btn {
+  transition: color var(--ease), background var(--ease), border-color var(--ease), transform 0.12s ease;
+}
+.mode-btn:active,
+.btn:not(:disabled):active,
+.back-btn:active { transform: scale(0.96); }
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: -1;
+  will-change: transform;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent);
+}
+body::before {
+  height: calc(100vh + 480px);
+  background-size: 480px 480px;
+  background-image:
+    radial-gradient(circle at 12% 18%, color-mix(in srgb, var(--theme) 14%, transparent) 0 2.5px, transparent 3.5px),
+    radial-gradient(circle at 47% 62%, color-mix(in srgb, var(--theme) 12%, transparent) 0 2px,   transparent 3px),
+    radial-gradient(circle at 78% 33%, color-mix(in srgb, var(--theme) 14%, transparent) 0 3px,   transparent 4px),
+    radial-gradient(circle at 63% 90%, color-mix(in srgb, var(--theme) 10%, transparent) 0 2px,   transparent 3px),
+    radial-gradient(circle at 90% 75%, color-mix(in srgb, var(--theme) 12%, transparent) 0 2.5px, transparent 3.5px),
+    radial-gradient(circle at 30% 85%, color-mix(in srgb, var(--theme) 10%, transparent) 0 2px,   transparent 3px);
+  animation: dots-rise 70s linear infinite;
+}
+body::after {
+  height: calc(100vh + 320px);
+  background-size: 320px 320px;
+  background-image:
+    radial-gradient(circle at 25% 40%, color-mix(in srgb, var(--text) 7%, transparent) 0 1px,   transparent 2px),
+    radial-gradient(circle at 70% 15%, color-mix(in srgb, var(--text) 5%, transparent) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 55% 78%, color-mix(in srgb, var(--text) 6%, transparent) 0 1px,   transparent 2px),
+    radial-gradient(circle at 88% 55%, color-mix(in srgb, var(--text) 5%, transparent) 0 1.5px, transparent 2.5px);
+  animation: dots-rise-fast 45s linear infinite;
+}
+@keyframes dots-rise      { to { transform: translateY(-480px); } }
+@keyframes dots-rise-fast { to { transform: translateY(-320px); } }

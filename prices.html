@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Calculator</title>
+    <link rel="icon" type="image/png" href="assets/Paycheck.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/prices.css">
+</head>
+<body class="mode-standard">
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="mobile-backdrop" id="mobileBackdrop" onclick="toggleMobileSettings(false)"></div>
+
+<div class="mobile-settings-overlay" id="mobileDrawer">
+    <div class="drawer-head">
+        <span class="label">Settings</span>
+        <button class="drawer-close" onclick="toggleMobileSettings(false)" aria-label="Close settings">✕</button>
+    </div>
+    <div id="mobile-settings-content"></div>
+</div>
+
+<div id="loading-screen">
+    <div class="loader-ring"></div>
+</div>
+
+<button class="view-arrow" id="toProt" onclick="switchView('prot', this)" aria-label="Open Prot Calc" title="Prot Calc">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"/></svg>
+</button>
+
+<div class="container" id="main-ui">
+    <header>
+        <a href="index.html" class="back-btn">← Home</a>
+        <h1>Upgrades Calculator</h1>
+        <p class="header-note">If any problems, DM <strong>alireza1303</strong></p>
+    </header>
+
+    <div class="main-layout">
+
+        <div class="card">
+            <div class="grid-head">
+                <div class="section-title">Upgrades</div>
+                <input type="search" class="upgrade-search" placeholder="Search upgrades ( / )" aria-label="Search upgrades" oninput="setSearch(this.value)">
+            </div>
+            <div class="upgrades-grid" id="mainGrid"></div>
+            <div class="grid-empty" id="gridEmpty" hidden>No upgrades match your search</div>
+        </div>
+
+        <div class="sticky-sidebar">
+            <div class="card" id="pc-settings-box">
+                <div class="section-title">Settings</div>
+                <div class="settings-grid">
+
+                    <div class="input-group">
+                        <label>Difficulty</label>
+                        <div class="mode-selector cols-3">
+                            <div class="mode-btn" data-diff="casual" onclick="setDifficulty('casual')">Casual</div>
+                            <div class="mode-btn active" data-diff="standard" onclick="setDifficulty('standard')">Standard</div>
+                            <div class="mode-btn" data-diff="extreme" onclick="setDifficulty('extreme')">Extreme</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Mode</label>
+                        <div class="mode-selector cols-2">
+                            <div class="mode-btn active" data-mode="solo" onclick="setMode('solo')">Solo</div>
+                            <div class="mode-btn" data-mode="duo" onclick="setMode('duo')">Duo</div>
+                            <div class="mode-btn" data-mode="party" onclick="setMode('party')">Party</div>
+                            <div class="mode-btn" data-mode="partyplus" onclick="setMode('partyplus')">Party+</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Player Count</label>
+                        <input type="number" class="player-input price-players" id="pInput" min="1" max="1" value="1" onchange="validatePlayers(this)">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Discounts</label>
+                        <div class="discount-list">
+                            <button class="curse-toggle-btn" data-discount="nothing" onclick="toggleDiscount('nothing')">
+                                <span>Nothing Curse</span>
+                                <span class="curse-pill">–15% off</span>
+                            </button>
+                            <button class="curse-toggle-btn" data-discount="wish" onclick="toggleDiscount('wish')">
+                                <span>Wish Perfection Discount</span>
+                                <span class="curse-pill">–10% off</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Budget</label>
+                        <button class="curse-toggle-btn buy-toggle" data-buy-toggle onclick="toggleBuyMode()">
+                            <span>Budget Mode</span>
+                            <span class="curse-pill buy-pill">Off</span>
+                        </button>
+                        <div class="buy-fields">
+                            <div>
+                                <label>Golden Gifts</label>
+                                <input type="number" class="gifts-input" min="0" placeholder="0" oninput="setGifts(this)">
+                            </div>
+                            <div>
+                                <label>Player Level</label>
+                                <input type="number" class="level-input" min="0" max="99" value="0" oninput="setLevel(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card purchases-card" id="purchasesCard"></div>
+
+            <div class="card total-card">
+                <span class="label" id="totalLabel">Total Gifts</span>
+                <div id="curse-indicator">Discount is on</div>
+                <div class="total-val" id="result">0</div>
+                <div class="formula-text" id="formulaText">ceil(base × √players)</div>
+                <button class="reset-all-btn" onclick="clearAll()">Reset all</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container prot-container" id="prot-view">
+    <header>
+        <a href="index.html" class="back-btn">← Home</a>
+        <h1>Protection Calculator</h1>
+    </header>
+    <div class="prot-layout">
+
+        <div class="prot-left">
+        <div class="card prot-card" id="protCard">
+            <div class="card-head">
+                <div class="section-title">Altar of Protection</div>
+            </div>
+            <div class="prot-grid">
+                <div class="input-group prot-shared">
+                    <label>Mode</label>
+                    <div class="mode-selector cols-2" id="protModeSel">
+                        <div class="mode-btn active" data-pmode="solo">Solo</div>
+                        <div class="mode-btn" data-pmode="duo">Duo</div>
+                        <div class="mode-btn" data-pmode="party">Party</div>
+                        <div class="mode-btn" data-pmode="party_plus">Party+</div>
+                    </div>
+                </div>
+                <div class="input-group prot-only">
+                    <label for="protStart">Starting Level (the level you start protection)</label>
+                    <input type="number" class="player-input" id="protStart" value="8" min="8">
+                </div>
+                <div class="input-group prot-only">
+                    <label for="protEnd">Ending Level (the last level you will protect)</label>
+                    <input type="number" class="player-input" id="protEnd" value="8" min="8">
+                </div>
+                <div class="input-group prot-shared">
+                    <label for="protPlayers">Player Count</label>
+                    <input type="number" class="player-input" id="protPlayers" value="1" min="1" max="1">
+                </div>
+                <div class="input-group prot-shared">
+                    <label>Delusions</label>
+                    <div class="discount-list">
+                        <button type="button" class="curse-toggle-btn" id="protDependence">
+                            <span class="toggle-name"><img class="toggle-icon" src="assets/Dependence.png" alt=""><span>Dependence</span></span>
+                            <span class="curse-pill">–20% price</span>
+                        </button>
+                        <button type="button" class="curse-toggle-btn" id="protBurnout">
+                            <span class="toggle-name"><img class="toggle-icon" src="assets/Burnout.png" alt=""><span>Burnout</span></span>
+                            <span class="curse-pill">2nd prot ×1.5</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="input-group prot-shared" id="protAegisGroup" hidden>
+                    <label>Upgrades</label>
+                    <button type="button" class="curse-toggle-btn" id="protAegis">
+                        <span>Drowned Ægis</span>
+                        <span class="curse-pill">Double prot</span>
+                    </button>
+                </div>
+                <div class="input-group prot-only" id="protDoubleGroup" hidden>
+                    <label>Double Prot Levels</label>
+                    <button type="button" class="curse-toggle-btn" id="protDoubleOpen">
+                        <span>Choose levels</span>
+                        <span class="curse-pill" id="protDoubleCount">None</span>
+                    </button>
+                    <div class="formula-text" id="protDoubleHint"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card next-card" id="nextCard">
+            <div class="section-title">Next Prots</div>
+            <div class="input-group">
+                <label for="nextGifts">Your Golden Gifts</label>
+                <input type="number" class="player-input" id="nextGifts" value="" min="0" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label for="nextCount">How Many Prots</label>
+                <input type="number" class="player-input" id="nextCount" value="10" min="1" max="100">
+            </div>
+            <div class="prot-result next-result" id="nextOutput"></div>
+        </div>
+        </div>
+
+        <div class="card prot-results" id="protResultsCard">
+            <div class="section-title">Results</div>
+            <button class="prot-calc-btn" id="protCalcBtn">Calculate</button>
+            <div class="prot-result" id="protOutput">Results will appear here.</div>
+        </div>
+
+    </div>
+</div>
+
+<button class="view-arrow left" id="toPrice" onclick="switchView('price', this)" aria-label="Back to Price Calc" title="Price Calc">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg>
+</button>
+
+<div class="mobile-bottom-nav">
+    <div class="mobile-total-wrap">
+        <span class="label" id="mobileLabel">Total</span>
+        <span class="price" id="mobile-result">0</span>
+    </div>
+    <div class="mobile-actions">
+        <button class="mobile-reset" onclick="clearAll()" aria-label="Reset all">↺</button>
+        <button class="mobile-settings-btn" id="mobileSettingsBtn" onclick="toggleMobileSettings()">Settings</button>
+    </div>
+</div>
+
+<div class="dp-overlay" id="dpOverlay"></div>
+<aside class="dp-panel" id="dpPanel" role="dialog" aria-label="Double prot levels" aria-hidden="true">
+    <div class="dp-head">
+        <span class="label">Double Prot Levels</span>
+        <button type="button" class="dp-close" id="dpClose" aria-label="Close">✕</button>
+    </div>
+    <div class="dp-actions">
+        <button type="button" class="btn" id="dpAll">Select all</button>
+        <button type="button" class="btn" id="dpNone">Clear</button>
+    </div>
+    <div class="dp-sub" id="dpSub"></div>
+    <div class="dp-list" id="dpList"></div>
+</aside>
+
+<script src="js/values.js"></script>
+<script src="js/price.js"></script>
+<script src="js/prot.js"></script>
+</body>
+</html>
