@@ -15,7 +15,8 @@ let searchTerm    = '';
 let toastTimer;
 
 const clamp     = (n, min, max) => Math.max(min, Math.min(max, n));
-const maxOf     = item => item.maxStack || 1;
+const dotsOf    = item => item.shopStack || item.maxStack || 1;
+const maxOf     = item => buyMode ? dotsOf(item) : (item.maxStack || 1);
 const ownedOf   = item => item.owned || 0;
 const haveOf    = item => (item.owned || 0) + (item.bought || 0);
 const stackOf   = item => buyMode ? haveOf(item) : item.currentStack;
@@ -55,7 +56,20 @@ function getDiscountPercent() {
     return 0;
 }
 
-function isPartyMode() { return currentMode === 'party' || currentMode === 'partyplus'; }
+function isPlayerLocked(item) {
+    if (item.minPlayers && playerCount < item.minPlayers) return true;
+    if (item.maxPlayers && playerCount > item.maxPlayers) return true;
+    return false;
+}
+
+function missingPrereq(item) {
+    if (!item.requires) return null;
+    for (const name of item.requires) {
+        const dep = upgradesList.find(u => u.name === name);
+        if (dep && haveOf(dep) < 1) return name;
+    }
+    return null;
+}
 
 function isCasualHidden(item) {
     if (currentDifficulty !== 'casual') return false;
@@ -127,8 +141,8 @@ function renderGrid() {
     const grid = document.getElementById('mainGrid');
     grid.innerHTML = upgradesList.map((item, index) => {
         let dots = '';
-        if (item.maxStack > 1) {
-            for (let i = 0; i < item.maxStack; i++) dots += `<div class="stack-dot" id="dot-${index}-${i}"></div>`;
+        if (dotsOf(item) > 1) {
+            for (let i = 0; i < dotsOf(item); i++) dots += `<div class="stack-dot" id="dot-${index}-${i}"></div>`;
         }
         return `<div class="upgrade-item" id="item-${index}" style="--i:${index}" onclick="clickUpgrade(${index}, this)">
             <div class="icon-wrapper"><img src="${item.icon}" onerror="this.src='https://via.placeholder.com/50?text=?'"></div>
@@ -169,9 +183,10 @@ function refreshItem(index, animate = false) {
     const s = stackOf(item);
     el.classList.toggle('active', s > 0);
     if (!el.classList.contains('buying')) el.classList.toggle('sold', buyMode && s >= maxOf(item));
-    for (let i = 0; i < item.maxStack; i++) {
+    for (let i = 0; i < dotsOf(item); i++) {
         const dot = document.getElementById(`dot-${index}-${i}`);
         if (!dot) continue;
+        dot.style.display = i < maxOf(item) ? '' : 'none';
         const want = i < s;
         const was  = dot.classList.contains('filled');
         dot.classList.toggle('filled', want);
@@ -201,7 +216,7 @@ function updateVisualPrices() {
             else {
                 text = max > 1 ? `Stack ${next}: ${cost.toLocaleString()}` : `Cost: ${cost.toLocaleString()}`;
                 unaffordable = cost > remaining;
-                locked = item.level > playerLevel;
+                locked = item.level > playerLevel || !!missingPrereq(item);
             }
         } else {
             const displayStack = item.currentStack > 0 ? item.currentStack : 1;
@@ -228,9 +243,7 @@ function applyRules() {
         el.classList.toggle('casual-hidden',  casualHide);
         el.classList.toggle('extreme-hidden', extremeHide);
         if (casualHide || extremeHide) { item.currentStack = 0; item.bought = 0; refreshItem(index); }
-        let disabled = false;
-        if (item.id === 'opt-adrenaline' && isPartyMode()) disabled = true;
-        if (item.id === 'opt-lrs' && (!isPartyMode() || playerCount < Price_Values.lastStandingMinPlayers)) disabled = true;
+        const disabled = isPlayerLocked(item);
         el.classList.toggle('disabled', disabled && !casualHide && !extremeHide);
         if (disabled) { item.currentStack = 0; item.bought = 0; refreshItem(index); }
     });
@@ -292,6 +305,12 @@ function clickUpgrade(index, el) {
         if (item.level > playerLevel) {
             shake(el);
             toast(`Requires level ${item.level}`);
+            return;
+        }
+        const need = missingPrereq(item);
+        if (need) {
+            shake(el);
+            toast(`Requires ${need} first`);
             return;
         }
         const cost = computePrice(item, owned + 1);
@@ -561,7 +580,13 @@ function syncControls() {
 }
 
 function setDifficulty(diff) {
+    if (diff === currentDifficulty) return;
+    const hadPurchases = purchaseOrder.length > 0 || purchaseHistory.length > 0;
     currentDifficulty = diff;
+    if (hadPurchases) {
+        resetPurchases();
+        toast('Spending log and buy history cleared for the new difficulty');
+    }
     syncControls();
     applyRules();
 }
